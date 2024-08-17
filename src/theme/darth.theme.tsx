@@ -1,46 +1,71 @@
 import { createTheme } from '@mui/material';
+import { red } from '@mui/material/colors';
+
+const darkPrimaryContainer = '#9cbc80'; // Versión más clara del color primario
+const darkPrimaryContainerText = '#1a2815'; // Texto en el contenedor primario
+
+const darkSecondaryContainer = '#8a9b80'; // Versión más clara del color secundario
+const darkSecondaryContainerText = '#2a2e24'; // Texto en el contenedor secundario
+
+const darkBackGroundDefault = '#121212'; // Fondo predeterminado oscuro
+const darkBackGroundPaper = '#1d1d1d'; // Fondo de los componentes (como tarjetas) en modo oscuro
+
+const darkPrimaryText = '#e2e5df'; // Texto primario claro
+const darkSecondaryText = '#c4c8c0'; // Texto secundario claro
 
 const darkTheme = createTheme({
   palette: {
+    // common:{
+    //   black:"",
+    //   white:"",
+    // },
     mode: 'dark',
+    contrastThreshold: 3,
     primary: {
-      main: '#0D47A1', // Azul Cobalto
+      // light: '',
+      main: darkPrimaryContainer,
+      // dark: ,
+      contrastText: darkPrimaryContainerText,
     },
     secondary: {
-      main: '#64FFDA', // Verde Menta
+      //   light: '',
+      main: darkSecondaryContainer,
+      //   dark: '',
+      contrastText: darkSecondaryContainerText,
     },
     error: {
-      main: '#FF6E6E', // Rojo Lava
+      //   light: '',
+      main: red.A400,
+      //   dark: '',
+      //   contrastText: '',
     },
+    // warning: {
+    //   light: '',
+    //   main: '',//Mandatory
+    //   dark: '',
+    //   contrastText: '',
+    // },
+    // info: {
+    //   light: '',
+    //   main: '',//Mandatory
+    //   dark: '',
+    //   contrastText: '',
+    // },
+    // success: {
+    //   light: '',
+    //   main: '',//Mandatory
+    //   dark: '',
+    //   contrastText: '',
+    // },
+    // divider: 'red',
     background: {
-      default: '#121212', // Gris Carbón
-      paper: '#1E1E1E', // Gris oscuro para elementos como tarjetas
+      default: darkBackGroundDefault,
+      paper: darkBackGroundPaper,
     },
     text: {
-      primary: '#E0E0E0', // Blanco Humo
-      secondary: '#B0BEC5', // Gris claro para textos secundarios
-    },
-  },
-  typography: {
-    fontFamily: 'Roboto, sans-serif',
-  },
-  components: {
-    MuiButton: {
-      styleOverrides: {
-        root: {
-          color: '#E0E0E0', // Color del texto del botón
-        },
-        outlined: {
-          borderColor: '#E0E0E0', // Color del borde en botones con estilo "outlined"
-        },
-        contained: {
-          color: '#121212', // Color del texto en botones con estilo "contained"
-          backgroundColor: '#0D47A1', // Color de fondo del botón
-          '&:hover': {
-            backgroundColor: '#0B3D91', // Color de fondo cuando el botón es hover
-          },
-        },
-      },
+      primary: darkPrimaryText,
+      secondary: darkSecondaryText,
+      // disabled:""
     },
   },
 });

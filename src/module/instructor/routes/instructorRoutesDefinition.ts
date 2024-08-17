@@ -1,12 +1,12 @@
 import { RouteDefinition } from '../../../router/router.interface';
-import HomeInstructor from '../pages/HomeInstructor';
+import ProfileDescription from '../pages/ProfileDescription';
 
 const instructorRoutesDefinition: RouteDefinition[] = [
   {
-    to: 'about',
-    path: 'about',
-    Component: HomeInstructor,
-    name: 'about',
+    to: 'profile-description',
+    path: 'profile-description',
+    Component: ProfileDescription,
+    name: 'Profile Description',
   },
 ];
 export default instructorRoutesDefinition;

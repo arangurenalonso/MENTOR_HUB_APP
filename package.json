@@ -17,7 +17,9 @@
     "@mui/material": "^5.16.7",
     "@reduxjs/toolkit": "^2.2.7",
     "axios": "^1.7.3",
+    "draft-js": "^0.11.7",
     "firebase": "^10.12.5",
+    "global": "^4.4.0",
     "gsap": "^3.12.5",
     "jwt-decode": "^4.0.0",
     "neverthrow": "^7.0.0",
@@ -31,6 +33,7 @@
   "devDependencies": {
     "@eslint/js": "^9.8.0",
     "@types/axios": "^0.14.0",
+    "@types/draft-js": "^0.11.18",
     "@types/react": "^18.3.3",
     "@types/react-dom": "^18.3.0",
     "@types/react-redux": "^7.1.33",

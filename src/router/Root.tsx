@@ -12,7 +12,7 @@ const Root = () => {
     checkAuthTokenProcess();
     const splashTimeout = setTimeout(() => {
       setShowSplash(false);
-    }, 2500); // 5000 ms = 5 segundos
+    }, 2500);
     return () => clearTimeout(splashTimeout);
   }, []);
 

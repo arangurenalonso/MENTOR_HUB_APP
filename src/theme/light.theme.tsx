@@ -1,47 +1,71 @@
 import { createTheme } from '@mui/material';
 import { red } from '@mui/material/colors';
 
+const primaryContainer = '#376a1f';
+const primaryContainerText = '#e2ffdf';
+
+const secondaryContainer = '#55634c';
+const secondaryContainerText = '#eef3e7';
+
+const backGroundDefault = '#ffffff';
+const backGroundPaper = '#d9e8cb';
+
+const primaryText = '#686a65';
+const secondaryText = '#55634c';
+
 const lightTheme = createTheme({
   palette: {
+    // common:{
+    //   black:"",
+    //   white:"",
+    // },
     mode: 'light',
+    contrastThreshold: 3,
     primary: {
-      main: '#1A237E', // Azul Medianoche
+      // light: '',
+      main: primaryContainer,
+      // dark: ,
+      contrastText: primaryContainerText,
     },
     secondary: {
-      main: '#4FC3F7', // Azul Cielo
+      //   light: '',
+      main: secondaryContainer,
+      //   dark: '',
+      contrastText: secondaryContainerText,
     },
     error: {
-      main: red.A400, // Rojo Coral
+      //   light: '',
+      main: red.A400,
+      //   dark: '',
+      //   contrastText: '',
     },
+    // warning: {
+    //   light: '',
+    //   main: '',//Mandatory
+    //   dark: '',
+    //   contrastText: '',
+    // },
+    // info: {
+    //   light: '',
+    //   main: '',//Mandatory
+    //   dark: '',
+    //   contrastText: '',
+    // },
+    // success: {
+    //   light: '',
+    //   main: '',//Mandatory
+    //   dark: '',
+    //   contrastText: '',
+    // },
+    // divider: 'red',
     background: {
-      default: '#FFFFFF', // Blanco Nieve
-      paper: '#F5F5F5', // Blanco suave para elementos como tarjetas
+      default: backGroundDefault,
+      paper: backGroundPaper,
     },
     text: {
-      primary: '#37474F', // Gris Pizarra
-      secondary: '#757575', // Gris medio para textos secundarios
-    },
-  },
-  typography: {
-    fontFamily: 'Roboto, sans-serif',
-  },
-  components: {
-    MuiButton: {
-      styleOverrides: {
-        root: {
-          color: '#37474F', // Color del texto del botón en estado normal
-        },
-        outlined: {
-          borderColor: '#37474F', // Color del borde en botones con estilo "outlined"
-        },
-        contained: {
-          color: '#FFFFFF', // Color del texto en botones con estilo "contained"
-          backgroundColor: '#1A237E', // Color de fondo del botón
-          '&:hover': {
-            backgroundColor: '#0D1C66', // Color de fondo cuando el botón es hover
-          },
-        },
-      },
+      primary: primaryText,
+      secondary: secondaryText,
+      // disabled:""
     },
   },
 });
