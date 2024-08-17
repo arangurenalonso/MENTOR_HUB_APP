@@ -1,5 +1,6 @@
 import React from 'react';
 import { Typography, Link } from '@mui/material';
+import { Link as RouterLinkComponent } from 'react-router-dom';
 
 interface TextWithLinkProps {
   mainText: string;
@@ -16,7 +17,8 @@ const TextWithLink: React.FC<TextWithLinkProps> = ({
     <Typography sx={{ textAlign: 'center', color: 'text.secondary' }}>
       {mainText}{' '}
       <Link
-        href={linkHref}
+        component={RouterLinkComponent}
+        to={linkHref}
         underline="hover"
         sx={{ fontWeight: 'bold', color: 'primary.main' }}
       >

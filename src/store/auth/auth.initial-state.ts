@@ -1,4 +1,5 @@
 export type authStatus =
+  | 'Init'
   | 'checking'
   | 'authenticated'
   | 'not-authenticated'
@@ -6,6 +7,7 @@ export type authStatus =
 
 export enum authStatusEnum {
   ERROR = 'Error',
+  INIT = 'Init',
   CHECKING = 'checking',
   AUTHENTICATED = 'authenticated',
   NOT_AUTHENTICATED = 'not-authenticated',
@@ -33,12 +35,16 @@ export type UserPayLoad = {
 
 export type AuthState = {
   status: authStatus;
+  isLogged: boolean;
+  redirectPath: string | null;
   user: UserPayLoad | null;
   errorMessage: string | null;
 };
 
 export const authInitialState: AuthState = {
-  status: authStatusEnum.CHECKING,
+  status: authStatusEnum.INIT,
+  isLogged: false,
+  redirectPath: null,
   user: null,
   errorMessage: null,
 };

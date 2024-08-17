@@ -16,7 +16,18 @@ export type AuthenticationResponse = {
   isAuthenticated: boolean;
   errorMessage: string;
 };
-
+export type ValidTokenResponse = {
+  isAuthenticated: boolean;
+  message: string;
+};
+export type socialMediaProviderParams = {
+  name: string;
+  email: string;
+  uid: string;
+  provider: string;
+  timeZone: string;
+  photoURL?: string | null;
+};
 export const authApi = {
   login: async (email: string, password: string) => {
     const data = { email, password };
@@ -38,6 +49,24 @@ export const authApi = {
       '/api/auth/register',
       data
     );
+  },
+
+  socialMediaProvider: async (params: socialMediaProviderParams) => {
+    const data = {
+      name: params.name,
+      email: params.email,
+      uid: params.uid,
+      timeZone: params.timeZone,
+      photoURL: params.photoURL,
+    };
+    return await httpClient.postJson<AuthenticationResponse>(
+      `/api/auth/social-provider/${params.provider}`,
+      data
+    );
+  },
+
+  validateToken: async () => {
+    return await httpClient.get<ValidTokenResponse>(`/api/auth/validate-token`);
   },
 
   //   logout: async () => {

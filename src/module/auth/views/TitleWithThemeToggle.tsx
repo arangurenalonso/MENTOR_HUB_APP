@@ -1,5 +1,5 @@
 import { Box, Typography } from '@mui/material';
-import ThemeSwitcher from '../../common/components/ThemeSwitcher';
+import ThemeSwitcher from '../../../common/components/ThemeSwitcher';
 
 type TitleWithThemeToggleProp = {
   title: string;

@@ -1,6 +1,6 @@
 import { useForm, SubmitHandler } from 'react-hook-form';
-import useAuthStore from '../../hooks/useAuthStore';
-import useGeolocation from '../../hooks/useGeolocation';
+import useAuthStore from '../../../hooks/useAuthStore';
+import useGeolocation from '../../../hooks/useGeolocation';
 import { Box, TextField, Button, Alert } from '@mui/material';
 
 type RegisterFormInputs = {

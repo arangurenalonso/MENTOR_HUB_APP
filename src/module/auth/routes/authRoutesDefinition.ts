@@ -1,15 +1,5 @@
-import { Component, LazyExoticComponent } from 'react';
 import { LoginPage, RegisterPage } from '../pages';
-
-type JSXComponent = () => JSX.Element;
-
-interface RouteDefinition {
-  to: string;
-  path: string;
-  // Component: React.FC;
-  Component: LazyExoticComponent<JSXComponent> | JSXComponent;
-  name: string;
-}
+import { RouteDefinition } from '../../../router/router.interface';
 
 const authRoutesDefinition: RouteDefinition[] = [
   {

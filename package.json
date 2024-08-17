@@ -17,6 +17,8 @@
     "@mui/material": "^5.16.7",
     "@reduxjs/toolkit": "^2.2.7",
     "axios": "^1.7.3",
+    "firebase": "^10.12.5",
+    "gsap": "^3.12.5",
     "jwt-decode": "^4.0.0",
     "neverthrow": "^7.0.0",
     "react": "^18.3.1",

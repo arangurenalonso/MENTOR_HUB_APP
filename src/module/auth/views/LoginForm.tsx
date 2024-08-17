@@ -1,5 +1,5 @@
 import { useForm, SubmitHandler } from 'react-hook-form';
-import useAuthStore from '../../hooks/useAuthStore';
+import useAuthStore from '../../../hooks/useAuthStore';
 import { Box, TextField, Button, Alert, Link } from '@mui/material';
 
 type LoginFormInputs = {
