@@ -8,7 +8,7 @@ type LoginFormInputs = {
 };
 
 const LoginForm = () => {
-  const { loginProcess, errorMessage } = useAuthStore();
+  const { signInProcess, errorMessage } = useAuthStore();
   const {
     register,
     handleSubmit,
@@ -23,7 +23,7 @@ const LoginForm = () => {
   const onSubmit: SubmitHandler<LoginFormInputs> = (data) => {
     console.log({ data });
 
-    loginProcess(data.email, data.password);
+    signInProcess(data.email, data.password);
     // reset();
   };
 
