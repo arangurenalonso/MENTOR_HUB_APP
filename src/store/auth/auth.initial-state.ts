@@ -27,7 +27,7 @@ export type timeZoneType = {
 
 export type UserPayLoad = {
   name: string;
-  id: string;
+  idUser: string;
   email: string;
   roles: rolesType[];
   timeZone: timeZoneType;

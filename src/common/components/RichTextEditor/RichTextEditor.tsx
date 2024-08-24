@@ -5,6 +5,8 @@ import {
   RichUtils,
   DraftHandleValue,
   convertToRaw,
+  RawDraftContentState,
+  convertFromRaw,
 } from 'draft-js';
 import { Box, Typography, useTheme } from '@mui/material';
 import './RichTextEditor.css';
@@ -13,12 +15,13 @@ import ToolbarRichTextEditor from './toolbar/ToolbarRichTextEditor';
 
 type RichTextEditorProps = {
   placeholder: string;
-  value?: string;
+  value?: EditorState;
+  valueToSet?: string | EditorState | undefined | null;
 
   error?: boolean;
   errorMessage?: string;
 
-  onChange?: (content: { plainText: string; jsonContent: string }) => void;
+  onChange?: (content: { plainText: string; editorState: EditorState }) => void;
   onBlur?: () => void;
 };
 const RichTextEditor = ({
@@ -28,10 +31,34 @@ const RichTextEditor = ({
   errorMessage = '',
   onChange,
   onBlur,
+  valueToSet,
 }: RichTextEditorProps) => {
-  const [editorState, setEditorState] = useState(EditorState.createEmpty());
+  const [editorState, setEditorState] = useState<EditorState>(
+    value || EditorState.createEmpty()
+  );
   const [charCount, setCharCount] = useState(0);
   const [initialLoad, setInitialLoad] = useState(true);
+
+  useEffect(() => {
+    if (valueToSet) {
+      try {
+        if (typeof valueToSet === 'string') {
+          const rawContent = JSON.parse(valueToSet) as RawDraftContentState;
+          const contentState = convertFromRaw(rawContent);
+          const editorState = EditorState.createWithContent(contentState);
+          setEditorState(editorState);
+        }
+      } catch (error) {
+        // console.error('Invalid JSON value provided:', error);
+      }
+    }
+  }, [valueToSet]);
+
+  useEffect(() => {
+    const currentContent = editorState.getCurrentContent();
+    const plainText = currentContent.getPlainText();
+    setCharCount(plainText.length);
+  }, [editorState]);
 
   const editorRef = useRef<Editor>(null);
   const theme = useTheme();
@@ -48,35 +75,36 @@ const RichTextEditor = ({
   };
 
   const handleFocusEditor = () => {
-    console.log('handleFocusEditor');
+    // console.log('handleFocusEditor');
     if (editorRef.current) {
       editorRef.current.focus();
     }
   };
   const handleOnChange = (editorState: EditorState) => {
+    console.log('HandleOnChange');
     if (initialLoad) {
-      setInitialLoad(false); // Marca la primera carga como completa
+      console.log('initialLoad');
+      setInitialLoad(false);
       return;
     }
-    console.log('HandleOnChange');
 
     setEditorState(editorState);
 
-    const currentContent = editorState.getCurrentContent();
-    const plainText = currentContent.getPlainText('');
-    setCharCount(plainText.length);
-    const rawContentState = convertToRaw(currentContent);
-    const jsonContent = JSON.stringify(rawContentState);
+    // const currentContent = editorState.getCurrentContent();
+    // const rawContentState: RawDraftContentState = convertToRaw(currentContent);
+    // const jsonContent = JSON.stringify(rawContentState);
 
     if (onChange) {
-      onChange({ plainText, jsonContent });
+      onChange({
+        plainText: editorState.getCurrentContent().getPlainText(),
+        editorState: editorState,
+      });
     }
   };
   const handleOnBlur = () => {
-    console.log('handleOnBlur');
-
+    // console.log('handleOnBlur');
     if (onBlur) {
-      onBlur(); // Ejecuta la función onBlur pasada como prop
+      onBlur();
     }
   };
   return (
@@ -110,15 +138,17 @@ const RichTextEditor = ({
           }}
         />
       </Box>
-
-      {error && (
-        <Typography sx={{ mt: 1, color: theme.palette.error.main }}>
-          {errorMessage}
+      <Box sx={{ display: 'flex', alignItems: 'center' }}>
+        {error && (
+          <Typography sx={{ mt: 1, color: theme.palette.error.main }}>
+            {errorMessage}
+          </Typography>
+        )}
+        <Box sx={{ flexGrow: 1 }}></Box>
+        <Typography sx={{ mt: 2, textAlign: 'right' }}>
+          &#x270F;&#xFE0F;: {charCount}
         </Typography>
-      )}
-      <Typography sx={{ mt: 2, textAlign: 'right' }}>
-        Characters: {charCount}
-      </Typography>
+      </Box>
     </Box>
   );
 };

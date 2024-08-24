@@ -1,39 +1,66 @@
 import { useForm } from 'react-hook-form';
 import RichTextEditorControlledField from '../../../common/components/controlledFields/RichTextEditorControlledField';
+import { convertToRaw, EditorState } from 'draft-js';
+import { Typography } from '@mui/material';
+import useInstructorStore, {
+  updateInstructorProfileArgs,
+} from '../../../hooks/useInstructorStore';
+import TextFieldControlledField from '../../../common/components/controlledFields/TextFieldControlledField';
+import TitleIcon from '@mui/icons-material/Title';
 
 type ProfileFormValues = {
-  contentJson: string;
-  content: string;
+  headline: string;
+  introductionPlainText: string;
+  introduction: EditorState;
+
+  teachingExperiencePlainText: string;
+  teachingExperience: EditorState;
+
+  motivationPlainText: string;
+  motivation: EditorState;
 };
 
 const ProfileDescription = () => {
-  // const [editorContent, setEditorContent] = useState('');
+  const { instructor, onUpdateInstructorProfile } = useInstructorStore();
 
-  const {
-    handleSubmit,
-    control,
-    setValue,
-    // formState: { errors },
-    // watch,
-    // register,
-  } = useForm<ProfileFormValues>({
+  const { handleSubmit, control, setValue } = useForm<ProfileFormValues>({
     mode: 'onTouched',
-    defaultValues: {
-      contentJson: '',
-      content: '',
-    },
   });
-  const onSubmit = (data: any) => {
-    console.log('Form Data:', data);
-    // data.content será el texto plano validado que puedes procesar o convertir a JSON si es necesario.
+  const onSubmit = async (data: ProfileFormValues) => {
+    console.log('data', data);
+
+    const instructorUpdateData: updateInstructorProfileArgs = {
+      introduction: convertToRaw(data.introduction.getCurrentContent()),
+      teachingExperience: convertToRaw(
+        data.teachingExperience.getCurrentContent()
+      ),
+      motivation: convertToRaw(data.motivation.getCurrentContent()),
+    };
+    onUpdateInstructorProfile(instructorUpdateData);
   };
-  // console.log('watch(content)', watch('content'));
   return (
     <>
+      <Typography variant="h4">Profile Descrition</Typography>
+      <Typography variant="subtitle1">
+        This info will go on your public profile. Write in the language you'll
+        teaching.
+      </Typography>
+
       <form onSubmit={handleSubmit(onSubmit)}>
+        <Typography variant="h5">1. Introduce Yourself</Typography>
+        <Typography variant="subtitle2">
+          Show potencial students who you are! Share your teaching experience
+          and passion for education and briefly mention your interests and
+          hobbies.
+        </Typography>
         <RichTextEditorControlledField<ProfileFormValues>
-          name="content"
-          nameForJson="contentJson"
+          name="introduction"
+          namePlainText="introductionPlainText"
+          // defaultValue={convertToRaw(
+          //   EditorState.createEmpty().getCurrentContent()
+          // )}
+          valueToSet={instructor?.introductionText}
+          placeholder={`Hello, my name is... and I'm from....`}
           control={control}
           setValue={setValue}
           rules={{
@@ -44,52 +71,72 @@ const ProfileDescription = () => {
             },
           }}
         />
+
+        <Typography variant="h5">2. Teaching experience</Typography>
+        <Typography variant="subtitle2">
+          Provide a detailed description of your relevant teaching
+          experience.include certifications, teaching methodology, education,
+          and subject expertise.
+        </Typography>
+        <RichTextEditorControlledField<ProfileFormValues>
+          name="teachingExperience"
+          namePlainText="teachingExperiencePlainText"
+          valueToSet={instructor?.teachingExperienceText}
+          placeholder={`I have 5 years of teaching experience. I'm TEFL Certified, and my classes are.....`}
+          control={control}
+          setValue={setValue}
+          rules={{
+            required: 'El contenido es requerido',
+            minLength: {
+              value: 10,
+              message: 'El contenido debe tener al menos 10 caracteres',
+            },
+          }}
+        />
+        <Typography variant="h5">3. Motivate potential students</Typography>
+        <Typography variant="subtitle2">
+          Encorage students to book their first lesson. Highlight the benefits
+          of learning with you.
+        </Typography>
+        <RichTextEditorControlledField<ProfileFormValues>
+          name="motivation"
+          namePlainText="motivationPlainText"
+          valueToSet={instructor?.motivationText}
+          control={control}
+          placeholder={`I have 5 years of teaching experience. I'm TEFL Certified, and my classes are.....`}
+          setValue={setValue}
+          rules={{
+            required: 'El contenido es requerido',
+            minLength: {
+              value: 10,
+              message: 'El contenido debe tener al menos 10 caracteres',
+            },
+          }}
+        />
+        <Typography variant="h5">4. Write a catchy headline</Typography>
+        <Typography variant="subtitle2">
+          Your headline is the first thing students will see. Make it
+          attention-grabbing, mention your specific teaching and encourage
+          students to read your full description.
+        </Typography>
+        <TextFieldControlledField
+          name="headline"
+          // label="Heading"
+          icon={TitleIcon}
+          // valueToSet={instructor?.motivationText}
+          control={control}
+          // placeholder={`I have 5 years of teaching experience. I'm TEFL Certified, and my classes are.....`}
+          setValue={setValue}
+          rules={{
+            required: 'El contenido es requerido',
+            minLength: {
+              value: 2,
+              message: 'El contenido debe tener al menos 2 caracteres',
+            },
+          }}
+        />
         <button type="submit">Submit</button>
       </form>
-      {/* <Typography variant="h4">Profile Descrition</Typography>
-      <Typography variant="subtitle1">
-        This info will go on your public profile. Write in the language you'll
-        teaching.
-      </Typography>
-      <Typography variant="h5">1. Introduce Yourself</Typography>
-      <Typography variant="subtitle2">
-        Show potencial students who you are! Share your teaching experience and
-        passion for education and briefly mention your interests and hobbies.
-      </Typography>
-      <RichTextEditor
-        placeholder={`Hello, my name is... and I'm from....`}
-        onChange={(content) => setEditorContent(content)}
-      />
-      <Typography variant="h5">2. Teaching experience</Typography>
-      <Typography variant="subtitle2">
-        Provide a detailed description of your relevant teaching
-        experience.include certifications, teaching methodology, education, and
-        subject expertise.
-      </Typography>
-      <RichTextEditor
-        placeholder={`I have 5 years of teaching experience. I'm TEFL Certified, and my classes are.....`}
-        onChange={(content) => setEditorContent(content)}
-      />
-      <Typography variant="h5">3. Motivate potential students</Typography>
-      <Typography variant="subtitle2">
-        Encorage students to book their first lesson. Highlight the benefits of
-        learning with you.
-      </Typography>
-      <RichTextEditor
-        placeholder={`I have 5 years of teaching experience. I'm TEFL Certified, and my classes are.....`}
-        onChange={(content) => setEditorContent(content)}
-      /> */}
-      {/* <Typography variant="h5">4. Write a catchy headline</Typography>
-      <Typography variant="subtitle2">
-        Your headline is the first thing students will see. Make it
-        attention-grabbing, mention your specific teaching and encourage
-        students to read your full description.
-      </Typography>
-      <RichTextEditor
-        placeholder={`Certified tutor with 5 years of experience.....`}
-        onChange={(content) => setEditorContent(content)}
-      />
-      <RichTextEditorView content={editorContent} /> */}
     </>
   );
 };

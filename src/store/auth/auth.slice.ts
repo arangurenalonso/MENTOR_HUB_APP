@@ -10,8 +10,6 @@ export const authSlice = createSlice({
   initialState: authInitialState,
   reducers: {
     setUser: (state, action: PayloadAction<UserPayLoad>) => {
-      console.log('setUser');
-
       const user = action.payload;
       state.isLogged = true;
       state.status = authStatusEnum.AUTHENTICATED;
@@ -19,7 +17,6 @@ export const authSlice = createSlice({
       state.errorMessage = null;
     },
     onLogout: (state) => {
-      console.log('onLogout');
       state.status = authStatusEnum.NOT_AUTHENTICATED;
       state.user = null;
       state.errorMessage = null;
@@ -31,7 +28,6 @@ export const authSlice = createSlice({
       state.errorMessage = null;
     },
     onSetError: (state, action: PayloadAction<string>) => {
-      console.log('onSetError');
       state.status = authStatusEnum.NOT_AUTHENTICATED;
       state.user = null;
       state.errorMessage = action.payload;

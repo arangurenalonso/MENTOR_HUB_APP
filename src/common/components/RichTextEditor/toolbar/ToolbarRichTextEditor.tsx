@@ -143,7 +143,7 @@ const ToolbarRichTextEditor = ({
               resetFontSizePreview();
             }}
           >
-            {size}px
+            {size}
           </MenuItem>
         ))}
       </Select>
