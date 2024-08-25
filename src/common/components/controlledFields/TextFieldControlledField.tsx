@@ -1,10 +1,12 @@
 import { TextField } from '@mui/material';
+import { useEffect } from 'react';
 import {
   Control,
   Controller,
   FieldPathValue,
   FieldValues,
   Path,
+  PathValue,
   RegisterOptions,
   UseFormSetValue,
 } from 'react-hook-form';
@@ -37,9 +39,15 @@ const TextFieldControlledField = <T extends FieldValues>({
   rules,
   control,
   disabled,
+  valueToSet,
+  setValue,
 }: TextFieldControlledFieldProps<T>) => {
   //   const [id, setId] = useState(uuidv4());
-
+  useEffect(() => {
+    if (valueToSet !== undefined && valueToSet !== null) {
+      setValue(name, valueToSet as PathValue<T, Path<T>>);
+    }
+  }, [valueToSet]);
   return (
     <Controller
       disabled={disabled}
@@ -57,7 +65,7 @@ const TextFieldControlledField = <T extends FieldValues>({
             onChange={onChange}
             onBlur={onBlur}
             ref={ref}
-            value={value}
+            value={value || ''}
             disabled={disabled}
             name={name}
             label={label}

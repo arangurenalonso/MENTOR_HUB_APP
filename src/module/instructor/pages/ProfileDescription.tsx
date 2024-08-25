@@ -1,7 +1,7 @@
 import { useForm } from 'react-hook-form';
 import RichTextEditorControlledField from '../../../common/components/controlledFields/RichTextEditorControlledField';
 import { convertToRaw, EditorState } from 'draft-js';
-import { Typography } from '@mui/material';
+import { Box, Typography } from '@mui/material';
 import useInstructorStore, {
   updateInstructorProfileArgs,
 } from '../../../hooks/useInstructorStore';
@@ -30,6 +30,7 @@ const ProfileDescription = () => {
     console.log('data', data);
 
     const instructorUpdateData: updateInstructorProfileArgs = {
+      headline: data.headline,
       introduction: convertToRaw(data.introduction.getCurrentContent()),
       teachingExperience: convertToRaw(
         data.teachingExperience.getCurrentContent()
@@ -39,7 +40,7 @@ const ProfileDescription = () => {
     onUpdateInstructorProfile(instructorUpdateData);
   };
   return (
-    <>
+    <Box sx={{ mx: 'auto', maxWidth: '700px' }}>
       <Typography variant="h4">Profile Descrition</Typography>
       <Typography variant="subtitle1">
         This info will go on your public profile. Write in the language you'll
@@ -56,9 +57,6 @@ const ProfileDescription = () => {
         <RichTextEditorControlledField<ProfileFormValues>
           name="introduction"
           namePlainText="introductionPlainText"
-          // defaultValue={convertToRaw(
-          //   EditorState.createEmpty().getCurrentContent()
-          // )}
           valueToSet={instructor?.introductionText}
           placeholder={`Hello, my name is... and I'm from....`}
           control={control}
@@ -122,10 +120,11 @@ const ProfileDescription = () => {
         <TextFieldControlledField
           name="headline"
           // label="Heading"
+          // defaultValue={'AAAA'}
           icon={TitleIcon}
-          // valueToSet={instructor?.motivationText}
+          valueToSet={instructor?.headline}
           control={control}
-          // placeholder={`I have 5 years of teaching experience. I'm TEFL Certified, and my classes are.....`}
+          placeholder={`Full Stack Web developer with over than 5 years of experience.`}
           setValue={setValue}
           rules={{
             required: 'El contenido es requerido',
@@ -133,11 +132,19 @@ const ProfileDescription = () => {
               value: 2,
               message: 'El contenido debe tener al menos 2 caracteres',
             },
+            maxLength: {
+              value: 60,
+              message: 'El contenido debe tener menos d60 caracteres',
+            },
+            pattern: {
+              value: /^[a-zA-Z0-9\s,.'-]{1,60}$/,
+              message: `Heading can only contain letters, numbers, spaces, and basic punctuation (.,'-).`,
+            },
           }}
         />
         <button type="submit">Submit</button>
       </form>
-    </>
+    </Box>
   );
 };
 

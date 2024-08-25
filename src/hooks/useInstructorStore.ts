@@ -12,6 +12,7 @@ import { RawDraftContentState } from 'draft-js';
 import useAuthStore from './useAuthStore';
 
 export type updateInstructorProfileArgs = {
+  headline: string;
   introduction: RawDraftContentState;
   teachingExperience: RawDraftContentState;
   motivation: RawDraftContentState;
@@ -66,9 +67,10 @@ const useInstructorStore = () => {
     instructorData: updateInstructorProfileArgs
   ) => {
     const authenticationResult = await instructorApi.updateAbout({
-      introductionText: JSON.stringify(instructorData.introduction),
-      teachingExperienceText: JSON.stringify(instructorData.teachingExperience),
-      motivationText: JSON.stringify(instructorData.motivation),
+      headline: instructorData.headline,
+      introduction: JSON.stringify(instructorData.introduction),
+      teachingExperience: JSON.stringify(instructorData.teachingExperience),
+      motivation: JSON.stringify(instructorData.motivation),
       idInstructor: user?.idUser || '',
     });
     console.log('authenticationResult', authenticationResult);

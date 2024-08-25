@@ -4,7 +4,6 @@ import {
   EditorState,
   RichUtils,
   DraftHandleValue,
-  convertToRaw,
   RawDraftContentState,
   convertFromRaw,
 } from 'draft-js';
@@ -122,6 +121,7 @@ const RichTextEditor = ({
           overflow: 'auto',
           p: 1,
           minHeight: '150px',
+          borderRadius: '5px',
         }}
         onClick={handleFocusEditor}
       >

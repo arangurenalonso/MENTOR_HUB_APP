@@ -6,9 +6,10 @@ const httpClient = new AxiosHttpClient(getEnvVariable().AUTH_API_URL!);
 const basePath = '/api/instructor';
 
 type updateAboutParams = {
-  introductionText: string;
-  teachingExperienceText: string;
-  motivationText: string;
+  headline: string;
+  introduction: string;
+  teachingExperience: string;
+  motivation: string;
   idInstructor: string;
 };
 
@@ -18,20 +19,22 @@ export const instructorApi = {
   },
 
   updateAbout: async ({
-    introductionText,
-    teachingExperienceText,
-    motivationText,
+    headline,
+    introduction,
+    teachingExperience,
+    motivation,
     idInstructor,
   }: updateAboutParams) => {
     const data = {
-      introductionText,
-      teachingExperienceText,
-      motivationText,
+      headline,
+      introduction,
+      teachingExperience,
+      motivation,
     };
     console.log();
 
     return await httpClient.put<void>(
-      `${basePath}/about/${idInstructor}`,
+      `${basePath}/profile/${idInstructor}`,
       data
     );
   },
