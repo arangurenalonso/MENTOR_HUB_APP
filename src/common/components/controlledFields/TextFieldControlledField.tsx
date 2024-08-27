@@ -2,14 +2,15 @@ import { TextField } from '@mui/material';
 import { useEffect } from 'react';
 import {
   Control,
-  Controller,
   FieldPathValue,
   FieldValues,
   Path,
   PathValue,
   RegisterOptions,
   UseFormSetValue,
+  UseFormWatch,
 } from 'react-hook-form';
+import BaseControlledField, { DependentField } from './BaseControlledField';
 // import { v4 as uuidv4 } from 'uuid';
 
 type TextFieldControlledFieldProps<T extends FieldValues> = {
@@ -29,6 +30,8 @@ type TextFieldControlledFieldProps<T extends FieldValues> = {
   disabled?: boolean;
   valueToSet?: FieldPathValue<T, Path<T>> | string | undefined | null;
   setValue: UseFormSetValue<T>;
+  watch: UseFormWatch<T>;
+  dependentFields?: DependentField<T>[];
 };
 const TextFieldControlledField = <T extends FieldValues>({
   label,
@@ -41,24 +44,27 @@ const TextFieldControlledField = <T extends FieldValues>({
   disabled,
   valueToSet,
   setValue,
+  watch,
+  dependentFields,
 }: TextFieldControlledFieldProps<T>) => {
   //   const [id, setId] = useState(uuidv4());
+
   useEffect(() => {
     if (valueToSet !== undefined && valueToSet !== null) {
       setValue(name, valueToSet as PathValue<T, Path<T>>);
     }
   }, [valueToSet]);
+
   return (
-    <Controller
-      disabled={disabled}
+    <BaseControlledField
+      watch={watch}
+      dependentFields={dependentFields}
       name={name}
-      control={control as Control<FieldValues>}
+      control={control}
+      disabled={disabled}
       defaultValue={defaultValue}
       rules={rules}
-      render={({
-        field: { value, onChange, onBlur, name, ref, disabled },
-        fieldState: { error },
-      }) => {
+      render={({ value, onChange, onBlur, name, ref, error, disabled }) => {
         return (
           <TextField
             // id={`textField-id-${id}`}
