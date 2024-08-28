@@ -16,7 +16,7 @@ import {
   SelectControlledActionType,
   selectControlledReducer,
 } from './reducer/selectControlled.reducer';
-// import { v4 as uuidv4 } from 'uuid';
+
 type RequireAtLeastOne<T, Keys extends keyof T = keyof T> = Pick<
   T,
   Exclude<keyof T, Keys>
@@ -73,6 +73,8 @@ type SelectControlledFieldProps<T extends FieldValues, K> = {
   watch: UseFormWatch<T>;
   dependentFields?: DependentField<T>[];
   optionProps: OptionProperties<T, K>;
+  helperText?: string;
+  informationText?: string;
 };
 
 const SelectControlledField = <
@@ -97,6 +99,8 @@ const SelectControlledField = <
   },
   watch,
   dependentFields,
+  helperText = ' ',
+  informationText,
 }: SelectControlledFieldProps<T, K>) => {
   // const [internalOptions, setInternalOptions] = useState<K[]>([]);
 
@@ -222,6 +226,8 @@ const SelectControlledField = <
             valueToSet={valueToSet}
             name={name}
             inputRef={ref}
+            helperText={helperText}
+            informationText={informationText}
             onFormatValue={(option: K) => {
               if (onFormatMenuItemLabel) {
                 return onFormatMenuItemLabel(option);

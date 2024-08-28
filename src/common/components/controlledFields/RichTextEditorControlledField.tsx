@@ -1,16 +1,17 @@
 import {
   Control,
-  Controller,
   FieldPathValue,
   FieldValues,
   Path,
   PathValue,
   RegisterOptions,
   UseFormSetValue,
+  UseFormWatch,
 } from 'react-hook-form';
 import RichTextEditor from '../RichTextEditor/RichTextEditor';
 import { useEffect } from 'react';
 import { convertFromRaw, EditorState, RawDraftContentState } from 'draft-js';
+import BaseControlledField, { DependentField } from './BaseControlledField';
 
 type RichTextEditorControlledFieldProps<T extends FieldValues> = {
   name: Path<T>;
@@ -27,6 +28,12 @@ type RichTextEditorControlledFieldProps<T extends FieldValues> = {
   setValue: UseFormSetValue<T>;
   defaultValue?: FieldPathValue<T, Path<T>>;
   valueToSet?: FieldPathValue<T, Path<T>> | string | undefined | null;
+
+  watch: UseFormWatch<T>;
+  dependentFields?: DependentField<T>[];
+  label?: string;
+  helperText?: string;
+  informationText?: string;
 };
 
 const RichTextEditorControlledField = <T extends FieldValues>({
@@ -38,6 +45,12 @@ const RichTextEditorControlledField = <T extends FieldValues>({
   rules,
   defaultValue,
   valueToSet,
+  watch,
+  dependentFields,
+  disabled,
+  label,
+  helperText,
+  informationText,
 }: RichTextEditorControlledFieldProps<T>) => {
   useEffect(() => {
     if (valueToSet) {
@@ -63,15 +76,15 @@ const RichTextEditorControlledField = <T extends FieldValues>({
 
   return (
     <>
-      <Controller
+      <BaseControlledField
+        watch={watch as UseFormWatch<FieldValues>}
+        dependentFields={dependentFields}
         name={namePlainText}
         control={control as Control<FieldValues>}
-        rules={rules}
+        disabled={disabled}
         defaultValue={defaultValue}
-        render={({
-          field: { value, onChange, onBlur },
-          fieldState: { error },
-        }) => {
+        rules={rules}
+        render={({ value, onChange, onBlur, error, disabled }) => {
           return (
             <RichTextEditor
               placeholder={placeholder || ''}
@@ -79,23 +92,19 @@ const RichTextEditorControlledField = <T extends FieldValues>({
                 onChange(plainText);
                 setValue(name, editorState as PathValue<T, Path<T>>);
               }}
+              disabled={disabled}
               value={value}
               valueToSet={valueToSet}
               error={!!error}
               errorMessage={error?.message}
               onBlur={onBlur}
+              label={label}
+              helperText={helperText}
+              informationText={informationText}
             />
           );
         }}
       />
-      {/* <Controller
-        name={namePlainText}
-        control={control as Control<FieldValues>}
-        rules={rules} // Aplica las reglas aquí
-        render={({ fieldState: { error } }) => (
-          <>{error && <p style={{ color: 'red' }}>{error.message}</p>}</>
-        )}
-      /> */}
     </>
   );
 };

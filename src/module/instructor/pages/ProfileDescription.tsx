@@ -5,7 +5,7 @@ import { Box, Typography } from '@mui/material';
 import useInstructorStore, {
   updateInstructorProfileArgs,
 } from '../../../hooks/useInstructorStore';
-import TextFieldControlledField from '../../../common/components/controlledFields/TextFieldControlledField';
+import TextFieldControlledField from '../../../common/components/controlledFields/textField/TextFieldControlledField';
 import TitleIcon from '@mui/icons-material/Title';
 
 type ProfileFormValues = {
@@ -23,9 +23,11 @@ type ProfileFormValues = {
 const ProfileDescription = () => {
   const { instructor, onUpdateInstructorProfile } = useInstructorStore();
 
-  const { handleSubmit, control, setValue } = useForm<ProfileFormValues>({
-    mode: 'onTouched',
-  });
+  const { handleSubmit, control, setValue, watch } = useForm<ProfileFormValues>(
+    {
+      mode: 'onTouched',
+    }
+  );
   const onSubmit = async (data: ProfileFormValues) => {
     console.log('data', data);
 
@@ -55,6 +57,7 @@ const ProfileDescription = () => {
           hobbies.
         </Typography>
         <RichTextEditorControlledField<ProfileFormValues>
+          watch={watch}
           name="introduction"
           namePlainText="introductionPlainText"
           valueToSet={instructor?.introductionText}
@@ -77,6 +80,7 @@ const ProfileDescription = () => {
           and subject expertise.
         </Typography>
         <RichTextEditorControlledField<ProfileFormValues>
+          watch={watch}
           name="teachingExperience"
           namePlainText="teachingExperiencePlainText"
           valueToSet={instructor?.teachingExperienceText}
@@ -97,6 +101,7 @@ const ProfileDescription = () => {
           of learning with you.
         </Typography>
         <RichTextEditorControlledField<ProfileFormValues>
+          watch={watch}
           name="motivation"
           namePlainText="motivationPlainText"
           valueToSet={instructor?.motivationText}
@@ -119,6 +124,7 @@ const ProfileDescription = () => {
         </Typography>
         <TextFieldControlledField
           name="headline"
+          watch={watch}
           // label="Heading"
           // defaultValue={'AAAA'}
           icon={TitleIcon}

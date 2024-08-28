@@ -7,10 +7,18 @@ import {
   RawDraftContentState,
   convertFromRaw,
 } from 'draft-js';
-import { Box, Typography, useTheme } from '@mui/material';
+import {
+  Box,
+  Divider,
+  FormControl,
+  FormHelperText,
+  InputLabel,
+  useTheme,
+} from '@mui/material';
 import './RichTextEditor.css';
 import { customStyleMap, myBlockStyleFn } from './richTextStyles';
 import ToolbarRichTextEditor from './toolbar/ToolbarRichTextEditor';
+import CustomInputLabel from '../controlledFields/common/CustomInputLabel';
 
 type RichTextEditorProps = {
   placeholder: string;
@@ -22,6 +30,10 @@ type RichTextEditorProps = {
 
   onChange?: (content: { plainText: string; editorState: EditorState }) => void;
   onBlur?: () => void;
+  label?: string;
+  helperText?: string;
+  informationText?: string;
+  disabled?: boolean;
 };
 const RichTextEditor = ({
   placeholder,
@@ -31,6 +43,10 @@ const RichTextEditor = ({
   onChange,
   onBlur,
   valueToSet,
+  label,
+  helperText = ' ',
+  informationText,
+  disabled,
 }: RichTextEditorProps) => {
   const [editorState, setEditorState] = useState<EditorState>(
     value || EditorState.createEmpty()
@@ -80,9 +96,9 @@ const RichTextEditor = ({
     }
   };
   const handleOnChange = (editorState: EditorState) => {
-    console.log('HandleOnChange');
+    // console.log('HandleOnChange');
     if (initialLoad) {
-      console.log('initialLoad');
+      // console.log('initialLoad');
       setInitialLoad(false);
       return;
     }
@@ -107,49 +123,90 @@ const RichTextEditor = ({
     }
   };
   return (
-    <Box sx={{ border: `2px solid  ${theme.palette.primary.main} `, p: 1 }}>
-      <ToolbarRichTextEditor
-        editorState={editorState}
-        setEditorState={handleOnChange}
-      />
+    <FormControl fullWidth>
+      <InputLabel
+        sx={{
+          backgroundColor: 'white',
+          px: 1,
+          color: error ? theme.palette.error.main : theme.palette.primary.main,
+        }}
+      >
+        <CustomInputLabel label={label} informationText={informationText} />
+      </InputLabel>
       <Box
         sx={{
-          border: `1px solid ${
-            error ? theme.palette.error.main : theme.palette.primary.main
-          }`,
-          flexGrow: 1,
-          overflow: 'auto',
-          p: 1,
-          minHeight: '150px',
-          borderRadius: '5px',
+          color: error ? theme.palette.error.main : theme.palette.primary.main,
         }}
-        onClick={handleFocusEditor}
       >
-        <Editor
-          onBlur={handleOnBlur}
-          ref={editorRef}
-          placeholder={placeholder}
-          handleKeyCommand={handleKeyCommand}
-          editorState={editorState}
-          customStyleMap={customStyleMap}
-          blockStyleFn={myBlockStyleFn}
-          onChange={(editorState) => {
-            handleOnChange(editorState);
+        <Box
+          sx={{
+            border: `1px solid ${
+              error ? theme.palette.error.main : theme.palette.primary.main
+            }`,
+            flexGrow: 1,
+            overflow: 'auto',
+            p: 1,
+            minHeight: '150px',
+            borderRadius: '5px',
           }}
-        />
+        >
+          <ToolbarRichTextEditor
+            editorState={editorState}
+            setEditorState={handleOnChange}
+          />
+          <Divider />
+          <Box
+            sx={{
+              flexGrow: 1,
+              overflow: 'auto',
+              p: 1,
+              minHeight: '150px',
+            }}
+            onClick={handleFocusEditor}
+          >
+            <Editor
+              onBlur={handleOnBlur}
+              ref={editorRef}
+              placeholder={placeholder}
+              handleKeyCommand={handleKeyCommand}
+              editorState={editorState}
+              customStyleMap={customStyleMap}
+              blockStyleFn={myBlockStyleFn}
+              onChange={(editorState) => {
+                handleOnChange(editorState);
+              }}
+              readOnly={disabled}
+            />
+          </Box>
+        </Box>
+        <Box
+          sx={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between', // Esto distribuye el contenido equitativamente
+            flexWrap: 'nowrap', // Evita que el contenido se envuelva
+          }}
+        >
+          <Box
+            sx={{
+              flexShrink: 1,
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+              color: error
+                ? theme.palette.error.main
+                : theme.palette.primary.main,
+            }}
+          >
+            <FormHelperText>
+              {errorMessage ? errorMessage : helperText}
+            </FormHelperText>
+          </Box>
+          <Box sx={{ whiteSpace: 'nowrap', fontSize: '12px', paddingRight: 2 }}>
+            &#x270F;&#xFE0F;: {charCount}
+          </Box>
+        </Box>
       </Box>
-      <Box sx={{ display: 'flex', alignItems: 'center' }}>
-        {error && (
-          <Typography sx={{ mt: 1, color: theme.palette.error.main }}>
-            {errorMessage}
-          </Typography>
-        )}
-        <Box sx={{ flexGrow: 1 }}></Box>
-        <Typography sx={{ mt: 2, textAlign: 'right' }}>
-          &#x270F;&#xFE0F;: {charCount}
-        </Typography>
-      </Box>
-    </Box>
+    </FormControl>
   );
 };
 

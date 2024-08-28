@@ -25,6 +25,7 @@ import SearchComponent from '../../SearchComponent';
 import ClearIcon from '@mui/icons-material/Clear';
 import { TransitionProps } from '@mui/material/transitions';
 import React from 'react';
+import CustomInputLabel from '../common/CustomInputLabel';
 
 interface CustomSelectProps<T> {
   label?: string;
@@ -43,6 +44,8 @@ interface CustomSelectProps<T> {
   onFormatValue: (option: T) => string;
   onChange: (value?: T[keyof T], selectedOption?: T) => void;
   onBlur: FocusEventHandler<HTMLInputElement | HTMLTextAreaElement>;
+  helperText?: string;
+  informationText?: string;
 }
 
 const INITIAL_STATE: SelectState<any> = {
@@ -78,6 +81,8 @@ const CustomSelect = <T extends { [key: string]: any }>({
   onFormatValue,
   onChange,
   onBlur,
+  helperText = ' ',
+  informationText,
 }: CustomSelectProps<T>) => {
   const [
     {
@@ -164,10 +169,13 @@ const CustomSelect = <T extends { [key: string]: any }>({
 
     onChange(undefined, undefined);
   };
+
   return (
     <>
       <FormControl fullWidth error={error} disabled={disabled}>
-        <InputLabel>{label}</InputLabel>
+        <InputLabel>
+          <CustomInputLabel label={label} informationText={informationText} />
+        </InputLabel>
         <Select
           value={internalValue ?? ''}
           onChange={handleOnChange}
@@ -220,6 +228,8 @@ const CustomSelect = <T extends { [key: string]: any }>({
                 <IconButton
                   aria-label="Clear"
                   edge="end"
+                  size="small"
+                  sx={{ p: 0 }}
                   onMouseDown={(e) => {
                     e.stopPropagation();
                     e.preventDefault();
@@ -256,11 +266,9 @@ const CustomSelect = <T extends { [key: string]: any }>({
             </MenuItem>
           ))}
         </Select>
-        {errorMessage && (
-          <FormHelperText sx={{ color: theme.palette.error.light }}>
-            {errorMessage}
-          </FormHelperText>
-        )}
+        <FormHelperText>
+          {errorMessage ? errorMessage : helperText}
+        </FormHelperText>
       </FormControl>
       <Dialog
         open={isModalOpen}

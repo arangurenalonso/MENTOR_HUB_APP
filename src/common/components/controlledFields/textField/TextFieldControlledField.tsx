@@ -1,4 +1,3 @@
-import { TextField } from '@mui/material';
 import { useEffect } from 'react';
 import {
   Control,
@@ -10,13 +9,13 @@ import {
   UseFormSetValue,
   UseFormWatch,
 } from 'react-hook-form';
-import BaseControlledField, { DependentField } from './BaseControlledField';
+import BaseControlledField, { DependentField } from '../BaseControlledField';
+import CustomTextField from './CustomTextField';
 // import { v4 as uuidv4 } from 'uuid';
 
 type TextFieldControlledFieldProps<T extends FieldValues> = {
   label?: string;
   icon?: React.ElementType;
-
   name: Path<T>;
   placeholder?: string | null;
   defaultValue?: FieldPathValue<T, Path<T>>;
@@ -32,6 +31,8 @@ type TextFieldControlledFieldProps<T extends FieldValues> = {
   setValue: UseFormSetValue<T>;
   watch: UseFormWatch<T>;
   dependentFields?: DependentField<T>[];
+  helperText?: string;
+  informationText?: string;
 };
 const TextFieldControlledField = <T extends FieldValues>({
   label,
@@ -46,6 +47,8 @@ const TextFieldControlledField = <T extends FieldValues>({
   setValue,
   watch,
   dependentFields,
+  helperText,
+  informationText,
 }: TextFieldControlledFieldProps<T>) => {
   //   const [id, setId] = useState(uuidv4());
 
@@ -66,23 +69,20 @@ const TextFieldControlledField = <T extends FieldValues>({
       rules={rules}
       render={({ value, onChange, onBlur, name, ref, error, disabled }) => {
         return (
-          <TextField
-            // id={`textField-id-${id}`}
+          <CustomTextField
+            inputRef={ref}
+            label={label}
+            value={value}
             onChange={onChange}
             onBlur={onBlur}
-            ref={ref}
-            value={value || ''}
-            disabled={disabled}
             name={name}
-            label={label}
+            helperText={helperText}
+            informationText={informationText}
             placeholder={placeholder || ''}
-            variant="outlined"
-            fullWidth
             error={!!error}
-            helperText={error?.message}
-            InputProps={{
-              startAdornment: <>{Icon && <Icon />}</>,
-            }}
+            errorMessage={error?.message}
+            disabled={disabled}
+            Icon={Icon}
           />
         );
       }}

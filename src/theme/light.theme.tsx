@@ -13,6 +13,8 @@ const backGroundPaper = '#d9e8cb';
 const primaryText = '#686a65';
 const secondaryText = '#55634c';
 
+const dividerColor = '#72806a';
+
 const lightTheme = createTheme({
   palette: {
     // common:{
@@ -67,6 +69,7 @@ const lightTheme = createTheme({
       secondary: secondaryText,
       // disabled:""
     },
+    divider: dividerColor,
   },
 });
 

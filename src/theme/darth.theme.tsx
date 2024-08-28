@@ -13,6 +13,7 @@ const darkBackGroundPaper = '#1d1d1d'; // Fondo de los componentes (como tarjeta
 const darkPrimaryText = '#e2e5df'; // Texto primario claro
 const darkSecondaryText = '#c4c8c0'; // Texto secundario claro
 
+const dividerColor = '#373737';
 const darkTheme = createTheme({
   palette: {
     // common:{
@@ -67,6 +68,7 @@ const darkTheme = createTheme({
       secondary: darkSecondaryText,
       // disabled:""
     },
+    divider: dividerColor,
   },
 });
 
