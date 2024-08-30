@@ -1,0 +1,130 @@
+import { Grid } from '@mui/material';
+import {
+  FieldValues,
+  Control,
+  UseFormSetValue,
+  UseFormWatch,
+} from 'react-hook-form';
+import RichTextEditorControlledField from '../controlledFields/RichTextEditorControlledField';
+import SelectControlledField from '../controlledFields/select/SelectControlledField';
+import TextFieldControlledField from '../controlledFields/textField/TextFieldControlledField';
+import { ControlledFieldEnum } from '../controlledFields/type/controlledTypeField';
+import FieldBaseType from '../controlledFields/type/fieldType';
+import DynamicFormMultipleBuilder from './DynamicFormMultipleBuilder';
+
+type RenderFieldProps<T extends FieldValues> = {
+  field: FieldBaseType<T>;
+  control: Control<T>;
+  setValue: UseFormSetValue<T>;
+  watch: UseFormWatch<T>;
+  isFromArrayForm?: boolean;
+};
+
+const RenderField = <T extends FieldValues>({
+  field,
+  control,
+  setValue,
+  watch,
+  isFromArrayForm,
+}: RenderFieldProps<T>) => {
+  // console.log('render'); // Este console.log solo se ejecutará si `field` cambia
+
+  let element: JSX.Element | null = null;
+
+  switch (field.type) {
+    case ControlledFieldEnum.Array:
+      element = (
+        <DynamicFormMultipleBuilder<T>
+          name={field.name as any}
+          fieldsObject={field.fieldArrayConfig!}
+          control={control}
+          setValue={setValue}
+          watch={watch}
+          label={field.label}
+          helperText={field.helperText}
+          informationText={field.informationText}
+        />
+      );
+
+      break;
+    case ControlledFieldEnum.InputTypeText:
+      element = (
+        <TextFieldControlledField
+          watch={watch}
+          setValue={setValue}
+          control={control}
+          dependentFields={field.dependentFields}
+          name={field.name}
+          disabled={field.disabled}
+          defaultValue={field.defaultValue}
+          rules={field.rules}
+          label={field.label}
+          helperText={field.helperText}
+          informationText={field.informationText}
+          isFromArrayForm={isFromArrayForm}
+          valueToSet={field.valueToSet}
+          placeholder={field.placeholder}
+          icon={field.icon}
+        />
+      );
+      break;
+    case ControlledFieldEnum.Select:
+      element = (
+        <SelectControlledField
+          watch={watch}
+          setValue={setValue}
+          control={control}
+          dependentFields={field.dependentFields}
+          name={field.name}
+          disabled={field.disabled}
+          defaultValue={field.defaultValue}
+          rules={field.rules}
+          label={field.label}
+          helperText={field.helperText}
+          informationText={field.informationText}
+          isFromArrayForm={isFromArrayForm}
+          valueToSet={field.valueToSet}
+          nameSelectedOption={field.optionalName!}
+          optionProps={field.optionProps!}
+        />
+      );
+      break;
+    case ControlledFieldEnum.RichTextEditor:
+      element = (
+        <RichTextEditorControlledField
+          watch={watch}
+          setValue={setValue}
+          control={control}
+          dependentFields={field.dependentFields}
+          name={field.name}
+          disabled={field.disabled}
+          defaultValue={field.defaultValue}
+          rules={field.rules}
+          label={field.label}
+          helperText={field.helperText}
+          informationText={field.informationText}
+          isFromArrayForm={isFromArrayForm}
+          valueToSet={field.valueToSet}
+          namePlainText={field.optionalName!}
+          placeholder={field.placeholder}
+        />
+      );
+      break;
+    default:
+      element = null;
+  }
+
+  return (
+    <Grid
+      item
+      xs={field.xs}
+      sm={field.sm}
+      md={field.md}
+      lg={field.lg}
+      xl={field.xl}
+    >
+      {element}
+    </Grid>
+  );
+};
+export default RenderField;

@@ -15,6 +15,7 @@ type CustomTextFieldProps = {
   Icon?: React.ElementType;
   helperText?: string;
   informationText?: string;
+  isFromArrayForm?: boolean;
 };
 
 const CustomTextField: React.FC<CustomTextFieldProps> = ({
@@ -31,6 +32,7 @@ const CustomTextField: React.FC<CustomTextFieldProps> = ({
   helperText = ' ',
   Icon,
   informationText,
+  isFromArrayForm,
 }) => {
   const id: string = useMemo(() => {
     return `text-field-id-${name}`;
@@ -49,14 +51,23 @@ const CustomTextField: React.FC<CustomTextFieldProps> = ({
       disabled={disabled}
       name={name}
       label={
-        <CustomInputLabel label={label} informationText={informationText} />
+        !isFromArrayForm
+          ? (label || informationText) && (
+              <CustomInputLabel
+                label={label}
+                informationText={informationText}
+              />
+            )
+          : undefined
       }
       placeholder={placeholder || ''}
       variant="outlined"
       //   InputLabelProps={{ shrink: true, onClick: () => console.log('clicked') }}
       fullWidth
       error={!!error}
-      helperText={error && errorMessage ? errorMessage : helperText}
+      helperText={
+        error && errorMessage ? errorMessage : !isFromArrayForm && helperText
+      }
       InputProps={{
         startAdornment: <>{Icon && <Icon />}</>,
       }}

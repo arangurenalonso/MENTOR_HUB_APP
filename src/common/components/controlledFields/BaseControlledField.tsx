@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo } from 'react';
+import { useEffect, useState } from 'react';
 import {
   Control,
   Controller,
@@ -41,17 +41,29 @@ const BaseControlledField = <T extends FieldValues>({
   disabled,
   render,
 }: BaseControlledFieldProps<T>) => {
-  const allFieldsHaveValues = useMemo(() => {
-    return dependentFields
-      ? dependentFields.every((dep) => {
-          if (typeof dep === 'string') {
-            return watch(dep) !== undefined && watch(dep) !== null;
-          } else {
-            return watch(dep.field) === dep.value;
-          }
-        })
-      : true;
-  }, [dependentFields, watch]);
+  const [allFieldsHaveValues, setAllFieldsHaveValues] = useState(false);
+  useEffect(() => {
+    if (dependentFields) {
+      const isAllDependentFieldHaveValues = dependentFields.every((dep) => {
+        if (typeof dep === 'string') {
+          return watch(dep) !== undefined && watch(dep) !== null;
+        } else {
+          return watch(dep.field) === dep.value;
+        }
+      });
+      setAllFieldsHaveValues(isAllDependentFieldHaveValues);
+    } else {
+      setAllFieldsHaveValues(true);
+    }
+  }, [
+    ...(dependentFields?.map((field) => {
+      if (typeof field === 'string') {
+        return watch(field);
+      } else {
+        return watch(field.field);
+      }
+    }) || []),
+  ]);
 
   useEffect(() => {
     if (!allFieldsHaveValues) {

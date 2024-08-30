@@ -33,6 +33,8 @@ type RichTextEditorProps = {
   label?: string;
   helperText?: string;
   informationText?: string;
+
+  isFromArrayForm?: boolean;
   disabled?: boolean;
 };
 const RichTextEditor = ({
@@ -46,6 +48,7 @@ const RichTextEditor = ({
   label,
   helperText = ' ',
   informationText,
+  isFromArrayForm,
   disabled,
 }: RichTextEditorProps) => {
   const [editorState, setEditorState] = useState<EditorState>(
@@ -124,15 +127,19 @@ const RichTextEditor = ({
   };
   return (
     <FormControl fullWidth>
-      <InputLabel
-        sx={{
-          backgroundColor: 'white',
-          px: 1,
-          color: error ? theme.palette.error.main : theme.palette.primary.main,
-        }}
-      >
-        <CustomInputLabel label={label} informationText={informationText} />
-      </InputLabel>
+      {isFromArrayForm && (
+        <InputLabel
+          sx={{
+            backgroundColor: 'white',
+            px: 1,
+            color: error
+              ? theme.palette.error.main
+              : theme.palette.primary.main,
+          }}
+        >
+          <CustomInputLabel label={label} informationText={informationText} />
+        </InputLabel>
+      )}
       <Box
         sx={{
           color: error ? theme.palette.error.main : theme.palette.primary.main,
@@ -198,7 +205,7 @@ const RichTextEditor = ({
             }}
           >
             <FormHelperText>
-              {errorMessage ? errorMessage : helperText}
+              {errorMessage ? errorMessage : !isFromArrayForm && helperText}
             </FormHelperText>
           </Box>
           <Box sx={{ whiteSpace: 'nowrap', fontSize: '12px', paddingRight: 2 }}>

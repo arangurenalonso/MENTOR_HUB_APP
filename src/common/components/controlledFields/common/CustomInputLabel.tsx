@@ -1,4 +1,4 @@
-import { Box, Tooltip, IconButton, useTheme } from '@mui/material';
+import { Box, IconButton, SxProps, Theme } from '@mui/material';
 import { useState } from 'react';
 
 import InfoIcon from '@mui/icons-material/Info';
@@ -6,10 +6,14 @@ import HtmlTooltip from '../../MUI-custom-Components/CustomWidthTooltip';
 type CustomInputLabelType = {
   label?: string;
   informationText?: string;
+  labelStyles?: SxProps<Theme> | undefined;
 };
 
-const CustomInputLabel = ({ label, informationText }: CustomInputLabelType) => {
-  const theme = useTheme(); // Accede al tema actual aquí
+const CustomInputLabel = ({
+  label,
+  informationText,
+  labelStyles,
+}: CustomInputLabelType) => {
   const [open, setOpen] = useState(false);
   const handleOpen = () => {
     console.log('aaa');
@@ -24,7 +28,7 @@ const CustomInputLabel = ({ label, informationText }: CustomInputLabelType) => {
         gap: 1,
       }}
     >
-      {label}
+      <Box sx={labelStyles}>{label}</Box>
       {informationText && (
         <HtmlTooltip
           open={open}

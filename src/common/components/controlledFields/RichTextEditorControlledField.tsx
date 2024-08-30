@@ -14,43 +14,49 @@ import { convertFromRaw, EditorState, RawDraftContentState } from 'draft-js';
 import BaseControlledField, { DependentField } from './BaseControlledField';
 
 type RichTextEditorControlledFieldProps<T extends FieldValues> = {
+  watch: UseFormWatch<T>;
+  setValue: UseFormSetValue<T>;
+  dependentFields?: DependentField<T>[];
+  control: Control<T>;
   name: Path<T>;
-  namePlainText: Path<T>;
-  placeholder?: string | null;
+  disabled?: boolean;
+  defaultValue?: FieldPathValue<T, Path<T>>;
   rules:
     | Omit<
         RegisterOptions<FieldValues, Path<T>>,
         'disabled' | 'valueAsNumber' | 'valueAsDate' | 'setValueAs'
       >
     | undefined;
-  control: Control<T>;
-  disabled?: boolean;
-  setValue: UseFormSetValue<T>;
-  defaultValue?: FieldPathValue<T, Path<T>>;
-  valueToSet?: FieldPathValue<T, Path<T>> | string | undefined | null;
 
-  watch: UseFormWatch<T>;
-  dependentFields?: DependentField<T>[];
   label?: string;
   helperText?: string;
   informationText?: string;
-};
+  isFromArrayForm?: boolean;
 
+  valueToSet?: FieldPathValue<T, Path<T>> | string | undefined | null;
+
+  namePlainText: Path<T>;
+  placeholder?: string | null;
+};
 const RichTextEditorControlledField = <T extends FieldValues>({
+  watch,
+  setValue,
+  control,
+  dependentFields,
   name,
+  disabled,
+  defaultValue,
+  rules,
+
+  label,
+  helperText = ' ',
+  informationText,
+  isFromArrayForm,
+
+  valueToSet,
+
   namePlainText,
   placeholder,
-  control,
-  setValue,
-  rules,
-  defaultValue,
-  valueToSet,
-  watch,
-  dependentFields,
-  disabled,
-  label,
-  helperText,
-  informationText,
 }: RichTextEditorControlledFieldProps<T>) => {
   useEffect(() => {
     if (valueToSet) {
@@ -92,6 +98,7 @@ const RichTextEditorControlledField = <T extends FieldValues>({
                 onChange(plainText);
                 setValue(name, editorState as PathValue<T, Path<T>>);
               }}
+              isFromArrayForm={isFromArrayForm}
               disabled={disabled}
               value={value}
               valueToSet={valueToSet}

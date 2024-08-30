@@ -33,22 +33,27 @@ type TextFieldControlledFieldProps<T extends FieldValues> = {
   dependentFields?: DependentField<T>[];
   helperText?: string;
   informationText?: string;
+  isFromArrayForm?: boolean;
 };
 const TextFieldControlledField = <T extends FieldValues>({
-  label,
-  icon: Icon,
+  watch,
+  setValue,
+  control,
+  dependentFields,
   name,
-  placeholder,
+  disabled,
   defaultValue,
   rules,
-  control,
-  disabled,
-  valueToSet,
-  setValue,
-  watch,
-  dependentFields,
-  helperText,
+
+  label,
+  helperText = ' ',
   informationText,
+  isFromArrayForm,
+
+  valueToSet,
+
+  icon: Icon,
+  placeholder,
 }: TextFieldControlledFieldProps<T>) => {
   //   const [id, setId] = useState(uuidv4());
 
@@ -78,6 +83,7 @@ const TextFieldControlledField = <T extends FieldValues>({
             name={name}
             helperText={helperText}
             informationText={informationText}
+            isFromArrayForm={isFromArrayForm}
             placeholder={placeholder || ''}
             error={!!error}
             errorMessage={error?.message}

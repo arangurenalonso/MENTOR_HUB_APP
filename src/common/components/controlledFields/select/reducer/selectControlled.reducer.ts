@@ -24,7 +24,7 @@ export const selectControlledReducer = <K>(
 ): SelectControlledState<K> => {
   switch (action.type) {
     case SelectControlledActionType.FETCH_INIT:
-      return { ...state, loading: true, error: null };
+      return { ...state, loading: true, error: null, options: [] };
     case SelectControlledActionType.FETCH_SUCCESS:
       return { ...state, loading: false, options: action.payload, error: null };
     case SelectControlledActionType.FETCH_FAILURE:

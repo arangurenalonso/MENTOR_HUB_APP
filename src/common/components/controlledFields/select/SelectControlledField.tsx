@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useReducer } from 'react';
+import { useEffect, useMemo, useReducer, useRef } from 'react';
 import {
   Control,
   FieldPathValue,
@@ -29,7 +29,7 @@ export type FetchProperties<T> = {
   method: 'GET'; // | 'POST' | 'PUT' | 'DELETE';
   baseUrl: string;
   endpoint: string;
-  valueReplacement?: Path<T>[];
+  valueReplacement?: { variableReplace: string; field: Path<T> }[] | undefined;
 };
 
 export type OptionProperties<T extends FieldValues, K> = {
@@ -44,17 +44,18 @@ export type OptionProperties<T extends FieldValues, K> = {
   RequireAtLeastOne<
     {
       options?: K[];
-      optionsFromApi?: FetchProperties<T>;
+      optionsFromApi?: FetchProperties<T> | undefined;
     },
     'options' | 'optionsFromApi'
   >;
 
 type SelectControlledFieldProps<T extends FieldValues, K> = {
-  label?: string;
-
+  watch: UseFormWatch<T>;
+  setValue: UseFormSetValue<T>;
+  control: Control<T>;
+  dependentFields?: DependentField<T>[];
   name: Path<T>;
-  nameSelectedOption: Path<T>;
-  placeholder?: string | null;
+  disabled?: boolean;
   defaultValue?: FieldPathValue<T, Path<T>>;
   rules?:
     | Omit<
@@ -62,34 +63,42 @@ type SelectControlledFieldProps<T extends FieldValues, K> = {
         'disabled' | 'valueAsNumber' | 'valueAsDate' | 'setValueAs'
       >
     | undefined;
-  control: Control<T>;
-  disabled?: boolean;
-  // valueToSet?: K[keyof K];
+
+  label?: string;
+  helperText?: string;
+  informationText?: string;
+  isFromArrayForm?: boolean;
+
   valueToSet?: K[SelectControlledFieldProps<
     T,
     K
   >['optionProps']['valueProperty']];
-  setValue: UseFormSetValue<T>;
-  watch: UseFormWatch<T>;
-  dependentFields?: DependentField<T>[];
-  optionProps: OptionProperties<T, K>;
-  helperText?: string;
-  informationText?: string;
-};
+  // valueToSet?: K[keyof K];
 
+  nameSelectedOption: Path<T>;
+  optionProps: OptionProperties<T, K>;
+};
 const SelectControlledField = <
   T extends FieldValues,
   K extends { [key: string]: any }
 >({
-  label,
+  watch,
+  setValue,
+  control,
+  dependentFields,
   name,
-  nameSelectedOption,
+  disabled,
   defaultValue,
   rules,
-  control,
-  disabled,
+
+  label,
+  helperText = ' ',
+  informationText,
+  isFromArrayForm,
+
   valueToSet,
-  setValue,
+
+  nameSelectedOption,
   optionProps: {
     options,
     optionsFromApi,
@@ -97,10 +106,6 @@ const SelectControlledField = <
     nameProperty,
     onFormatMenuItemLabel,
   },
-  watch,
-  dependentFields,
-  helperText = ' ',
-  informationText,
 }: SelectControlledFieldProps<T, K>) => {
   // const [internalOptions, setInternalOptions] = useState<K[]>([]);
 
@@ -114,13 +119,15 @@ const SelectControlledField = <
     loading: false,
     error: null,
   });
-
+  const isInitialValueUsed = useRef(false);
   useEffect(() => {
     if (
       valueToSet !== undefined &&
       valueToSet !== null &&
-      internalOptions.length > 0
+      internalOptions.length > 0 &&
+      isInitialValueUsed.current === false
     ) {
+      isInitialValueUsed.current = true;
       const selectedOption = internalOptions.find(
         (option) => option[valueProperty] === valueToSet
       );
@@ -149,7 +156,7 @@ const SelectControlledField = <
       if (memoizedOptionsFromApi.valueReplacement) {
         const { valueReplacement } = memoizedOptionsFromApi;
         const hasAllRequiresValues = valueReplacement.every(
-          (field) => watch(field) !== undefined && watch(field) !== null
+          ({ field }) => watch(field) !== undefined && watch(field) !== null
         );
         if (hasAllRequiresValues) {
           exectApi(memoizedOptionsFromApi);
@@ -160,7 +167,7 @@ const SelectControlledField = <
     }
   }, [
     memoizedOptionsFromApi,
-    ...(memoizedOptionsFromApi?.valueReplacement?.map((field) =>
+    ...(memoizedOptionsFromApi?.valueReplacement?.map(({ field }) =>
       watch(field)
     ) || []),
   ]);
@@ -173,9 +180,9 @@ const SelectControlledField = <
     let endpoint = optionsFromApi.endpoint;
 
     if (optionsFromApi.valueReplacement) {
-      optionsFromApi.valueReplacement.forEach((field) => {
+      optionsFromApi.valueReplacement.forEach(({ variableReplace, field }) => {
         const fieldValue = watch(field);
-        endpoint = endpoint.replace(`{{${field}}}`, fieldValue);
+        endpoint = endpoint.replace(`{{${variableReplace}}}`, fieldValue);
       });
     }
 
@@ -225,6 +232,7 @@ const SelectControlledField = <
             value={value}
             valueToSet={valueToSet}
             name={name}
+            isFromArrayForm={isFromArrayForm}
             inputRef={ref}
             helperText={helperText}
             informationText={informationText}

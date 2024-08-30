@@ -46,6 +46,7 @@ interface CustomSelectProps<T> {
   onBlur: FocusEventHandler<HTMLInputElement | HTMLTextAreaElement>;
   helperText?: string;
   informationText?: string;
+  isFromArrayForm?: boolean;
 }
 
 const INITIAL_STATE: SelectState<any> = {
@@ -83,6 +84,7 @@ const CustomSelect = <T extends { [key: string]: any }>({
   onBlur,
   helperText = ' ',
   informationText,
+  isFromArrayForm,
 }: CustomSelectProps<T>) => {
   const [
     {
@@ -173,14 +175,23 @@ const CustomSelect = <T extends { [key: string]: any }>({
   return (
     <>
       <FormControl fullWidth error={error} disabled={disabled}>
-        <InputLabel>
-          <CustomInputLabel label={label} informationText={informationText} />
-        </InputLabel>
+        {!isFromArrayForm && (
+          <InputLabel
+            sx={{
+              backgroundColor: 'white',
+              px: 1,
+              color: error
+                ? theme.palette.error.main
+                : theme.palette.primary.main,
+            }}
+          >
+            <CustomInputLabel label={label} informationText={informationText} />
+          </InputLabel>
+        )}
         <Select
           value={internalValue ?? ''}
           onChange={handleOnChange}
           onBlur={onBlur}
-          label={label}
           onOpen={handleOpen}
           onClose={handleClose}
           open={isOpenSelect}
@@ -267,7 +278,7 @@ const CustomSelect = <T extends { [key: string]: any }>({
           ))}
         </Select>
         <FormHelperText>
-          {errorMessage ? errorMessage : helperText}
+          {errorMessage ? errorMessage : !isFromArrayForm && helperText}
         </FormHelperText>
       </FormControl>
       <Dialog
