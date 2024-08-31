@@ -5,9 +5,9 @@ import {
   Path,
 } from 'react-hook-form';
 import { ControlledFieldEnum } from './controlledTypeField';
-import { DependentField } from '../BaseControlledField';
 import { ElementType } from 'react';
 import { OptionProperties } from '../select/SelectControlledField';
+import { DependentField } from '../common/BaseControlledField';
 
 type FieldBaseType<T extends FieldValues, K = any> = {
   type: ControlledFieldEnum;

@@ -5,7 +5,7 @@ import {
   UseFormWatch,
 } from 'react-hook-form';
 import FieldBaseType from '../controlledFields/type/fieldType';
-import useDependedField from '../controlledFields/useDependedField';
+import useDependedField from '../controlledFields/common/useDependedField';
 import DynamicFormMultipleBuilder from './DynamicFormMultipleBuilder';
 
 interface DynamicFormMultipleBuilderProps<T extends FieldValues> {

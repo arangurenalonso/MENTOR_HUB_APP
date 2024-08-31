@@ -5,12 +5,12 @@ import {
   UseFormSetValue,
   UseFormWatch,
 } from 'react-hook-form';
-import RichTextEditorControlledField from '../controlledFields/RichTextEditorControlledField';
 import SelectControlledField from '../controlledFields/select/SelectControlledField';
 import TextFieldControlledField from '../controlledFields/textField/TextFieldControlledField';
 import { ControlledFieldEnum } from '../controlledFields/type/controlledTypeField';
 import FieldBaseType from '../controlledFields/type/fieldType';
 import DynamicFormMultipleBuilderWrapped from './DynamicFormMultipleBuilderWrapped';
+import RichTextEditorControlledField from '../controlledFields/richTextEditor/RichTextEditorControlledField';
 
 type RenderFieldProps<T extends FieldValues> = {
   field: FieldBaseType<T>;
@@ -60,7 +60,7 @@ const RenderField = <T extends FieldValues>({
           helperText={field.helperText}
           informationText={field.informationText}
           isFromArrayForm={isFromArrayForm}
-          valueToSet={field.valueToSet}
+          // valueToSet={field.valueToSet}
           placeholder={field.placeholder}
           icon={field.icon}
         />
@@ -81,7 +81,7 @@ const RenderField = <T extends FieldValues>({
           helperText={field.helperText}
           informationText={field.informationText}
           isFromArrayForm={isFromArrayForm}
-          valueToSet={field.valueToSet}
+          // valueToSet={field.valueToSet}
           nameSelectedOption={field.optionalName!}
           optionProps={field.optionProps!}
         />
@@ -102,7 +102,7 @@ const RenderField = <T extends FieldValues>({
           helperText={field.helperText}
           informationText={field.informationText}
           isFromArrayForm={isFromArrayForm}
-          valueToSet={field.valueToSet}
+          // valueToSet={field.valueToSet}
           namePlainText={field.optionalName!}
           placeholder={field.placeholder}
         />

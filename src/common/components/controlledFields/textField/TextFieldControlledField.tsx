@@ -1,16 +1,16 @@
-import { useEffect } from 'react';
 import {
   Control,
   FieldPathValue,
   FieldValues,
   Path,
-  PathValue,
   RegisterOptions,
   UseFormSetValue,
   UseFormWatch,
 } from 'react-hook-form';
-import BaseControlledField, { DependentField } from '../BaseControlledField';
 import CustomTextField from './CustomTextField';
+import BaseControlledField, {
+  DependentField,
+} from '../common/BaseControlledField';
 // import { v4 as uuidv4 } from 'uuid';
 
 type TextFieldControlledFieldProps<T extends FieldValues> = {
@@ -27,7 +27,6 @@ type TextFieldControlledFieldProps<T extends FieldValues> = {
     | undefined;
   control: Control<T>;
   disabled?: boolean;
-  valueToSet?: FieldPathValue<T, Path<T>> | string | undefined | null;
   setValue: UseFormSetValue<T>;
   watch: UseFormWatch<T>;
   dependentFields?: DependentField<T>[];
@@ -37,7 +36,7 @@ type TextFieldControlledFieldProps<T extends FieldValues> = {
 };
 const TextFieldControlledField = <T extends FieldValues>({
   watch,
-  setValue,
+  // setValue,
   control,
   dependentFields,
   name,
@@ -50,19 +49,9 @@ const TextFieldControlledField = <T extends FieldValues>({
   informationText,
   isFromArrayForm,
 
-  valueToSet,
-
   icon: Icon,
   placeholder,
 }: TextFieldControlledFieldProps<T>) => {
-  //   const [id, setId] = useState(uuidv4());
-
-  useEffect(() => {
-    if (valueToSet !== undefined && valueToSet !== null) {
-      setValue(name, valueToSet as PathValue<T, Path<T>>);
-    }
-  }, [valueToSet]);
-
   return (
     <BaseControlledField
       watch={watch}

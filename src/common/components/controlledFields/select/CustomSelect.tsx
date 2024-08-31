@@ -40,10 +40,13 @@ interface CustomSelectProps<T> {
   inputRef?: React.Ref<HTMLSelectElement>;
   // valueToSet?: T[keyof T];
 
-  valueToSet?: T[CustomSelectProps<T>['valueProperty']];
+  // valueToSet?: T[CustomSelectProps<T>['valueProperty']];
   onFormatValue: (option: T) => string;
-  onChange: (value?: T[keyof T], selectedOption?: T) => void;
+  onChange: (value?: T[keyof T] | undefined) => void;
+  onReset: () => void;
+  onChangeSelectOption: (selectedOption?: T) => void;
   onBlur: FocusEventHandler<HTMLInputElement | HTMLTextAreaElement>;
+
   helperText?: string;
   informationText?: string;
   isFromArrayForm?: boolean;
@@ -78,9 +81,11 @@ const CustomSelect = <T extends { [key: string]: any }>({
   value,
   name,
   inputRef,
-  valueToSet,
+  // valueToSet,
   onFormatValue,
   onChange,
+  onChangeSelectOption,
+  onReset,
   onBlur,
   helperText = ' ',
   informationText,
@@ -98,6 +103,10 @@ const CustomSelect = <T extends { [key: string]: any }>({
     dispatch,
   ] = useReducer(selectReducer<T>, INITIAL_STATE);
 
+  if (name == 'category') {
+    console.log('value', value);
+    console.log('internalValue', internalValue);
+  }
   const theme = useTheme();
 
   const xsScreenMatch = useMediaQuery(theme.breakpoints.only('xs'));
@@ -108,32 +117,38 @@ const CustomSelect = <T extends { [key: string]: any }>({
 
   useEffect(() => {
     dispatch({ type: SelectActionType.SET_VALUE, payload: value });
-  }, [value]);
+  }, [value, options]);
 
   useEffect(() => {
-    if (valueToSet !== undefined && valueToSet !== null) {
-      if (options.length > 0) {
-        const firstOption = options[0];
-        const valuePropertyType = typeof firstOption[valueProperty];
-        const valueToSetType = typeof valueToSet;
-        if (valuePropertyType !== valueToSetType) {
-          console.log('Error', {
-            valueToSet,
-            valueToSetType,
-            valuePropertyType,
-          });
+    const selectedOption = internalOptions.find(
+      (option) => option[valueProperty] === internalValue
+    ) as T;
+    onChangeSelectOption(selectedOption);
+  }, [internalValue]);
+  // useEffect(() => {
+  //   if (valueToSet !== undefined && valueToSet !== null) {
+  //     if (options.length > 0) {
+  //       const firstOption = options[0];
+  //       const valuePropertyType = typeof firstOption[valueProperty];
+  //       const valueToSetType = typeof valueToSet;
+  //       if (valuePropertyType !== valueToSetType) {
+  //         console.log('Error', {
+  //           valueToSet,
+  //           valueToSetType,
+  //           valuePropertyType,
+  //         });
 
-          throw new Error(
-            `Type Mismatch Error: The type of 'valueToSet' (${valueToSetType}) does not match the expected type based on the 'valueProperty' of the options (${valuePropertyType}). Please ensure that the 'valueToSet' is of the correct type to match the selected property in the provided options array.`
-          );
-        }
-      }
-      dispatch({
-        type: SelectActionType.SET_VALUE_TO_SET,
-        payload: valueToSet,
-      });
-    }
-  }, [valueToSet]);
+  //         throw new Error(
+  //           `Type Mismatch Error: The type of 'valueToSet' (${valueToSetType}) does not match the expected type based on the 'valueProperty' of the options (${valuePropertyType}). Please ensure that the 'valueToSet' is of the correct type to match the selected property in the provided options array.`
+  //         );
+  //       }
+  //     }
+  //     dispatch({
+  //       type: SelectActionType.SET_VALUE_TO_SET,
+  //       payload: valueToSet,
+  //     });
+  //   }
+  // }, [valueToSet]);
 
   useEffect(() => {
     dispatch({
@@ -144,13 +159,10 @@ const CustomSelect = <T extends { [key: string]: any }>({
 
   const handleOnChange = (e: SelectChangeEvent<T[keyof T] | null>) => {
     const selectedValue = e.target.value as T[keyof T];
-    const selectedOption = internalOptions.find(
-      (option) => option[valueProperty] === selectedValue
-    ) as T;
 
     dispatch({ type: SelectActionType.SET_VALUE, payload: selectedValue });
 
-    onChange(selectedValue, selectedOption);
+    onChange(selectedValue);
   };
   const handleOnChangeSerch = (searchTerm: string) => {
     dispatch({
@@ -169,7 +181,7 @@ const CustomSelect = <T extends { [key: string]: any }>({
   const handleReset = () => {
     dispatch({ type: SelectActionType.RESET_SELECT });
 
-    onChange(undefined, undefined);
+    onReset();
   };
 
   return (
@@ -178,7 +190,7 @@ const CustomSelect = <T extends { [key: string]: any }>({
         {!isFromArrayForm && (
           <InputLabel
             sx={{
-              backgroundColor: 'white',
+              backgroundColor: theme.palette.background.default,
               px: 1,
               color: error
                 ? theme.palette.error.main

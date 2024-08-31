@@ -3,7 +3,7 @@ import FieldBaseType from '../controlledFields/type/fieldType';
 import { Grid } from '@mui/material';
 import { Fragment } from 'react/jsx-runtime';
 import RenderField from './RenderField';
-import { forwardRef, useImperativeHandle, useMemo } from 'react';
+import { forwardRef, useEffect, useImperativeHandle, useMemo } from 'react';
 
 interface DinamicallyFormBuilderProps<T extends FieldValues> {
   fieldsObject: FieldBaseType<T>[];
@@ -14,10 +14,14 @@ function DinamicallyFormBuilderComponent<T extends FieldValues>(
   { fieldsObject, valuesToSet }: DinamicallyFormBuilderProps<T>,
   ref: React.Ref<any>
 ) {
-  const { handleSubmit, control, setValue, watch } = useForm<T>({
+  const { handleSubmit, control, setValue, watch, reset } = useForm<T>({
     mode: 'onTouched',
-    values: valuesToSet as T,
   });
+  useEffect(() => {
+    if (valuesToSet) {
+      reset(valuesToSet as T);
+    }
+  }, [valuesToSet]);
 
   const updatedFieldsObject = useMemo(() => {
     return fieldsObject.map((field) => {

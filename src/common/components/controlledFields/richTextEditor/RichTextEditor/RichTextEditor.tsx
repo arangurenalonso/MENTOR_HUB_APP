@@ -18,17 +18,18 @@ import {
 import './RichTextEditor.css';
 import { customStyleMap, myBlockStyleFn } from './richTextStyles';
 import ToolbarRichTextEditor from './toolbar/ToolbarRichTextEditor';
-import CustomInputLabel from '../controlledFields/common/CustomInputLabel';
+import CustomInputLabel from '../../common/CustomInputLabel';
 
 type RichTextEditorProps = {
   placeholder: string;
-  value?: EditorState;
-  valueToSet?: string | EditorState | undefined | null;
+  value?: string | EditorState;
+  // valueToSet?: string | EditorState | undefined | null;
 
   error?: boolean;
   errorMessage?: string;
 
-  onChange?: (content: { plainText: string; editorState: EditorState }) => void;
+  onChange: (editorStateJson: EditorState) => void;
+  onChangePlaneText: (plainText: string) => void;
   onBlur?: () => void;
   label?: string;
   helperText?: string;
@@ -43,8 +44,9 @@ const RichTextEditor = ({
   error = false,
   errorMessage = '',
   onChange,
+  onChangePlaneText,
   onBlur,
-  valueToSet,
+  // valueToSet,
   label,
   helperText = ' ',
   informationText,
@@ -52,25 +54,48 @@ const RichTextEditor = ({
   disabled,
 }: RichTextEditorProps) => {
   const [editorState, setEditorState] = useState<EditorState>(
-    value || EditorState.createEmpty()
+    EditorState.createEmpty()
   );
   const [charCount, setCharCount] = useState(0);
   const [initialLoad, setInitialLoad] = useState(true);
 
   useEffect(() => {
-    if (valueToSet) {
+    // const currentContent = editorState.getCurrentContent();
+    // const rawContentState: RawDraftContentState = convertToRaw(currentContent);
+    // const editorStateJson = JSON.stringify(rawContentState);
+
+    onChange(editorState);
+    onChangePlaneText(editorState.getCurrentContent().getPlainText());
+  }, [editorState]);
+
+  useEffect(() => {
+    if (value) {
       try {
-        if (typeof valueToSet === 'string') {
-          const rawContent = JSON.parse(valueToSet) as RawDraftContentState;
+        if (
+          typeof value === null ||
+          typeof value === undefined ||
+          value === ''
+        ) {
+          setEditorState(EditorState.createEmpty());
+        } else if (typeof value === 'string') {
+          const rawContent = JSON.parse(value) as RawDraftContentState;
           const contentState = convertFromRaw(rawContent);
           const editorState = EditorState.createWithContent(contentState);
+
           setEditorState(editorState);
+        } else if (value instanceof EditorState) {
+          setEditorState(value);
+        } else {
+          console.error(
+            'Invalid value type: Expected undefined, null, string or EditorState.'
+          );
         }
       } catch (error) {
+        console.log('Error', error);
         // console.error('Invalid JSON value provided:', error);
       }
     }
-  }, [valueToSet]);
+  }, [value]);
 
   useEffect(() => {
     const currentContent = editorState.getCurrentContent();
@@ -101,23 +126,10 @@ const RichTextEditor = ({
   const handleOnChange = (editorState: EditorState) => {
     // console.log('HandleOnChange');
     if (initialLoad) {
-      // console.log('initialLoad');
       setInitialLoad(false);
       return;
     }
-
     setEditorState(editorState);
-
-    // const currentContent = editorState.getCurrentContent();
-    // const rawContentState: RawDraftContentState = convertToRaw(currentContent);
-    // const jsonContent = JSON.stringify(rawContentState);
-
-    if (onChange) {
-      onChange({
-        plainText: editorState.getCurrentContent().getPlainText(),
-        editorState: editorState,
-      });
-    }
   };
   const handleOnBlur = () => {
     // console.log('handleOnBlur');
@@ -125,19 +137,24 @@ const RichTextEditor = ({
       onBlur();
     }
   };
+
   return (
     <FormControl fullWidth>
-      {isFromArrayForm && (
+      {!isFromArrayForm && (
         <InputLabel
           sx={{
-            backgroundColor: 'white',
+            backgroundColor: theme.palette.background.default,
             px: 1,
             color: error
               ? theme.palette.error.main
               : theme.palette.primary.main,
           }}
         >
-          <CustomInputLabel label={label} informationText={informationText} />
+          <CustomInputLabel
+            label={label}
+            labelStyles={{ fontSize: '20px' }}
+            informationText={informationText}
+          />
         </InputLabel>
       )}
       <Box
@@ -204,7 +221,13 @@ const RichTextEditor = ({
                 : theme.palette.primary.main,
             }}
           >
-            <FormHelperText>
+            <FormHelperText
+              sx={{
+                color: error
+                  ? theme.palette.error.main
+                  : theme.palette.primary.main,
+              }}
+            >
               {errorMessage ? errorMessage : !isFromArrayForm && helperText}
             </FormHelperText>
           </Box>

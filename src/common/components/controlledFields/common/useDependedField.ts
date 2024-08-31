@@ -19,7 +19,9 @@ const useDependedField = <T extends FieldValues>({
     if (dependentFields) {
       const isAllDependentFieldHaveValues = dependentFields.every((dep) => {
         if (typeof dep === 'string') {
-          return watch(dep) !== undefined && watch(dep) !== null;
+          return (
+            watch(dep) !== undefined && watch(dep) !== null && watch(dep) !== ''
+          );
         } else {
           return watch(dep.field) === dep.value;
         }

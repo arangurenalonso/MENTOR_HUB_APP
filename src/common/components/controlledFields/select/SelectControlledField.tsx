@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useReducer, useRef } from 'react';
+import { useEffect, useMemo, useReducer } from 'react';
 import {
   Control,
   FieldPathValue,
@@ -10,12 +10,14 @@ import {
   UseFormWatch,
 } from 'react-hook-form';
 import CustomSelect from './CustomSelect';
-import BaseControlledField, { DependentField } from '../BaseControlledField';
 import FetchAdapter from '../adapter/fetch.adapter';
 import {
   SelectControlledActionType,
   selectControlledReducer,
 } from './reducer/selectControlled.reducer';
+import BaseControlledField, {
+  DependentField,
+} from '../common/BaseControlledField';
 
 type RequireAtLeastOne<T, Keys extends keyof T = keyof T> = Pick<
   T,
@@ -69,10 +71,10 @@ type SelectControlledFieldProps<T extends FieldValues, K> = {
   informationText?: string;
   isFromArrayForm?: boolean;
 
-  valueToSet?: K[SelectControlledFieldProps<
-    T,
-    K
-  >['optionProps']['valueProperty']];
+  // valueToSet?: K[SelectControlledFieldProps<
+  //   T,
+  //   K
+  // >['optionProps']['valueProperty']];
   // valueToSet?: K[keyof K];
 
   nameSelectedOption: Path<T>;
@@ -96,7 +98,7 @@ const SelectControlledField = <
   informationText,
   isFromArrayForm,
 
-  valueToSet,
+  // valueToSet,
 
   nameSelectedOption,
   optionProps: {
@@ -119,25 +121,25 @@ const SelectControlledField = <
     loading: false,
     error: null,
   });
-  const isInitialValueUsed = useRef(false);
-  useEffect(() => {
-    if (
-      valueToSet !== undefined &&
-      valueToSet !== null &&
-      internalOptions.length > 0 &&
-      isInitialValueUsed.current === false
-    ) {
-      isInitialValueUsed.current = true;
-      const selectedOption = internalOptions.find(
-        (option) => option[valueProperty] === valueToSet
-      );
+  // const isInitialValueUsed = useRef(false);
+  // useEffect(() => {
+  //   if (
+  //     valueToSet !== undefined &&
+  //     valueToSet !== null &&
+  //     internalOptions.length > 0 &&
+  //     isInitialValueUsed.current === false
+  //   ) {
+  //     isInitialValueUsed.current = true;
+  //     const selectedOption = internalOptions.find(
+  //       (option) => option[valueProperty] === valueToSet
+  //     );
 
-      if (selectedOption) {
-        setValue(name, valueToSet as PathValue<T, Path<T>>);
-        setValue(nameSelectedOption, selectedOption as PathValue<T, Path<T>>);
-      }
-    }
-  }, [valueToSet, internalOptions]);
+  //     if (selectedOption) {
+  //       setValue(name, valueToSet as PathValue<T, Path<T>>);
+  //       setValue(nameSelectedOption, selectedOption as PathValue<T, Path<T>>);
+  //     }
+  //   }
+  // }, [valueToSet, internalOptions]);
 
   useEffect(() => {
     if (options !== undefined && options !== null) {
@@ -230,7 +232,7 @@ const SelectControlledField = <
             options={internalOptions}
             valueProperty={valueProperty}
             value={value}
-            valueToSet={valueToSet}
+            // valueToSet={valueToSet}
             name={name}
             isFromArrayForm={isFromArrayForm}
             inputRef={ref}
@@ -242,12 +244,20 @@ const SelectControlledField = <
               }
               return option[nameProperty];
             }}
-            onChange={(selectedValue, selectedOption) => {
+            onChange={(selectedValue) => {
               onChange(selectedValue);
+            }}
+            onChangeSelectOption={(selectedOption) => {
+              console.log('selectedOption', selectedOption);
+
               setValue(
                 nameSelectedOption,
                 selectedOption as PathValue<T, Path<T>>
               );
+            }}
+            onReset={() => {
+              onChange('');
+              setValue(nameSelectedOption, undefined as PathValue<T, Path<T>>);
             }}
             onBlur={onBlur}
           />
