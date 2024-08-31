@@ -1,4 +1,3 @@
-import { useEffect, useState } from 'react';
 import {
   Control,
   Controller,
@@ -7,6 +6,7 @@ import {
   Path,
   UseFormWatch,
 } from 'react-hook-form';
+import useDependedField from './useDependedField';
 
 export type DependentField<T extends FieldValues> =
   | Path<T>
@@ -41,37 +41,12 @@ const BaseControlledField = <T extends FieldValues>({
   disabled,
   render,
 }: BaseControlledFieldProps<T>) => {
-  const [allFieldsHaveValues, setAllFieldsHaveValues] = useState(false);
-  useEffect(() => {
-    if (dependentFields) {
-      const isAllDependentFieldHaveValues = dependentFields.every((dep) => {
-        if (typeof dep === 'string') {
-          return watch(dep) !== undefined && watch(dep) !== null;
-        } else {
-          return watch(dep.field) === dep.value;
-        }
-      });
-      setAllFieldsHaveValues(isAllDependentFieldHaveValues);
-    } else {
-      setAllFieldsHaveValues(true);
-    }
-  }, [
-    ...(dependentFields?.map((field) => {
-      if (typeof field === 'string') {
-        return watch(field);
-      } else {
-        return watch(field.field);
-      }
-    }) || []),
-  ]);
-
-  useEffect(() => {
-    if (!allFieldsHaveValues) {
-      control.unregister(name);
-    } else {
-      control.register(name);
-    }
-  }, [allFieldsHaveValues, control, name]);
+  const { allFieldsHaveValues } = useDependedField<T>({
+    name,
+    control,
+    watch,
+    dependentFields,
+  });
 
   if (!allFieldsHaveValues) {
     return null;

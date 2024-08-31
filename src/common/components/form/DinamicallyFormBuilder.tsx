@@ -1,41 +1,42 @@
 import { FieldValues, useForm } from 'react-hook-form';
 import FieldBaseType from '../controlledFields/type/fieldType';
-import { Button, Grid } from '@mui/material';
+import { Grid } from '@mui/material';
 import { Fragment } from 'react/jsx-runtime';
 import RenderField from './RenderField';
-import { useMemo } from 'react';
+import { forwardRef, useImperativeHandle, useMemo } from 'react';
 
 interface DinamicallyFormBuilderProps<T extends FieldValues> {
   fieldsObject: FieldBaseType<T>[];
   valuesToSet?: Partial<T>;
 }
 
-const DinamicallyFormBuilder = <T extends FieldValues>({
-  fieldsObject,
-  valuesToSet,
-}: DinamicallyFormBuilderProps<T>) => {
+function DinamicallyFormBuilderComponent<T extends FieldValues>(
+  { fieldsObject, valuesToSet }: DinamicallyFormBuilderProps<T>,
+  ref: React.Ref<any>
+) {
   const { handleSubmit, control, setValue, watch } = useForm<T>({
     mode: 'onTouched',
+    values: valuesToSet as T,
   });
 
   const updatedFieldsObject = useMemo(() => {
-    console.log('AAAAA');
-
     return fieldsObject.map((field) => {
-      const valueToSet = valuesToSet?.[field.name as keyof T];
+      // const valueToSet = valuesToSet?.[field.name as keyof T];
       return {
         ...field,
-        valueToSet: valueToSet ?? field.valueToSet,
+        // valueToSet: valueToSet ?? field.valueToSet,
       };
     });
   }, [valuesToSet]);
 
-  const onSubmit = async (data: T) => {
-    console.log('data', data);
-  };
+  useImperativeHandle(ref, () => ({
+    submit: (onSubmit: (data: T) => void) => {
+      handleSubmit(onSubmit)();
+    },
+  }));
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
+    <form>
       <Grid container spacing={1} rowSpacing={3}>
         {updatedFieldsObject.map((fieldConfig, index) => (
           <Fragment key={index}>
@@ -47,14 +48,16 @@ const DinamicallyFormBuilder = <T extends FieldValues>({
             />
           </Fragment>
         ))}
-        <Grid container spacing={2} justifyContent="center" sx={{ mt: 2 }}>
-          <Button type="submit" variant="contained">
-            Submit
-          </Button>
-        </Grid>
       </Grid>
     </form>
   );
-};
+}
+
+// Forward the ref while keeping the generic type declaration in the component
+const DinamicallyFormBuilder = forwardRef(DinamicallyFormBuilderComponent) as <
+  T extends FieldValues
+>(
+  props: DinamicallyFormBuilderProps<T> & { ref?: React.Ref<any> }
+) => ReturnType<typeof DinamicallyFormBuilderComponent>;
 
 export default DinamicallyFormBuilder;

@@ -10,7 +10,7 @@ import SelectControlledField from '../controlledFields/select/SelectControlledFi
 import TextFieldControlledField from '../controlledFields/textField/TextFieldControlledField';
 import { ControlledFieldEnum } from '../controlledFields/type/controlledTypeField';
 import FieldBaseType from '../controlledFields/type/fieldType';
-import DynamicFormMultipleBuilder from './DynamicFormMultipleBuilder';
+import DynamicFormMultipleBuilderWrapped from './DynamicFormMultipleBuilderWrapped';
 
 type RenderFieldProps<T extends FieldValues> = {
   field: FieldBaseType<T>;
@@ -34,15 +34,13 @@ const RenderField = <T extends FieldValues>({
   switch (field.type) {
     case ControlledFieldEnum.Array:
       element = (
-        <DynamicFormMultipleBuilder<T>
-          name={field.name as any}
-          fieldsObject={field.fieldArrayConfig!}
+        <DynamicFormMultipleBuilderWrapped<T>
+          field={field}
           control={control}
           setValue={setValue}
           watch={watch}
-          label={field.label}
-          helperText={field.helperText}
-          informationText={field.informationText}
+          isFromArrayForm={isFromArrayForm}
+          valuesToSet={field.valueToSet as any}
         />
       );
 

@@ -14,16 +14,17 @@ import AddIcon from '@mui/icons-material/Add';
 import { useEffect } from 'react';
 import LayoutRenderDynamicFormMultipleBuilder from './components/LayoutRenderDynamicFormMultipleBuilder';
 import CustomInputLabel from '../controlledFields/common/CustomInputLabel';
-
+import { v4 as uuidv4 } from 'uuid';
 interface DynamicFormMultipleBuilderProps<T extends FieldValues> {
-  name: ArrayPath<T>; // Nombre del campo array en el formulario principal
-  control: Control<T>; // Control principal del formulario
-  fieldsObject: FieldBaseType<T>[]; // Campos a replicar en el array
-  setValue: UseFormSetValue<T>; // Función para establecer valores en el formulario
-  watch: UseFormWatch<T>; // Función para observar cambios en el formulario
+  name: ArrayPath<T>;
+  control: Control<T>;
+  fieldsObject: FieldBaseType<T>[];
+  setValue: UseFormSetValue<T>;
+  watch: UseFormWatch<T>;
   label?: string;
   helperText?: string;
   informationText?: string;
+  valuesToSet?: any[];
 }
 
 const DynamicFormMultipleBuilder = <T extends FieldValues>({
@@ -35,25 +36,35 @@ const DynamicFormMultipleBuilder = <T extends FieldValues>({
   label,
   informationText,
   helperText,
+  valuesToSet,
 }: DynamicFormMultipleBuilderProps<T>) => {
   const { fields, append, remove } = useFieldArray<T>({
     control: control,
-    // keyName: 'id',
-    name: name, // TypeScript necesita que el tipo sea ArrayPath<T>
+    name: name,
   });
-  const handleOnAdd = () => {
-    append({} as FieldArray<T, ArrayPath<T>>);
+  const handleOnAdd = (value?: any) => {
+    console.log('Entro');
+
+    if (value == undefined || value == null) {
+      append({ id: uuidv4() } as FieldArray<T, ArrayPath<T>>);
+      return;
+    }
+    append({ id: uuidv4(), ...value } as FieldArray<T, ArrayPath<T>>);
   };
   useEffect(() => {
-    if (fields?.length == 0) {
-      handleOnAdd();
+    if (valuesToSet) {
+      remove();
+      valuesToSet.forEach((value) => {
+        handleOnAdd(value);
+      });
     }
-  }, [fields.length]);
+  }, [valuesToSet]);
   const handleOnDelete = (index: number) => {
     if (fields.length > 1) {
       remove(index);
     }
   };
+
   return (
     <Grid container>
       {label && (
@@ -103,6 +114,9 @@ const DynamicFormMultipleBuilder = <T extends FieldValues>({
                               }
                             ),
                             // @ts-ignore
+                            valueToSet:
+                              item[fieldConfig.name as keyof typeof item],
+                            // @ts-ignore
                             optionProps: fieldConfig.optionProps
                               ? {
                                   ...fieldConfig.optionProps,
@@ -144,7 +158,7 @@ const DynamicFormMultipleBuilder = <T extends FieldValues>({
         <Button
           variant="text"
           color="primary"
-          onClick={() => handleOnAdd()}
+          onClick={() => handleOnAdd(undefined)}
           startIcon={<AddIcon />}
         >
           Add More to your response

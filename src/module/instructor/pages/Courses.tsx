@@ -1,6 +1,18 @@
-import { Box } from '@mui/material';
+import {
+  Box,
+  Button,
+  Paper,
+  Step,
+  StepContent,
+  StepLabel,
+  Stepper,
+  Typography,
+} from '@mui/material';
+import React, { useRef } from 'react';
 import DinamicallyFormBuilder from '../../../common/components/form/DinamicallyFormBuilder';
-import fieldsObject, { CourseFormField } from './fieldsCourses';
+import { CourseFormField } from '../type/course.type';
+import formCourseInformation from '../form/formCourseInformation';
+// import { FieldValues } from 'react-hook-form';
 
 const Courses = () => {
   const valuesToSet: Partial<CourseFormField> = {
@@ -8,272 +20,123 @@ const Courses = () => {
     subCategory: 'f954e1b3-a5ba-44a2-a4d4-9c41ef838d00',
     courseTitle: 'Este es un valor seteado desde el componente',
   };
+
+  const [activeStep, setActiveStep] = React.useState(0);
+
+  const handleNext = () => {
+    setActiveStep((prevActiveStep) => prevActiveStep + 1);
+  };
+
+  const handleBack = () => {
+    setActiveStep((prevActiveStep) => prevActiveStep - 1);
+  };
+
+  const handleReset = () => {
+    setActiveStep(0);
+  };
+
+  const formRef = useRef<{
+    submit: (onSubmit: (data: CourseFormField) => void) => void;
+  }>(null);
+  const handleSubmit = (data: CourseFormField) => {
+    console.log('Form data:', data);
+    // Aquí puedes manejar los datos del formulario
+  };
+  const onSubmitClick = () => {
+    if (formRef.current) {
+      formRef.current.submit(handleSubmit);
+    }
+  };
   return (
     <Box sx={{ mx: 'auto', maxWidth: '700px' }}>
-      <DinamicallyFormBuilder<CourseFormField>
-        fieldsObject={fieldsObject}
-        valuesToSet={valuesToSet}
-      />
+      <Stepper activeStep={activeStep} orientation="vertical">
+        <Step>
+          <StepLabel>Course Information</StepLabel>
+          <StepContent>
+            <DinamicallyFormBuilder<CourseFormField>
+              ref={formRef}
+              fieldsObject={formCourseInformation}
+              valuesToSet={valuesToSet}
+            />
+            <Box sx={{ mb: 2 }}>
+              <Button
+                variant="contained"
+                onClick={handleNext}
+                sx={{ mt: 1, mr: 1 }}
+              >
+                Continue
+              </Button>
+              <Button
+                onClick={handleBack}
+                sx={{ mt: 1, mr: 1 }}
+                disabled={activeStep === 0}
+              >
+                Back
+              </Button>
+
+              <button type="button" onClick={onSubmitClick}>
+                Submit Form
+              </button>
+            </Box>
+          </StepContent>
+        </Step>
+        <Step>
+          <StepLabel>Enrollment Criteria</StepLabel>
+          <StepContent>
+            {/* <DinamicallyFormBuilder<CourseFormField>
+              fieldsObject={formEnrollmentCriteria}
+              valuesToSet={valuesToSet}
+            /> */}
+            <Box sx={{ mb: 2 }}>
+              <Button
+                variant="contained"
+                onClick={handleNext}
+                sx={{ mt: 1, mr: 1 }}
+              >
+                Continue
+              </Button>
+              <Button onClick={handleBack} sx={{ mt: 1, mr: 1 }}>
+                Back
+              </Button>
+            </Box>
+          </StepContent>
+        </Step>
+        <Step>
+          <StepLabel>Create an ad</StepLabel>
+          <StepContent>
+            <Typography>
+              Try out different ad text to see what brings in the most
+              customers, and learn how to enhance your ads using features like
+              ad extensions. If you run into any problems with your ads, find
+              out how to tell if they're running and how to resolve approval
+              issues.
+            </Typography>
+            <Box sx={{ mb: 2 }}>
+              <Button
+                variant="contained"
+                onClick={handleNext}
+                sx={{ mt: 1, mr: 1 }}
+                disabled={activeStep === 2}
+              >
+                Finish
+              </Button>
+              <Button onClick={handleBack} sx={{ mt: 1, mr: 1 }}>
+                Back
+              </Button>
+            </Box>
+          </StepContent>
+        </Step>
+      </Stepper>
+      {activeStep === 3 && (
+        <Paper square elevation={0} sx={{ p: 3 }}>
+          <Typography>All steps completed - you're finished</Typography>
+          <Button onClick={handleReset} sx={{ mt: 1, mr: 1 }}>
+            Reset
+          </Button>
+        </Paper>
+      )}
     </Box>
   );
 };
+
 export default Courses;
-
-// const Courses = () => {
-//   const { handleSubmit, control, setValue, watch } = useForm<ProfileFormValues>(
-//     {
-//       mode: 'onTouched',
-//     }
-//   );
-//   const onSubmit = async (data: ProfileFormValues) => {
-//     console.log('data', data);
-//   };
-//   return (
-//     <Box sx={{ mx: 'auto', maxWidth: '700px' }}>
-//       <form onSubmit={handleSubmit(onSubmit)}>
-//         <Grid container spacing={2}>
-//           <Grid item xs={12}>
-//             <TextFieldControlledField
-//               name="courseTitle"
-//               label="Course Title"
-//               control={control}
-//               // disabled={true}
-//               watch={watch}
-//               placeholder={`Insert your course title.`}
-//               helperText={`Your title should be a mix of attention-grabbing, informative, and optimized for search.`}
-//               setValue={setValue}
-//               // dependentFields={[{ field: 'category', value: 2 }]}
-//               rules={{
-//                 required: 'El contenido es requerido',
-//                 minLength: {
-//                   value: 2,
-//                   message: 'El contenido debe tener al menos 2 caracteres',
-//                 },
-//                 maxLength: {
-//                   value: 60,
-//                   message: 'El contenido debe tener menos d60 caracteres',
-//                 },
-//                 pattern: {
-//                   value: /^[a-zA-Z0-9\s,.'-]{1,60}$/,
-//                   message: `Heading can only contain letters, numbers, spaces, and basic punctuation (.,'-).`,
-//                 },
-//               }}
-//             />
-//           </Grid>
-//           <Grid item xs={12}>
-//             <Grid container spacing={2}>
-//               <Grid item xs={6}>
-//                 <SelectControlledField<ProfileFormValues, CategoryType>
-//                   label="Select a category"
-//                   name="category"
-//                   nameSelectedOption="categoryOption"
-//                   watch={watch}
-//                   control={control}
-//                   setValue={setValue}
-//                   informationText={
-//                     'Each individual topic chosen should comprehensively describe your courses content without being too broad. E.g. "The Complete Tennis Course" should have "Tennis"  not "Tennis Serve" (specific, but not comprehensive) and not "Sports" (comprehensive, but not specific)'
-//                   }
-//                   // disabled={true}
-//                   optionProps={{
-//                     valueProperty: 'id',
-//                     nameProperty: 'description', //No se puede mandar ambos nameProperty y onFormatMenuItemLabel
-//                     // options: [
-//                     //   {
-//                     //     id: '69dba3a0-e4b2-460c-b008-b941d10bd82c',
-//                     //     description: 'SOFTWARE DEV',
-//                     //   },
-//                     //   {
-//                     //     id: '2e9a1d5a-18d2-4814-919a-26b7b83e2fe8',
-//                     //     description: 'SECURITY',
-//                     //   },
-//                     // ],
-//                     optionsFromApi: {
-//                       baseUrl: 'http://localhost:4000',
-//                       endpoint: '/api/master/category',
-//                       method: 'GET',
-//                     },
-//                     // onFormatMenuItemLabel: (value) => {
-//                     //   return `--- ${value.name} ---`;
-//                     // },
-//                   }}
-//                   valueToSet={'2e9a1d5a-18d2-4814-919a-26b7b83e2fe8'}
-//                   rules={{ required: 'This field is required' }}
-//                   helperText="AAA"
-//                 />
-//               </Grid>
-//               <Grid item xs={6}>
-//                 <SelectControlledField<ProfileFormValues, SubCategoryType>
-//                   label="Select a sub category"
-//                   name="subCategory"
-//                   nameSelectedOption="subCategoryOption"
-//                   watch={watch}
-//                   control={control}
-//                   setValue={setValue}
-//                   // disabled={true}
-//                   optionProps={{
-//                     valueProperty: 'id',
-//                     // nameProperty: 'description', //No se puede mandar ambos nameProperty y onFormatMenuItemLabel
-//                     // options: [
-//                     //   {
-//                     //     id: '69dba3a0-e4b2-460c-b008-b941d10bd82c',
-//                     //     description: 'SOFTWARE DEV',
-//                     //   },
-//                     //   {
-//                     //     id: '2e9a1d5a-18d2-4814-919a-26b7b83e2fe8',
-//                     //     description: 'SECURITY',
-//                     //   },
-//                     // ],
-//                     optionsFromApi: {
-//                       baseUrl: 'http://localhost:4000',
-//                       endpoint:
-//                         '/api/master/category/{{category}}/sub-categories',
-//                       method: 'GET',
-//                       valueReplacement: ['category'],
-//                     },
-//                     onFormatMenuItemLabel: (value) => {
-//                       return `--- ${value.description} ---`;
-//                     },
-//                   }}
-//                   dependentFields={['category']}
-//                   // valueToSet={'2e9a1d5a-18d2-4814-919a-26b7b83e2fe8'}
-//                   rules={{ required: 'This field is required' }}
-//                 />
-//               </Grid>
-//             </Grid>
-//           </Grid>
-//           <Grid item xs={12}>
-//             <RichTextEditorControlledField<ProfileFormValues>
-//               dependentFields={['category']}
-//               watch={watch}
-//               label={'Course description'}
-//               name="courseDescription"
-//               namePlainText="courseDescriptionPlainText"
-//               // valueToSet={}
-//               placeholder={`Hello, my name is... and I'm from....`}
-//               control={control}
-//               setValue={setValue}
-//               rules={{
-//                 required: 'El contenido es requerido',
-//                 minLength: {
-//                   value: 10,
-//                   message: 'El contenido debe tener al menos 10 caracteres',
-//                 },
-//               }}
-//               // informationText="This is the first thing students will see when they find your course. Write a short paragraph that describes the course and what students will learn. This will help students decide if the course is right for them."
-//               helperText="Your description should be a brief overview of what students will learn. It should be written in the third person."
-//             />
-//           </Grid>
-//         </Grid>
-
-//         <button type="submit">Submit</button>
-//       </form>
-//     </Box>
-//   );
-// };
-
-// export default Courses;
-
-/**
- <form onSubmit={handleSubmit(onSubmit)}>
-        <TextFieldControlledField
-          name="headline"
-          label="Heading"
-          control={control}
-          // disabled={true}
-          watch={watch}
-          placeholder={`Full Stack Web developer with over than 5 years of experience.`}
-          setValue={setValue}
-          // dependentFields={[{ field: 'category', value: 2 }]}
-          rules={{
-            required: 'El contenido es requerido',
-            minLength: {
-              value: 2,
-              message: 'El contenido debe tener al menos 2 caracteres',
-            },
-            maxLength: {
-              value: 60,
-              message: 'El contenido debe tener menos d60 caracteres',
-            },
-            pattern: {
-              value: /^[a-zA-Z0-9\s,.'-]{1,60}$/,
-              message: `Heading can only contain letters, numbers, spaces, and basic punctuation (.,'-).`,
-            },
-          }}
-        />
-        <Box sx={{ py: 1 }}></Box>
-        <SelectControlledField<ProfileFormValues, CategoryType>
-          label="Select a category"
-          name="category"
-          nameSelectedOption="categoryOption"
-          watch={watch}
-          control={control}
-          setValue={setValue}
-          // disabled={true}
-          optionProps={{
-            valueProperty: 'id',
-            nameProperty: 'description', //No se puede mandar ambos nameProperty y onFormatMenuItemLabel
-            // options: [
-            //   {
-            //     id: '69dba3a0-e4b2-460c-b008-b941d10bd82c',
-            //     description: 'SOFTWARE DEV',
-            //   },
-            //   {
-            //     id: '2e9a1d5a-18d2-4814-919a-26b7b83e2fe8',
-            //     description: 'SECURITY',
-            //   },
-            // ],
-            optionsFromApi: {
-              baseUrl: 'http://localhost:4000',
-              endpoint: '/api/master/category',
-              method: 'GET',
-            },
-            // onFormatMenuItemLabel: (value) => {
-            //   return `--- ${value.name} ---`;
-            // },
-          }}
-          valueToSet={'2e9a1d5a-18d2-4814-919a-26b7b83e2fe8'}
-          rules={{ required: 'This field is required' }}
-        />
-
-        <Box sx={{ py: 1 }}></Box>
-
-        <SelectControlledField<ProfileFormValues, SubCategoryType>
-          label="Select a sub category"
-          name="subCategory"
-          nameSelectedOption="subCategoryOption"
-          watch={watch}
-          control={control}
-          setValue={setValue}
-          // disabled={true}
-          optionProps={{
-            valueProperty: 'id',
-            // nameProperty: 'description', //No se puede mandar ambos nameProperty y onFormatMenuItemLabel
-            // options: [
-            //   {
-            //     id: '69dba3a0-e4b2-460c-b008-b941d10bd82c',
-            //     description: 'SOFTWARE DEV',
-            //   },
-            //   {
-            //     id: '2e9a1d5a-18d2-4814-919a-26b7b83e2fe8',
-            //     description: 'SECURITY',
-            //   },
-            // ],
-            optionsFromApi: {
-              baseUrl: 'http://localhost:4000',
-              endpoint: '/api/master/category/{{category}}/sub-categories',
-              method: 'GET',
-              valueReplacement: ['category'],
-            },
-            onFormatMenuItemLabel: (value) => {
-              return `--- ${value.description} ---`;
-            },
-          }}
-          dependentFields={['category']}
-          // valueToSet={'2e9a1d5a-18d2-4814-919a-26b7b83e2fe8'}
-          rules={{ required: 'This field is required' }}
-        />
-        <Box sx={{ py: 1 }}></Box>
-
-        <button type="submit">Submit</button>
-      </form>
- */
