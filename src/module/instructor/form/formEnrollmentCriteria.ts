@@ -182,31 +182,31 @@ const formEnrollmentCriteria: FieldBaseType<CourseFormField>[] = [
     lg: 12,
     xl: 12,
   },
-  {
-    type: ControlledFieldEnum.Array,
-    fieldArrayConfig: fieldsArrayRequirementConfig,
-    name: 'requirements',
-    label: 'Course Requirements and Prerequisites',
-    helperText:
-      'Specify any prerequisites or prior knowledge that students should have before enrolling in your course. This could include specific skills, experience levels, or necessary materials that will help students succeed.',
-    xs: 12,
-    sm: 12,
-    md: 12,
-    lg: 12,
-    xl: 12,
-  },
-  {
-    type: ControlledFieldEnum.Array,
-    fieldArrayConfig: fieldsArrayStudentObjectiveConfig,
-    name: 'intendedLearners',
-    label: 'Target Audience for Your Course',
-    helperText:
-      'Provide a detailed description of the students who will benefit most from this course. Specify the knowledge level, experience, and any particular characteristics that would make your course especially valuable to them.',
-    xs: 12,
-    sm: 12,
-    md: 12,
-    lg: 12,
-    xl: 12,
-  },
+  // {
+  //   type: ControlledFieldEnum.Array,
+  //   fieldArrayConfig: fieldsArrayRequirementConfig,
+  //   name: 'requirements',
+  //   label: 'Course Requirements and Prerequisites',
+  //   helperText:
+  //     'Specify any prerequisites or prior knowledge that students should have before enrolling in your course. This could include specific skills, experience levels, or necessary materials that will help students succeed.',
+  //   xs: 12,
+  //   sm: 12,
+  //   md: 12,
+  //   lg: 12,
+  //   xl: 12,
+  // },
+  // {
+  //   type: ControlledFieldEnum.Array,
+  //   fieldArrayConfig: fieldsArrayStudentObjectiveConfig,
+  //   name: 'intendedLearners',
+  //   label: 'Target Audience for Your Course',
+  //   helperText:
+  //     'Provide a detailed description of the students who will benefit most from this course. Specify the knowledge level, experience, and any particular characteristics that would make your course especially valuable to them.',
+  //   xs: 12,
+  //   sm: 12,
+  //   md: 12,
+  //   lg: 12,
+  //   xl: 12,
+  // },
 ];
 export default formEnrollmentCriteria;

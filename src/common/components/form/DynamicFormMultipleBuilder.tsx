@@ -43,12 +43,20 @@ DynamicFormMultipleBuilderProps<T>) => {
     name: name,
   });
   const handleOnAdd = (value?: any) => {
+    console.log('value', value);
     if (value == undefined || value == null) {
       append({ id: uuidv4() } as FieldArray<T, ArrayPath<T>>);
       return;
     }
-    append({ id: uuidv4(), ...value } as FieldArray<T, ArrayPath<T>>);
+    if (fields.length == 0) {
+      append({ id: uuidv4(), ...value } as FieldArray<T, ArrayPath<T>>);
+    }
   };
+  useEffect(() => {
+    if (fields.length === 0) {
+      append({ id: uuidv4() } as FieldArray<T, ArrayPath<T>>);
+    }
+  }, [fields]);
   // useEffect(() => {
   //   if (valuesToSet) {
   //     remove();

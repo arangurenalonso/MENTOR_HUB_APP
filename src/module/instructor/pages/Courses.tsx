@@ -49,10 +49,14 @@ const Courses = () => {
           <StepLabel>Course Information</StepLabel>
           <StepContent>
             <DinamicallyFormBuilder<CourseFormField>
+              fieldsObject={formEnrollmentCriteria}
+              // valuesToSet={valuesToSetEnrollmentCriteria}
+            />
+            {/* <DinamicallyFormBuilder<CourseFormField>
               ref={formRef}
               fieldsObject={formCourseInformation}
               // valuesToSet={valuesToSet}
-            />
+            /> */}
             <Box sx={{ mb: 2 }}>
               <Button
                 variant="contained"
@@ -78,10 +82,10 @@ const Courses = () => {
         <Step>
           <StepLabel>Enrollment Criteria</StepLabel>
           <StepContent>
-            <DinamicallyFormBuilder<CourseFormField>
+            {/* <DinamicallyFormBuilder<CourseFormField>
               fieldsObject={formEnrollmentCriteria}
               // valuesToSet={valuesToSetEnrollmentCriteria}
-            />
+            /> */}
             <Box sx={{ mb: 2 }}>
               <Button
                 variant="contained"

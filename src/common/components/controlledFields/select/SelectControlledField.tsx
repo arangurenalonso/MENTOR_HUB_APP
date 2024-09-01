@@ -202,10 +202,6 @@ const SelectControlledField = <
       });
     }
   };
-  // console.log('watch otros', watch());
-  // console.log('watch otros', watch('otros'));
-  // console.log('watch otros.0', watch('otros.0'));
-  // console.log('watch otros.0.category', watch('otros.0.category'));
 
   return (
     <BaseControlledField
