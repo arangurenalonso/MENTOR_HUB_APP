@@ -28,7 +28,7 @@ type FieldBaseType<T extends FieldValues, K = any> = {
   informationText?: string;
 
   //Values to set
-  valueToSet?: FieldPathValue<T, Path<T>> | string | undefined | null;
+  valueToSet?: any;
 
   //Valores Opcionales dependiendo del tipo de campo
   optionalName?: Path<T>;

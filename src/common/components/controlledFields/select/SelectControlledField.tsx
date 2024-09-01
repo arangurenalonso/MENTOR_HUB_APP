@@ -71,10 +71,10 @@ type SelectControlledFieldProps<T extends FieldValues, K> = {
   informationText?: string;
   isFromArrayForm?: boolean;
 
-  // valueToSet?: K[SelectControlledFieldProps<
-  //   T,
-  //   K
-  // >['optionProps']['valueProperty']];
+  valueToSet?: K[SelectControlledFieldProps<
+    T,
+    K
+  >['optionProps']['valueProperty']];
   // valueToSet?: K[keyof K];
 
   nameSelectedOption: Path<T>;
@@ -98,7 +98,7 @@ const SelectControlledField = <
   informationText,
   isFromArrayForm,
 
-  // valueToSet,
+  valueToSet,
 
   nameSelectedOption,
   optionProps: {
@@ -202,6 +202,10 @@ const SelectControlledField = <
       });
     }
   };
+  // console.log('watch otros', watch());
+  // console.log('watch otros', watch('otros'));
+  // console.log('watch otros.0', watch('otros.0'));
+  // console.log('watch otros.0.category', watch('otros.0.category'));
 
   return (
     <BaseControlledField
@@ -212,6 +216,7 @@ const SelectControlledField = <
       disabled={disabled}
       defaultValue={defaultValue}
       rules={rules}
+      valueToSet={valueToSet}
       render={({ value, onChange, onBlur, name, ref, error, disabled }) => {
         return (
           <CustomSelect<K>
@@ -248,8 +253,6 @@ const SelectControlledField = <
               onChange(selectedValue);
             }}
             onChangeSelectOption={(selectedOption) => {
-              console.log('selectedOption', selectedOption);
-
               setValue(
                 nameSelectedOption,
                 selectedOption as PathValue<T, Path<T>>

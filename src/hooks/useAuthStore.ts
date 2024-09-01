@@ -143,8 +143,6 @@ const useAuthStore = () => {
   };
 
   const setRedirectPath = (fullPathName: string | null) => {
-    console.log('Entro', fullPathName);
-
     dispatch(onSetRedirectPath(fullPathName));
   };
 

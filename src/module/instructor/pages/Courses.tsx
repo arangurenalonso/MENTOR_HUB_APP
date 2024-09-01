@@ -12,15 +12,10 @@ import React, { useRef } from 'react';
 import DinamicallyFormBuilder from '../../../common/components/form/DinamicallyFormBuilder';
 import { CourseFormField } from '../type/course.type';
 import formCourseInformation from '../form/formCourseInformation';
+import formEnrollmentCriteria from '../form/formEnrollmentCriteria';
 // import { FieldValues } from 'react-hook-form';
 
 const Courses = () => {
-  const valuesToSet: Partial<CourseFormField> = {
-    category: '68ff9a1c-18fd-4fa1-9197-b669273d5aeb',
-    subCategory: 'f954e1b3-a5ba-44a2-a4d4-9c41ef838d00',
-    courseTitle: 'Este es un valor seteado desde el componente',
-  };
-
   const [activeStep, setActiveStep] = React.useState(0);
 
   const handleNext = () => {
@@ -56,7 +51,7 @@ const Courses = () => {
             <DinamicallyFormBuilder<CourseFormField>
               ref={formRef}
               fieldsObject={formCourseInformation}
-              valuesToSet={valuesToSet}
+              // valuesToSet={valuesToSet}
             />
             <Box sx={{ mb: 2 }}>
               <Button
@@ -83,10 +78,10 @@ const Courses = () => {
         <Step>
           <StepLabel>Enrollment Criteria</StepLabel>
           <StepContent>
-            {/* <DinamicallyFormBuilder<CourseFormField>
+            <DinamicallyFormBuilder<CourseFormField>
               fieldsObject={formEnrollmentCriteria}
-              valuesToSet={valuesToSet}
-            /> */}
+              // valuesToSet={valuesToSetEnrollmentCriteria}
+            />
             <Box sx={{ mb: 2 }}>
               <Button
                 variant="contained"

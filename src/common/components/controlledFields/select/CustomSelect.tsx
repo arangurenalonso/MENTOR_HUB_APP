@@ -103,10 +103,6 @@ const CustomSelect = <T extends { [key: string]: any }>({
     dispatch,
   ] = useReducer(selectReducer<T>, INITIAL_STATE);
 
-  if (name == 'category') {
-    console.log('value', value);
-    console.log('internalValue', internalValue);
-  }
   const theme = useTheme();
 
   const xsScreenMatch = useMediaQuery(theme.breakpoints.only('xs'));
@@ -116,39 +112,18 @@ const CustomSelect = <T extends { [key: string]: any }>({
   }, [xsScreenMatch]);
 
   useEffect(() => {
-    dispatch({ type: SelectActionType.SET_VALUE, payload: value });
-  }, [value, options]);
+    dispatch({
+      type: SelectActionType.SET_VALUE,
+      payload: { value: value, searchKey: valueProperty },
+    });
+  }, [value, internalOptions]);
 
   useEffect(() => {
     const selectedOption = internalOptions.find(
       (option) => option[valueProperty] === internalValue
     ) as T;
     onChangeSelectOption(selectedOption);
-  }, [internalValue]);
-  // useEffect(() => {
-  //   if (valueToSet !== undefined && valueToSet !== null) {
-  //     if (options.length > 0) {
-  //       const firstOption = options[0];
-  //       const valuePropertyType = typeof firstOption[valueProperty];
-  //       const valueToSetType = typeof valueToSet;
-  //       if (valuePropertyType !== valueToSetType) {
-  //         console.log('Error', {
-  //           valueToSet,
-  //           valueToSetType,
-  //           valuePropertyType,
-  //         });
-
-  //         throw new Error(
-  //           `Type Mismatch Error: The type of 'valueToSet' (${valueToSetType}) does not match the expected type based on the 'valueProperty' of the options (${valuePropertyType}). Please ensure that the 'valueToSet' is of the correct type to match the selected property in the provided options array.`
-  //         );
-  //       }
-  //     }
-  //     dispatch({
-  //       type: SelectActionType.SET_VALUE_TO_SET,
-  //       payload: valueToSet,
-  //     });
-  //   }
-  // }, [valueToSet]);
+  }, [internalValue, internalOptions]);
 
   useEffect(() => {
     dispatch({
@@ -160,7 +135,10 @@ const CustomSelect = <T extends { [key: string]: any }>({
   const handleOnChange = (e: SelectChangeEvent<T[keyof T] | null>) => {
     const selectedValue = e.target.value as T[keyof T];
 
-    dispatch({ type: SelectActionType.SET_VALUE, payload: selectedValue });
+    dispatch({
+      type: SelectActionType.SET_VALUE,
+      payload: { value: selectedValue, searchKey: valueProperty },
+    });
 
     onChange(selectedValue);
   };

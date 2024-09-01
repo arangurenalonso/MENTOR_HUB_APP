@@ -3,34 +3,34 @@ import FieldBaseType from '../../../common/components/controlledFields/type/fiel
 import { CourseFormField } from '../type/course.type';
 
 const formCourseInformation: FieldBaseType<CourseFormField>[] = [
-  // {
-  //   type: ControlledFieldEnum.InputTypeText,
-  //   name: 'courseTitle',
-  //   label: 'Course Title',
-  //   placeholder: 'Insert your course title.',
-  //   helperText:
-  //     'Your title should be a mix of attention-grabbing, informative, and optimized for search.',
-  //   rules: {
-  //     required: 'El contenido es requerido',
-  //     minLength: {
-  //       value: 2,
-  //       message: 'El contenido debe tener al menos 2 caracteres',
-  //     },
-  //     maxLength: {
-  //       value: 60,
-  //       message: 'El contenido debe tener menos de 60 caracteres',
-  //     },
-  //     pattern: {
-  //       value: /^[a-zA-Z0-9\s,.'-]{1,60}$/,
-  //       message: `Heading can only contain letters, numbers, spaces, and basic punctuation (.,'-).`,
-  //     },
-  //   },
-  //   xs: 12,
-  //   sm: 12,
-  //   md: 12,
-  //   lg: 12,
-  //   xl: 12,
-  // },
+  {
+    type: ControlledFieldEnum.InputTypeText,
+    name: 'courseTitle',
+    label: 'Course Title',
+    placeholder: 'Insert your course title.',
+    helperText:
+      'Your title should be a mix of attention-grabbing, informative, and optimized for search.',
+    rules: {
+      required: 'El contenido es requerido',
+      minLength: {
+        value: 2,
+        message: 'El contenido debe tener al menos 2 caracteres',
+      },
+      maxLength: {
+        value: 60,
+        message: 'El contenido debe tener menos de 60 caracteres',
+      },
+      pattern: {
+        value: /^[a-zA-Z0-9\s,.'-]{1,60}$/,
+        message: `Heading can only contain letters, numbers, spaces, and basic punctuation (.,'-).`,
+      },
+    },
+    xs: 12,
+    sm: 12,
+    md: 12,
+    lg: 12,
+    xl: 12,
+  },
   {
     type: ControlledFieldEnum.Select,
     name: 'category',
@@ -78,26 +78,26 @@ const formCourseInformation: FieldBaseType<CourseFormField>[] = [
     lg: 6,
     xl: 6,
   },
-  // {
-  //   type: ControlledFieldEnum.RichTextEditor,
-  //   name: 'courseDescription',
-  //   optionalName: 'courseDescriptionPlainText',
-  //   label: 'Course description',
-  //   placeholder: "Hello, my name is... and I'm from....",
-  //   helperText:
-  //     'Your description should be a brief overview of what students will learn.',
-  //   rules: {
-  //     required: 'El contenido es requerido',
-  //     minLength: {
-  //       value: 10,
-  //       message: 'El contenido debe tener al menos 10 caracteres',
-  //     },
-  //   },
-  //   xs: 12,
-  //   sm: 12,
-  //   md: 12,
-  //   lg: 12,
-  //   xl: 12,
-  // },
+  {
+    type: ControlledFieldEnum.RichTextEditor,
+    name: 'courseDescription',
+    optionalName: 'courseDescriptionPlainText',
+    label: 'Course description',
+    placeholder: "Hello, my name is... and I'm from....",
+    helperText:
+      'Your description should be a brief overview of what students will learn.',
+    rules: {
+      required: 'El contenido es requerido',
+      minLength: {
+        value: 10,
+        message: 'El contenido debe tener al menos 10 caracteres',
+      },
+    },
+    xs: 12,
+    sm: 12,
+    md: 12,
+    lg: 12,
+    xl: 12,
+  },
 ];
 export default formCourseInformation;

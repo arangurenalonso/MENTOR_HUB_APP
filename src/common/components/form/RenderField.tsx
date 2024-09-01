@@ -40,7 +40,7 @@ const RenderField = <T extends FieldValues>({
           setValue={setValue}
           watch={watch}
           isFromArrayForm={isFromArrayForm}
-          valuesToSet={field.valueToSet as any}
+          // valuesToSet={field.valueToSet as any}
         />
       );
 
@@ -60,7 +60,7 @@ const RenderField = <T extends FieldValues>({
           helperText={field.helperText}
           informationText={field.informationText}
           isFromArrayForm={isFromArrayForm}
-          // valueToSet={field.valueToSet}
+          valueToSet={field.valueToSet}
           placeholder={field.placeholder}
           icon={field.icon}
         />
@@ -81,7 +81,7 @@ const RenderField = <T extends FieldValues>({
           helperText={field.helperText}
           informationText={field.informationText}
           isFromArrayForm={isFromArrayForm}
-          // valueToSet={field.valueToSet}
+          valueToSet={field.valueToSet}
           nameSelectedOption={field.optionalName!}
           optionProps={field.optionProps!}
         />
@@ -102,7 +102,7 @@ const RenderField = <T extends FieldValues>({
           helperText={field.helperText}
           informationText={field.informationText}
           isFromArrayForm={isFromArrayForm}
-          // valueToSet={field.valueToSet}
+          valueToSet={field.valueToSet}
           namePlainText={field.optionalName!}
           placeholder={field.placeholder}
         />

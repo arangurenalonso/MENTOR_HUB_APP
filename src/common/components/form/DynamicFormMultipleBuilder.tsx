@@ -36,29 +36,28 @@ const DynamicFormMultipleBuilder = <T extends FieldValues>({
   label,
   informationText,
   helperText,
-  valuesToSet,
-}: DynamicFormMultipleBuilderProps<T>) => {
+}: // valuesToSet,
+DynamicFormMultipleBuilderProps<T>) => {
   const { fields, append, remove } = useFieldArray<T>({
     control: control,
     name: name,
   });
   const handleOnAdd = (value?: any) => {
-    console.log('Entro');
-
     if (value == undefined || value == null) {
       append({ id: uuidv4() } as FieldArray<T, ArrayPath<T>>);
       return;
     }
     append({ id: uuidv4(), ...value } as FieldArray<T, ArrayPath<T>>);
   };
-  useEffect(() => {
-    if (valuesToSet) {
-      remove();
-      valuesToSet.forEach((value) => {
-        handleOnAdd(value);
-      });
-    }
-  }, [valuesToSet]);
+  // useEffect(() => {
+  //   if (valuesToSet) {
+  //     remove();
+  //     valuesToSet.forEach((value) => {
+  //       handleOnAdd(value);
+  //     });
+  //   }
+  // }, [valuesToSet]);
+
   const handleOnDelete = (index: number) => {
     if (fields.length > 1) {
       remove(index);
@@ -113,7 +112,6 @@ const DynamicFormMultipleBuilder = <T extends FieldValues>({
                                 }
                               }
                             ),
-                            // @ts-ignore
                             valueToSet:
                               item[fieldConfig.name as keyof typeof item],
                             // @ts-ignore

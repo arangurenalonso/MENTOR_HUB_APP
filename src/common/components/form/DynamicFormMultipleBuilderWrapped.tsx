@@ -23,8 +23,8 @@ const DynamicFormMultipleBuilderWrapped = <T extends FieldValues>({
   setValue,
   watch,
   isFromArrayForm,
-  valuesToSet,
-}: DynamicFormMultipleBuilderProps<T>) => {
+}: // valuesToSet,
+DynamicFormMultipleBuilderProps<T>) => {
   if (isFromArrayForm) {
     return null;
   }
@@ -49,7 +49,7 @@ const DynamicFormMultipleBuilderWrapped = <T extends FieldValues>({
       label={field.label}
       helperText={field.helperText}
       informationText={field.informationText}
-      valuesToSet={valuesToSet}
+      // valuesToSet={valuesToSet}
     />
   );
 };

@@ -33,6 +33,7 @@ type TextFieldControlledFieldProps<T extends FieldValues> = {
   helperText?: string;
   informationText?: string;
   isFromArrayForm?: boolean;
+  valueToSet?: FieldPathValue<T, Path<T>> | string | undefined | null;
 };
 const TextFieldControlledField = <T extends FieldValues>({
   watch,
@@ -43,6 +44,7 @@ const TextFieldControlledField = <T extends FieldValues>({
   disabled,
   defaultValue,
   rules,
+  valueToSet,
 
   label,
   helperText = ' ',
@@ -57,6 +59,7 @@ const TextFieldControlledField = <T extends FieldValues>({
       watch={watch}
       dependentFields={dependentFields}
       name={name}
+      valueToSet={valueToSet}
       control={control}
       disabled={disabled}
       defaultValue={defaultValue}

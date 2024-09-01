@@ -1,7 +1,7 @@
 import { ControlledFieldEnum } from '../../../common/components/controlledFields/type/controlledTypeField';
 import FieldBaseType from '../../../common/components/controlledFields/type/fieldType';
 import { ProfileFormField } from '../type/course.type';
-
+import TitleIcon from '@mui/icons-material/Title';
 const formProfileInformation: FieldBaseType<ProfileFormField>[] = [
   {
     type: ControlledFieldEnum.InputTypeText,
@@ -26,6 +26,7 @@ const formProfileInformation: FieldBaseType<ProfileFormField>[] = [
         message: `Heading can only contain letters, numbers, spaces, and basic punctuation (.,'-).`,
       },
     },
+    icon: TitleIcon,
     xs: 12,
     sm: 12,
     md: 12,

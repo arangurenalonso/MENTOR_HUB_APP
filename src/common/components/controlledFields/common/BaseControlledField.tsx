@@ -7,6 +7,7 @@ import {
   UseFormWatch,
 } from 'react-hook-form';
 import useDependedField from './useDependedField';
+import { useEffect } from 'react';
 
 export type DependentField<T extends FieldValues> =
   | Path<T>
@@ -29,6 +30,7 @@ type BaseControlledFieldProps<T extends FieldValues> = {
     error: FieldError | undefined;
     disabled?: boolean;
   }) => React.ReactElement;
+  valueToSet?: any;
 };
 
 const BaseControlledField = <T extends FieldValues>({
@@ -40,6 +42,7 @@ const BaseControlledField = <T extends FieldValues>({
   rules,
   disabled,
   render,
+  valueToSet,
 }: BaseControlledFieldProps<T>) => {
   const { allFieldsHaveValues } = useDependedField<T>({
     name,
@@ -62,8 +65,13 @@ const BaseControlledField = <T extends FieldValues>({
       render={({
         field: { value, onChange, onBlur, name, ref },
         fieldState: { error },
-      }) =>
-        render({
+      }) => {
+        useEffect(() => {
+          if (valueToSet) {
+            onChange(valueToSet);
+          }
+        }, [valueToSet]);
+        return render({
           value,
           onChange,
           onBlur,
@@ -71,8 +79,8 @@ const BaseControlledField = <T extends FieldValues>({
           ref,
           error: error,
           disabled: disabled,
-        })
-      }
+        });
+      }}
     />
   );
 };

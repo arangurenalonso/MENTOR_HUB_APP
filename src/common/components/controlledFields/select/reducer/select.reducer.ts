@@ -11,7 +11,6 @@ export interface SelectState<T> {
 export enum SelectActionType {
   SET_VALUE = 'SET_VALUE',
   SET_OPTIONS = 'SET_OPTIONS',
-  SET_VALUE_TO_SET = 'SET_VALUE_TO_SET',
   SET_SEARCH_TERM = 'SET_SEARCH_TERM',
   SET_OPEN_SELECT = 'SET_OPEN_SELECT',
   SET_CLOSE_SELECT = 'SET_CLOSE_SELECT',
@@ -20,14 +19,16 @@ export enum SelectActionType {
 }
 
 type SelectAction<T> =
-  | { type: SelectActionType.SET_VALUE; payload: T[keyof T] | null }
+  | {
+      type: SelectActionType.SET_VALUE;
+      payload: {
+        value?: T[keyof T] | null | undefined;
+        searchKey: keyof T;
+      };
+    }
   | {
       type: SelectActionType.SET_OPTIONS;
       payload: { options: T[]; valueProperty: keyof T };
-    }
-  | {
-      type: SelectActionType.SET_VALUE_TO_SET;
-      payload: T[keyof T] | null | undefined;
     }
   | {
       type: SelectActionType.SET_SEARCH_TERM;
@@ -44,12 +45,14 @@ export const selectReducer = <T extends Record<string, any>>(
 ): SelectState<T> => {
   switch (action.type) {
     case SelectActionType.SET_VALUE:
-      return { ...state, internalValue: action.payload };
-    case SelectActionType.SET_VALUE_TO_SET:
-      return {
-        ...state,
-        internalValue: action.payload ?? state.internalValue,
-      };
+      const { value, searchKey } = action.payload;
+      const existSelection = state.internalOptions.find(
+        (option) => option[searchKey] === value
+      ) as T;
+      if (existSelection) {
+        return { ...state, internalValue: value };
+      }
+      return { ...state, internalValue: undefined };
     case SelectActionType.SET_OPTIONS:
       const actualValue = state.internalValue;
       const { options, valueProperty } = action.payload;

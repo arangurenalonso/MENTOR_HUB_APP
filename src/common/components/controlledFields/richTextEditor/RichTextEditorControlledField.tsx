@@ -36,7 +36,7 @@ type RichTextEditorControlledFieldProps<T extends FieldValues> = {
   informationText?: string;
   isFromArrayForm?: boolean;
 
-  // valueToSet?: FieldPathValue<T, Path<T>> | string | undefined | null;
+  valueToSet?: FieldPathValue<T, Path<T>> | string | undefined | null;
 
   namePlainText: Path<T>;
   placeholder?: string | null;
@@ -56,7 +56,7 @@ const RichTextEditorControlledField = <T extends FieldValues>({
   informationText,
   isFromArrayForm,
 
-  // valueToSet,
+  valueToSet,
 
   namePlainText,
   placeholder,
@@ -96,6 +96,7 @@ const RichTextEditorControlledField = <T extends FieldValues>({
         control={control as Control<FieldValues>}
         disabled={disabled}
         defaultValue={defaultValue}
+        valueToSet={valueToSet}
         // rules={rules}
         render={({
           value,
