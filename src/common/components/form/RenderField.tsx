@@ -8,12 +8,14 @@ import {
 import SelectControlledField from '../controlledFields/select/SelectControlledField';
 import TextFieldControlledField from '../controlledFields/textField/TextFieldControlledField';
 import { ControlledFieldEnum } from '../controlledFields/type/controlledTypeField';
-import FieldBaseType from '../controlledFields/type/fieldType';
+import FieldBaseType, {
+  LineBreakType,
+} from '../controlledFields/type/fieldType';
 import DynamicFormMultipleBuilderWrapped from './DynamicFormMultipleBuilderWrapped';
 import RichTextEditorControlledField from '../controlledFields/richTextEditor/RichTextEditorControlledField';
 
 type RenderFieldProps<T extends FieldValues> = {
-  field: FieldBaseType<T>;
+  field: FieldBaseType<T> | LineBreakType;
   control: Control<T>;
   setValue: UseFormSetValue<T>;
   watch: UseFormWatch<T>;
@@ -27,7 +29,15 @@ const RenderField = <T extends FieldValues>({
   watch,
   isFromArrayForm,
 }: RenderFieldProps<T>) => {
-  // console.log('render'); // Este console.log solo se ejecutará si `field` cambia
+  if (field.type === ControlledFieldEnum.LineBreak) {
+    return (
+      <Grid
+        item
+        xs={12}
+        style={{ display: 'block', height: 0, padding: 0, margin: 0 }}
+      />
+    );
+  }
 
   let element: JSX.Element | null = null;
 

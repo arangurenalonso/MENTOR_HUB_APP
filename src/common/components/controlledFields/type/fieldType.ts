@@ -9,7 +9,12 @@ import { ElementType } from 'react';
 import { OptionProperties } from '../select/SelectControlledField';
 import { DependentField } from '../common/BaseControlledField';
 
-type FieldBaseType<T extends FieldValues, K = any> = {
+export interface LineBreakType {
+  type: ControlledFieldEnum.LineBreak;
+  name: string;
+}
+
+interface FieldBaseType<T extends FieldValues, K = any> {
   type: ControlledFieldEnum;
 
   dependentFields?: DependentField<T>[];
@@ -46,5 +51,5 @@ type FieldBaseType<T extends FieldValues, K = any> = {
   optionProps?: OptionProperties<T, K>;
 
   fieldArrayConfig?: any;
-};
+}
 export default FieldBaseType;

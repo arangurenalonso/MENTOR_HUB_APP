@@ -1,139 +1,124 @@
-import {
-  Box,
-  Button,
-  Paper,
-  Step,
-  StepContent,
-  StepLabel,
-  Stepper,
-  Typography,
-} from '@mui/material';
-import React, { useRef } from 'react';
+import { Box, Grid } from '@mui/material';
+import { useEffect, useRef, useState } from 'react';
 import DinamicallyFormBuilder from '../../../common/components/form/DinamicallyFormBuilder';
-import { CourseFormField } from '../type/course.type';
+import { CourseFormField } from '../type/course-form.type';
 import formCourseInformation from '../form/formCourseInformation';
+import VerticalStepper from '../../../common/components/MUI-custom-Components/VerticalStepper';
 import formEnrollmentCriteria from '../form/formEnrollmentCriteria';
-// import { FieldValues } from 'react-hook-form';
+import StepNavigationButtons from '../../../common/components/MUI-custom-Components/FormStepButtons';
+import useCourseStore from '../../../hooks/useCourseStore';
+import {
+  CourseInstructorCard,
+  CourseInstructorHover,
+  CourseInstructorImage,
+  CourseInstructorTitle,
+} from '../view/course-card/course-card-instructor';
+import { CourseType } from '../../../store/course/course.type';
 
 const Courses = () => {
-  const [activeStep, setActiveStep] = React.useState(0);
-
-  const handleNext = () => {
-    setActiveStep((prevActiveStep) => prevActiveStep + 1);
-  };
-
-  const handleBack = () => {
-    setActiveStep((prevActiveStep) => prevActiveStep - 1);
-  };
-
-  const handleReset = () => {
-    setActiveStep(0);
-  };
-
+  const { onCreateCourseProcess, course, courses } = useCourseStore();
   const formRef = useRef<{
-    submit: (onSubmit: (data: CourseFormField) => void) => void;
+    submit: (
+      onSubmit: (data: CourseFormField, onAfterSubmit?: () => void) => void,
+      onAfterSubmit?: () => void
+    ) => void;
   }>(null);
-  const handleSubmit = (data: CourseFormField) => {
-    console.log('Form data:', data);
-    // Aquí puedes manejar los datos del formulario
-  };
-  const onSubmitClick = () => {
-    if (formRef.current) {
-      formRef.current.submit(handleSubmit);
+
+  const [courseSelected, setCourseSelected] = useState<
+    Partial<CourseFormField>
+  >({});
+
+  useEffect(() => {
+    if (course) {
+      const courseFormField: Partial<CourseFormField> = {
+        idCategory: course.subCategory.category?.id,
+        idLevel: course.level.id,
+        idSubCategory: course.subCategory.id,
+        courseTitle: course.title,
+        courseDescription: course.description,
+        requirements: course.requirements || [],
+        learningObjectives: course.learningObjectives || [],
+        intendedLearners: course.intendedLearners || [],
+      };
+      setCourseSelected(courseFormField);
     }
+  }, [course]);
+
+  const handleCourseInformationSubmit = async (
+    data: CourseFormField,
+    onAfterSubmit?: () => void
+  ) => {
+    console.log('Form data:', data);
+    const result = await onCreateCourseProcess(data);
+
+    if (onAfterSubmit && result) {
+      onAfterSubmit();
+    }
+  };
+
+  const handleOnClick = (course: CourseType) => {
+    console.log('Course clicked', course);
   };
   return (
     <Box sx={{ mx: 'auto', maxWidth: '700px' }}>
-      <Stepper activeStep={activeStep} orientation="vertical">
-        <Step>
-          <StepLabel>Course Information</StepLabel>
-          <StepContent>
-            <DinamicallyFormBuilder<CourseFormField>
-              fieldsObject={formEnrollmentCriteria}
-              // valuesToSet={valuesToSetEnrollmentCriteria}
-            />
-            {/* <DinamicallyFormBuilder<CourseFormField>
-              ref={formRef}
-              fieldsObject={formCourseInformation}
-              // valuesToSet={valuesToSet}
-            /> */}
-            <Box sx={{ mb: 2 }}>
-              <Button
-                variant="contained"
-                onClick={handleNext}
-                sx={{ mt: 1, mr: 1 }}
-              >
-                Continue
-              </Button>
-              <Button
-                onClick={handleBack}
-                sx={{ mt: 1, mr: 1 }}
-                disabled={activeStep === 0}
-              >
-                Back
-              </Button>
+      <Grid container spacing={2}>
+        {courses.map((course) => (
+          <Grid key={course.id} item xs={12}>
+            <CourseInstructorCard course={course} onClick={handleOnClick}>
+              {({ course }) => (
+                <>
+                  <CourseInstructorImage />
+                  <CourseInstructorTitle />
+                  <CourseInstructorHover />
+                </>
+              )}
+            </CourseInstructorCard>
+          </Grid>
+        ))}
+      </Grid>
 
-              <button type="button" onClick={onSubmitClick}>
-                Submit Form
-              </button>
-            </Box>
-          </StepContent>
-        </Step>
-        <Step>
-          <StepLabel>Enrollment Criteria</StepLabel>
-          <StepContent>
-            {/* <DinamicallyFormBuilder<CourseFormField>
-              fieldsObject={formEnrollmentCriteria}
-              // valuesToSet={valuesToSetEnrollmentCriteria}
-            /> */}
-            <Box sx={{ mb: 2 }}>
-              <Button
-                variant="contained"
-                onClick={handleNext}
-                sx={{ mt: 1, mr: 1 }}
-              >
-                Continue
-              </Button>
-              <Button onClick={handleBack} sx={{ mt: 1, mr: 1 }}>
-                Back
-              </Button>
-            </Box>
-          </StepContent>
-        </Step>
-        <Step>
-          <StepLabel>Create an ad</StepLabel>
-          <StepContent>
-            <Typography>
-              Try out different ad text to see what brings in the most
-              customers, and learn how to enhance your ads using features like
-              ad extensions. If you run into any problems with your ads, find
-              out how to tell if they're running and how to resolve approval
-              issues.
-            </Typography>
-            <Box sx={{ mb: 2 }}>
-              <Button
-                variant="contained"
-                onClick={handleNext}
-                sx={{ mt: 1, mr: 1 }}
-                disabled={activeStep === 2}
-              >
-                Finish
-              </Button>
-              <Button onClick={handleBack} sx={{ mt: 1, mr: 1 }}>
-                Back
-              </Button>
-            </Box>
-          </StepContent>
-        </Step>
-      </Stepper>
-      {activeStep === 3 && (
-        <Paper square elevation={0} sx={{ p: 3 }}>
-          <Typography>All steps completed - you're finished</Typography>
-          <Button onClick={handleReset} sx={{ mt: 1, mr: 1 }}>
-            Reset
-          </Button>
-        </Paper>
-      )}
+      <VerticalStepper
+        stepsLabels={['Course Information', 'Enrollment Criteria']}
+        children={{
+          firstChild: ({ handleNext, handleBack, isInitial, isLastStep }) => {
+            return (
+              <>
+                <DinamicallyFormBuilder<CourseFormField>
+                  ref={formRef}
+                  fieldsObject={formCourseInformation}
+                  valuesToSet={courseSelected}
+                />
+                <StepNavigationButtons
+                  handleBack={handleBack}
+                  handleNext={() => {
+                    if (formRef.current) {
+                      formRef.current.submit(
+                        handleCourseInformationSubmit,
+                        handleNext
+                      );
+                    }
+                  }}
+                  isLastStep={isLastStep}
+                  isInitial={isInitial}
+                />
+              </>
+            );
+          },
+          secondChild: ({ handleNext, handleBack, isInitial, isLastStep }) => (
+            <>
+              <DinamicallyFormBuilder<CourseFormField>
+                fieldsObject={formEnrollmentCriteria}
+              />
+              <StepNavigationButtons
+                handleBack={handleBack}
+                handleNext={handleNext}
+                isLastStep={isLastStep}
+                isInitial={isInitial}
+              />
+            </>
+          ),
+        }}
+      />
     </Box>
   );
 };

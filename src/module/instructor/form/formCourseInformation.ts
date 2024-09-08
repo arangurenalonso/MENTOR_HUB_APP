@@ -1,8 +1,13 @@
 import { ControlledFieldEnum } from '../../../common/components/controlledFields/type/controlledTypeField';
-import FieldBaseType from '../../../common/components/controlledFields/type/fieldType';
-import { CourseFormField } from '../type/course.type';
+import FieldBaseType, {
+  LineBreakType,
+} from '../../../common/components/controlledFields/type/fieldType';
+import { CourseFormField } from '../type/course-form.type';
 
-const formCourseInformation: FieldBaseType<CourseFormField>[] = [
+const formCourseInformation: (
+  | LineBreakType
+  | FieldBaseType<CourseFormField>
+)[] = [
   {
     type: ControlledFieldEnum.InputTypeText,
     name: 'courseTitle',
@@ -33,7 +38,33 @@ const formCourseInformation: FieldBaseType<CourseFormField>[] = [
   },
   {
     type: ControlledFieldEnum.Select,
-    name: 'category',
+    name: 'idLevel',
+    optionalName: 'levelOption',
+    label: 'Select level',
+    helperText: 'Choose a level that best describes your course.',
+    optionProps: {
+      valueProperty: 'id',
+      nameProperty: 'description',
+      optionsFromApi: {
+        baseUrl: 'http://localhost:4000',
+        endpoint: '/api/master/level',
+        method: 'GET',
+      },
+    },
+    rules: { required: 'This field is required' },
+    xs: 12,
+    sm: 6,
+    md: 6,
+    lg: 6,
+    xl: 6,
+  },
+  {
+    type: ControlledFieldEnum.LineBreak,
+    name: 'lineBreak1',
+  },
+  {
+    type: ControlledFieldEnum.Select,
+    name: 'idCategory',
     optionalName: 'categoryOption',
     label: 'Select a category',
     helperText: 'Choose a category that best describes your course.',
@@ -56,7 +87,7 @@ const formCourseInformation: FieldBaseType<CourseFormField>[] = [
 
   {
     type: ControlledFieldEnum.Select,
-    name: 'subCategory',
+    name: 'idSubCategory',
     optionalName: 'subCategoryOption',
     label: 'Select a sub category',
     helperText: 'Select a sub-category based on your selected category.',
@@ -64,13 +95,15 @@ const formCourseInformation: FieldBaseType<CourseFormField>[] = [
       valueProperty: 'id',
       optionsFromApi: {
         baseUrl: 'http://localhost:4000',
-        endpoint: '/api/master/category/{{category}}/sub-categories',
+        endpoint: '/api/master/category/{{idCategory}}/sub-categories',
         method: 'GET',
-        valueReplacement: [{ variableReplace: 'category', field: 'category' }],
+        valueReplacement: [
+          { variableReplace: 'idCategory', field: 'idCategory' },
+        ],
       },
       onFormatMenuItemLabel: (value) => `--- ${value.description} ---`,
     },
-    dependentFields: ['category'],
+    dependentFields: ['idCategory'],
     rules: { required: 'This field is required' },
     xs: 12,
     sm: 6,

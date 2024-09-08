@@ -1,7 +1,7 @@
 import { Box, Button, Grid, Typography } from '@mui/material';
 import useInstructorStore from '../../../hooks/useInstructorStore';
 import DinamicallyFormBuilder from '../../../common/components/form/DinamicallyFormBuilder';
-import { ProfileFormField } from '../type/course.type';
+import { ProfileFormField } from '../type/course-form.type';
 import formProfileInformation from '../form/formProfileInformation';
 import { useEffect, useRef, useState } from 'react';
 

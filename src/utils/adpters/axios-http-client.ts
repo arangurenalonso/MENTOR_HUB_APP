@@ -118,6 +118,8 @@ export class AxiosHttpClient {
   ): Promise<Result<T, HttpError>> {
     try {
       const response = await this.instance.get<T>(url, config);
+      console.log('response', response.data);
+
       return ok(response.data);
     } catch (error) {
       return this.handleError(error);

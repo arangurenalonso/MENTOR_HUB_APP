@@ -1,10 +1,12 @@
 export enum ControlledFieldEnum {
+  LineBreak = 'LineBreak',
   Array = 'Array',
   Select = 'Select',
   InputTypeText = 'InputTypeText',
   RichTextEditor = 'RichTextEditor',
 }
 export type ControlledFieldType =
+  | ControlledFieldEnum.LineBreak
   | ControlledFieldEnum.Array
   | ControlledFieldEnum.Select
   | ControlledFieldEnum.InputTypeText

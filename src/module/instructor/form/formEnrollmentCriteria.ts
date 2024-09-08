@@ -5,8 +5,7 @@ import {
   RequirementsForm,
   IntendedLearnersForm,
   CourseFormField,
-  ProfileFormField,
-} from '../type/course.type';
+} from '../type/course-form.type';
 
 const fieldsArrayLearningObjectiveConfig: FieldBaseType<LearningObjectiveForm>[] =
   [
@@ -22,11 +21,11 @@ const fieldsArrayLearningObjectiveConfig: FieldBaseType<LearningObjectiveForm>[]
           message: 'El contenido debe tener al menos 2 caracteres',
         },
         maxLength: {
-          value: 160,
-          message: 'El contenido debe tener menos de 160 caracteres',
+          value: 100,
+          message: 'El contenido debe tener menos de 100 caracteres',
         },
         pattern: {
-          value: /^[a-zA-Z0-9\s,.'-]{2,160}$/,
+          value: /^[a-zA-Z0-9\s,.'-]{2,100}$/,
           message: `Heading can only contain letters, numbers, spaces, and basic punctuation (.,'-).`,
         },
       },
@@ -41,12 +40,9 @@ const fieldsArrayRequirementConfig: FieldBaseType<RequirementsForm>[] = [
   {
     type: ControlledFieldEnum.InputTypeText,
     name: 'description',
-    // label: 'Course Title',
     placeholder:
       'Example: No programming experience needed. You will learn everthing you need to know',
     defaultValue: '',
-    // helperText:
-    //   'Your title should be a mix of attention-grabbing, informative, and optimized for search.',
     rules: {
       required: 'El contenido es requerido',
       minLength: {
@@ -54,11 +50,11 @@ const fieldsArrayRequirementConfig: FieldBaseType<RequirementsForm>[] = [
         message: 'El contenido debe tener al menos 2 caracteres',
       },
       maxLength: {
-        value: 60,
-        message: 'El contenido debe tener menos de 60 caracteres',
+        value: 100,
+        message: 'El contenido debe tener menos de 100 caracteres',
       },
       pattern: {
-        value: /^[a-zA-Z0-9\s,.'-]{1,60}$/,
+        value: /^[a-zA-Z0-9\s,.'-]{1,100}$/,
         message: `Heading can only contain letters, numbers, spaces, and basic punctuation (.,'-).`,
       },
     },
@@ -69,18 +65,28 @@ const fieldsArrayRequirementConfig: FieldBaseType<RequirementsForm>[] = [
     xl: 12,
   },
 ];
-const fieldsArrayStudentObjectiveConfig: FieldBaseType<IntendedLearnersForm>[] =
+const fieldsArrayIntendedLearnersConfig: FieldBaseType<IntendedLearnersForm>[] =
   [
     {
       type: ControlledFieldEnum.InputTypeText,
       name: 'description',
-      // label: 'Course Title',
-      placeholder: 'Example: Beginner developers who want to learn React',
+      placeholder:
+        'Example: This course is for beginners who want to learn how to code',
       defaultValue: '',
-      // helperText:
-      //   'Your title should be a mix of attention-grabbing, informative, and optimized for search.',
       rules: {
         required: 'El contenido es requerido',
+        minLength: {
+          value: 2,
+          message: 'El contenido debe tener al menos 2 caracteres',
+        },
+        maxLength: {
+          value: 100,
+          message: 'El contenido debe tener menos de 100 caracteres',
+        },
+        pattern: {
+          value: /^[a-zA-Z0-9\s,.'-]{1,100}$/,
+          message: `Heading can only contain letters, numbers, spaces, and basic punctuation (.,'-).`,
+        },
       },
       xs: 12,
       sm: 12,
@@ -89,84 +95,6 @@ const fieldsArrayStudentObjectiveConfig: FieldBaseType<IntendedLearnersForm>[] =
       xl: 12,
     },
   ];
-
-const formArrayPruebas: FieldBaseType<CourseFormField>[] = [
-  {
-    type: ControlledFieldEnum.InputTypeText,
-    name: 'courseTitle',
-    label: 'Course Title',
-    placeholder: 'Insert your course title.',
-    helperText:
-      'Your title should be a mix of attention-grabbing, informative, and optimized for search.',
-    rules: {
-      required: 'El contenido es requerido',
-      minLength: {
-        value: 2,
-        message: 'El contenido debe tener al menos 2 caracteres',
-      },
-      maxLength: {
-        value: 60,
-        message: 'El contenido debe tener menos de 60 caracteres',
-      },
-      pattern: {
-        value: /^[a-zA-Z0-9\s,.'-]{1,60}$/,
-        message: `Heading can only contain letters, numbers, spaces, and basic punctuation (.,'-).`,
-      },
-    },
-    xs: 12,
-    sm: 12,
-    md: 12,
-    lg: 12,
-    xl: 12,
-  },
-  {
-    type: ControlledFieldEnum.Select,
-    name: 'category',
-    optionalName: 'categoryOption',
-    label: 'Select a category',
-    helperText: 'Choose a category that best describes your course.',
-    optionProps: {
-      valueProperty: 'id',
-      nameProperty: 'description',
-      optionsFromApi: {
-        baseUrl: 'http://localhost:4000',
-        endpoint: '/api/master/category',
-        method: 'GET',
-      },
-    },
-    rules: { required: 'This field is required' },
-    xs: 12,
-    sm: 6,
-    md: 6,
-    lg: 6,
-    xl: 6,
-  },
-
-  {
-    type: ControlledFieldEnum.Select,
-    name: 'subCategory',
-    optionalName: 'subCategoryOption',
-    label: 'Select a sub category',
-    helperText: 'Select a sub-category based on your selected category.',
-    optionProps: {
-      valueProperty: 'id',
-      optionsFromApi: {
-        baseUrl: 'http://localhost:4000',
-        endpoint: '/api/master/category/{{category}}/sub-categories',
-        method: 'GET',
-        valueReplacement: [{ variableReplace: 'category', field: 'category' }],
-      },
-      onFormatMenuItemLabel: (value) => `--- ${value.description} ---`,
-    },
-    dependentFields: ['category'],
-    rules: { required: 'This field is required' },
-    xs: 12,
-    sm: 6,
-    md: 6,
-    lg: 6,
-    xl: 6,
-  },
-];
 
 const formEnrollmentCriteria: FieldBaseType<CourseFormField>[] = [
   {
@@ -182,31 +110,31 @@ const formEnrollmentCriteria: FieldBaseType<CourseFormField>[] = [
     lg: 12,
     xl: 12,
   },
-  // {
-  //   type: ControlledFieldEnum.Array,
-  //   fieldArrayConfig: fieldsArrayRequirementConfig,
-  //   name: 'requirements',
-  //   label: 'Course Requirements and Prerequisites',
-  //   helperText:
-  //     'Specify any prerequisites or prior knowledge that students should have before enrolling in your course. This could include specific skills, experience levels, or necessary materials that will help students succeed.',
-  //   xs: 12,
-  //   sm: 12,
-  //   md: 12,
-  //   lg: 12,
-  //   xl: 12,
-  // },
-  // {
-  //   type: ControlledFieldEnum.Array,
-  //   fieldArrayConfig: fieldsArrayStudentObjectiveConfig,
-  //   name: 'intendedLearners',
-  //   label: 'Target Audience for Your Course',
-  //   helperText:
-  //     'Provide a detailed description of the students who will benefit most from this course. Specify the knowledge level, experience, and any particular characteristics that would make your course especially valuable to them.',
-  //   xs: 12,
-  //   sm: 12,
-  //   md: 12,
-  //   lg: 12,
-  //   xl: 12,
-  // },
+  {
+    type: ControlledFieldEnum.Array,
+    fieldArrayConfig: fieldsArrayRequirementConfig,
+    name: 'requirements',
+    label: 'Course Requirements and Prerequisites',
+    helperText:
+      'Specify any prerequisites or prior knowledge that students should have before enrolling in your course. This could include specific skills, experience levels, or necessary materials that will help students succeed.',
+    xs: 12,
+    sm: 12,
+    md: 12,
+    lg: 12,
+    xl: 12,
+  },
+  {
+    type: ControlledFieldEnum.Array,
+    fieldArrayConfig: fieldsArrayIntendedLearnersConfig,
+    name: 'intendedLearners',
+    label: 'Target Audience for Your Course',
+    helperText:
+      'Provide a detailed description of the students who will benefit most from this course. Specify the knowledge level, experience, and any particular characteristics that would make your course especially valuable to them.',
+    xs: 12,
+    sm: 12,
+    md: 12,
+    lg: 12,
+    xl: 12,
+  },
 ];
 export default formEnrollmentCriteria;

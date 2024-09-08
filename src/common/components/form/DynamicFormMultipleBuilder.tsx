@@ -97,7 +97,7 @@ DynamicFormMultipleBuilderProps<T>) => {
                   showButtonDelete={fields.length > 1}
                 >
                   <Grid container spacing={1}>
-                    {fieldsObject.map((fieldConfig) => {
+                    {fieldsObject.map((fieldConfig, index) => {
                       return (
                         <RenderField<T>
                           isFromArrayForm={true}

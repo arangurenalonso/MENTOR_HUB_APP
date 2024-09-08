@@ -1,6 +1,6 @@
 import { ControlledFieldEnum } from '../../../common/components/controlledFields/type/controlledTypeField';
 import FieldBaseType from '../../../common/components/controlledFields/type/fieldType';
-import { ProfileFormField } from '../type/course.type';
+import { ProfileFormField } from '../type/course-form.type';
 import TitleIcon from '@mui/icons-material/Title';
 const formProfileInformation: FieldBaseType<ProfileFormField>[] = [
   {

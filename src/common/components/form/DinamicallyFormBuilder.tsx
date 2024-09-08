@@ -1,12 +1,14 @@
 import { FieldValues, useForm } from 'react-hook-form';
-import FieldBaseType from '../controlledFields/type/fieldType';
+import FieldBaseType, {
+  LineBreakType,
+} from '../controlledFields/type/fieldType';
 import { Grid } from '@mui/material';
 import { Fragment } from 'react/jsx-runtime';
 import RenderField from './RenderField';
 import { forwardRef, useEffect, useImperativeHandle, useMemo } from 'react';
 
 interface DinamicallyFormBuilderProps<T extends FieldValues> {
-  fieldsObject: FieldBaseType<T>[];
+  fieldsObject: (FieldBaseType<T> | LineBreakType)[];
   valuesToSet?: Partial<T>;
 }
 
@@ -34,26 +36,33 @@ function DinamicallyFormBuilderComponent<T extends FieldValues>(
   }, [valuesToSet]);
 
   useImperativeHandle(ref, () => ({
-    submit: (onSubmit: (data: T) => void) => {
-      handleSubmit(onSubmit)();
+    submit: (
+      onSubmit: (data: T, onAfterSubmit?: () => void) => void,
+      onAfterSubmit?: () => void
+    ) => {
+      console.log('AA');
+
+      handleSubmit((data) => {
+        console.log('BBB');
+
+        onSubmit(data, onAfterSubmit);
+      })();
     },
   }));
 
   return (
-    <form>
-      <Grid container spacing={1} rowSpacing={3}>
-        {updatedFieldsObject.map((fieldConfig, index) => (
-          <Fragment key={index}>
-            <RenderField<T>
-              field={fieldConfig}
-              control={control}
-              setValue={setValue}
-              watch={watch}
-            />
-          </Fragment>
-        ))}
-      </Grid>
-    </form>
+    <Grid container spacing={1} rowSpacing={3}>
+      {updatedFieldsObject.map((fieldConfig, index) => (
+        <Fragment key={index}>
+          <RenderField<T>
+            field={fieldConfig}
+            control={control}
+            setValue={setValue}
+            watch={watch}
+          />
+        </Fragment>
+      ))}
+    </Grid>
   );
 }
 
