@@ -16,9 +16,12 @@ const Root = () => {
     return () => clearTimeout(splashTimeout);
   }, []);
 
+  console.log('Root -> ', { status, showSplash });
+
   if (showSplash || status === authStatusEnum.INIT) {
     return <InitComponent />;
   }
+
   return (
     <>
       <Outlet />

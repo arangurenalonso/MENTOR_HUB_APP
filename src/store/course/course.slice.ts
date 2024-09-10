@@ -14,11 +14,20 @@ export const coursesSlice = createSlice({
     },
     setCourse: (state, action: PayloadAction<CourseType>) => {
       const course = action.payload;
+
       state.course = course;
       state.status = courseStatusEnum.LOADED;
       state.errorMessage = null;
     },
-
+    findAndSetCourse: (state, action: PayloadAction<string>) => {
+      const id = action.payload;
+      const course = state.courses.find((course) => course.id === id);
+      if (course) {
+        state.course = course;
+      } else {
+        state.course = null;
+      }
+    },
     onLogout: (state) => {
       state.courses = [];
       state.course = null;
@@ -31,13 +40,23 @@ export const coursesSlice = createSlice({
     },
     onSetError: (state, action: PayloadAction<string>) => {
       state.status = courseStatusEnum.ERROR;
-      state.course = null;
       state.errorMessage = action.payload;
     },
     onClear: (state) => {
       state.status = courseStatusEnum.LOADED;
-      state.course = null;
       state.errorMessage = null;
+    },
+    onInsertCourse: (state, action: PayloadAction<CourseType>) => {
+      const course = action.payload;
+      state.courses.push(course);
+      state.course = course;
+    },
+    onUpdateCourse(state, action: PayloadAction<CourseType>) {
+      const course = action.payload;
+      const index = state.courses.findIndex((c) => c.id === course.id);
+      if (index !== -1) {
+        state.courses[index] = course;
+      }
     },
   },
 });
@@ -45,6 +64,9 @@ export const coursesSlice = createSlice({
 export const {
   setCourses,
   setCourse,
+  onInsertCourse,
+  onUpdateCourse,
+  findAndSetCourse,
   onLogout,
   onChecking,
   onSetError,

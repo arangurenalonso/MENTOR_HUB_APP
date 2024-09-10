@@ -57,8 +57,8 @@ const SideBar = ({
         <Divider />
         <Box sx={{ height: '100%', overflowY: 'auto' }}>
           <List>
-            {instructorRoutesDefinition.map(({ name }) => (
-              <SidBarItem key={name} primaryText={name} />
+            {instructorRoutesDefinition.map(({ name, to }) => (
+              <SidBarItem key={name} primaryText={name} to={to} />
             ))}
           </List>
         </Box>

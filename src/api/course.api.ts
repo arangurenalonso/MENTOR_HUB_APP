@@ -11,7 +11,9 @@ type createCourseParams = {
   idSubCategory: string;
   idLevel: string;
 };
-
+type idCourseParams = {
+  idCourse: string;
+};
 export const courseApi = {
   getCoursesByInstructorConnected: async () => {
     return await httpClient.get<CourseType[]>(`${basePath}/profile`);
@@ -30,5 +32,23 @@ export const courseApi = {
       idLevel,
     };
     return await httpClient.postJson<string>(`${basePath}`, data);
+  },
+  updateCourseInformation: async ({
+    idCourse,
+    title,
+    description,
+    idSubCategory,
+    idLevel,
+  }: createCourseParams & idCourseParams) => {
+    const data = {
+      title,
+      description,
+      idSubCategory,
+      idLevel,
+    };
+    return await httpClient.put<void>(
+      `${basePath}/course-information/${idCourse}`,
+      data
+    );
   },
 };

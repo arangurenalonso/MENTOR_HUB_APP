@@ -1,4 +1,4 @@
-import { FieldValues, useForm } from 'react-hook-form';
+import { FieldValues, Path, PathValue, useForm } from 'react-hook-form';
 import FieldBaseType, {
   LineBreakType,
 } from '../controlledFields/type/fieldType';
@@ -6,10 +6,11 @@ import { Grid } from '@mui/material';
 import { Fragment } from 'react/jsx-runtime';
 import RenderField from './RenderField';
 import { forwardRef, useEffect, useImperativeHandle, useMemo } from 'react';
+import { ControlledFieldEnum } from '../controlledFields/type/controlledTypeField';
 
 interface DinamicallyFormBuilderProps<T extends FieldValues> {
   fieldsObject: (FieldBaseType<T> | LineBreakType)[];
-  valuesToSet?: Partial<T>;
+  valuesToSet?: Partial<T> | null;
 }
 
 function DinamicallyFormBuilderComponent<T extends FieldValues>(
@@ -22,6 +23,12 @@ function DinamicallyFormBuilderComponent<T extends FieldValues>(
   useEffect(() => {
     if (valuesToSet) {
       reset(valuesToSet as T);
+    } else {
+      fieldsObject.forEach((field) => {
+        if (field.type != ControlledFieldEnum.LineBreak) {
+          setValue(field.name as Path<T>, undefined as PathValue<T, Path<T>>);
+        }
+      });
     }
   }, [valuesToSet]);
 
@@ -40,11 +47,9 @@ function DinamicallyFormBuilderComponent<T extends FieldValues>(
       onSubmit: (data: T, onAfterSubmit?: () => void) => void,
       onAfterSubmit?: () => void
     ) => {
-      console.log('AA');
+      console.log('watch', watch());
 
       handleSubmit((data) => {
-        console.log('BBB');
-
         onSubmit(data, onAfterSubmit);
       })();
     },

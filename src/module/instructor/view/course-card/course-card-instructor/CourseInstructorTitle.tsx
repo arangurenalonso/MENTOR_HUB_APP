@@ -33,6 +33,12 @@ const CourseInstructorTitle = ({
       className={`${className}`}
     >
       {titleToShow}
+      <br />
+      Category:{course?.subCategory?.category?.description}
+      <br />
+      SubCategory: {course?.subCategory?.description}
+      <br />
+      Level: {course?.level?.description}
     </Grid>
   );
 };

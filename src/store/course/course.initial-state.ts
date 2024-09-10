@@ -11,7 +11,7 @@ export enum courseStatusEnum {
 
 export type CourseState = {
   status: courseStatus;
-  courses: CourseType[] | [];
+  courses: CourseType[];
   course: CourseType | null;
   errorMessage: string | null;
 };

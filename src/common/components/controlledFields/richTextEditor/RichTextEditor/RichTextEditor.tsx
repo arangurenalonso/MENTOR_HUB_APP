@@ -65,26 +65,31 @@ const RichTextEditor = ({
     // const editorStateJson = JSON.stringify(rawContentState);
 
     onChange(editorState);
-    onChangePlaneText(editorState.getCurrentContent().getPlainText());
+    const plainText = editorState.getCurrentContent().getPlainText();
+
+    onChangePlaneText(plainText);
   }, [editorState]);
 
   useEffect(() => {
+    // console.log('value', value);
+
+    if (value === null || value === undefined || value === '') {
+      const emptyEditorState = EditorState.createEmpty();
+
+      setEditorState(emptyEditorState);
+    }
     if (value) {
       try {
-        if (
-          typeof value === null ||
-          typeof value === undefined ||
-          value === ''
-        ) {
-          setEditorState(EditorState.createEmpty());
-        } else if (typeof value === 'string') {
+        if (typeof value === 'string') {
           const rawContent = JSON.parse(value) as RawDraftContentState;
           const contentState = convertFromRaw(rawContent);
           const editorState = EditorState.createWithContent(contentState);
 
           setEditorState(editorState);
         } else if (value instanceof EditorState) {
-          setEditorState(value);
+          if (value.getCurrentContent().hasText()) {
+            setEditorState(value);
+          }
         } else {
           console.error(
             'Invalid value type: Expected undefined, null, string or EditorState.'
@@ -92,7 +97,6 @@ const RichTextEditor = ({
         }
       } catch (error) {
         console.log('Error', error);
-        // console.error('Invalid JSON value provided:', error);
       }
     }
   }, [value]);

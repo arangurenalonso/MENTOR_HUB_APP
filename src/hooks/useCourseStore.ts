@@ -9,17 +9,23 @@ import {
   onChecking,
   setCourse,
   setCourses,
+  findAndSetCourse,
+  onInsertCourse,
+  onUpdateCourse,
 } from '../store/course/course.slice';
 import { courseApi } from '../api/course.api';
 import { CourseFormField } from '../module/instructor/type/course-form.type';
 import { CourseType } from '../store/course/course.type';
-import { convertToRaw } from 'draft-js';
+import { convertToRaw, EditorState } from 'draft-js';
 
 const useCourseStore = () => {
   const dispatch: AppDispatch = useDispatch();
-  const { status, courses, course, errorMessage } = useSelector(
-    (state: RootState) => state.courses
-  );
+  const {
+    status,
+    courses,
+    course: courseSelected,
+    errorMessage,
+  } = useSelector((state: RootState) => state.courses);
   const { user } = useAuthStore();
 
   const handleDecodingError = (
@@ -60,60 +66,111 @@ const useCourseStore = () => {
 
     dispatch(setCourses(coursesResult.value));
   };
-  const onCreateCourseProcess = async (
+  const onCreateUpdateCourseInformationProcess = async (
     form: CourseFormField
   ): Promise<boolean> => {
     dispatch(onChecking());
-    console.log('form.courseDescription', form.courseDescription);
 
-    const description =
-      typeof form.courseDescription === 'string'
-        ? form.courseDescription
-        : JSON.stringify(
-            convertToRaw(form.courseDescription.getCurrentContent())
-          );
+    if (courseSelected?.id) {
+      console.log('Entro al actualizar');
 
-    const courseCreateResult = await courseApi.createCourse({
-      title: form.courseTitle,
-      description: description,
-      idSubCategory: form.idSubCategory,
-      idLevel: form.idLevel,
-    });
-    if (courseCreateResult.isErr()) {
-      const error = courseCreateResult.error;
-      handleDecodingError(error.error);
-      return false;
+      const courseUpdateResult = await courseApi.updateCourseInformation({
+        idCourse: courseSelected.id,
+        title: form.courseTitle,
+        description: convertionFromCourseDescriptionFormToString(
+          form.courseDescription
+        ),
+        idSubCategory: form.idSubCategory,
+        idLevel: form.idLevel,
+      });
+
+      if (courseUpdateResult.isErr()) {
+        const error = courseUpdateResult.error;
+        handleDecodingError(error.error);
+        return false;
+      }
+      const courseUpdated = convertionFromCourseFormToCourseType(
+        form,
+        courseSelected.id
+      );
+      dispatch(onUpdateCourse(courseUpdated));
+    } else {
+      const courseCreateResult = await courseApi.createCourse({
+        title: form.courseTitle,
+        description: convertionFromCourseDescriptionFormToString(
+          form.courseDescription
+        ),
+        idSubCategory: form.idSubCategory,
+        idLevel: form.idLevel,
+      });
+
+      if (courseCreateResult.isErr()) {
+        const error = courseCreateResult.error;
+        handleDecodingError(error.error);
+        return false;
+      }
+      const idCourse = courseCreateResult.value;
+      const courseToInsert = convertionFromCourseFormToCourseType(
+        form,
+        idCourse
+      );
+      dispatch(onInsertCourse(courseToInsert));
     }
-    const idCourse = courseCreateResult.value;
+    return true;
+  };
+  const convertionFromCourseDescriptionFormToString = (
+    courseDescription: string | EditorState
+  ): string => {
+    const description =
+      typeof courseDescription === 'string'
+        ? courseDescription
+        : JSON.stringify(convertToRaw(courseDescription.getCurrentContent()));
+    return description;
+  };
+  const convertionFromCourseFormToCourseType = (
+    form: CourseFormField,
+    idCourse: string
+  ): CourseType => {
+    const description = convertionFromCourseDescriptionFormToString(
+      form.courseDescription
+    );
     const courseType: CourseType = {
       id: idCourse,
       title: form.courseTitle,
       idInstructor: user?.idUser || '',
-      level: form.levelOption,
+      level: {
+        id: form.idLevel,
+        description: form.levelOption?.description,
+      },
       subCategory: {
         id: form.idSubCategory,
         category: {
           id: form.idCategory,
-          description: form.categoryOption.description,
+          description: form.categoryOption?.description,
         },
-        description: form.subCategoryOption.description,
+        description: form.subCategoryOption?.description,
       },
       description: description,
     };
-
-    dispatch(setCourse(courseType));
-    return true;
+    return courseType;
   };
-
+  const onSetCourse = (course: CourseType) => {
+    dispatch(setCourse(course));
+  };
+  const onSetByIdCourse = async (id: string) => {
+    dispatch(findAndSetCourse(id));
+  };
   return {
     //*Properties
     status,
     courses,
-    course,
+    course: courseSelected,
     errorMessage,
     //*Methods
-    onCreateCourseProcess,
+    onCreateUpdateCourseInformationProcess,
     onGetCourseByInstructorConnectedProcess,
+    onSetCourse,
+    onSetByIdCourse,
   };
 };
 

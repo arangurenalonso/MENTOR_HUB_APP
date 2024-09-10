@@ -113,7 +113,6 @@ const RichTextEditorControlledField = <T extends FieldValues>({
                   onChange(editorState);
                 }}
                 onChangePlaneText={(plainText) => {
-                  // setValue(namePlainText, plainText as PathValue<T, Path<T>>);
                   setPlainText(plainText);
                 }}
                 isFromArrayForm={isFromArrayForm}
@@ -130,31 +129,36 @@ const RichTextEditorControlledField = <T extends FieldValues>({
                 helperText={helperText}
                 informationText={informationText}
               />
-              <Controller
-                name={namePlainText}
-                rules={rules}
-                defaultValue={defaultValue}
-                control={control as Control<FieldValues>}
-                render={({
-                  field: { onBlur, onChange },
-                  fieldState: { error },
-                }) => {
-                  useEffect(() => {
-                    if (isBlur) {
-                      onBlur();
-                    }
-                  }, [isBlur]);
-                  useEffect(() => {
-                    onChange(plainText);
-                  }, [plainText]);
-                  useEffect(() => {
-                    setErrorTextPlain(error);
-                  }, [error]);
-                  return <></>;
-                }}
-              />
             </>
           );
+        }}
+      />
+      <Controller
+        name={namePlainText}
+        rules={rules}
+        defaultValue={defaultValue}
+        control={control as Control<FieldValues>}
+        render={({
+          field: { onBlur, onChange, value },
+          fieldState: { error },
+        }) => {
+          useEffect(() => {
+            if (!value && plainText) {
+              onChange(plainText);
+            }
+          }, [value, onChange]);
+          useEffect(() => {
+            if (isBlur) {
+              onBlur();
+            }
+          }, [isBlur]);
+          useEffect(() => {
+            onChange(plainText);
+          }, [plainText]);
+          useEffect(() => {
+            setErrorTextPlain(error);
+          }, [error]);
+          return <></>;
         }}
       />
     </>

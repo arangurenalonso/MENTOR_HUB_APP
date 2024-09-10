@@ -1,6 +1,7 @@
-import { useEffect, useMemo, useReducer } from 'react';
+import { useEffect, useMemo, useReducer, useState } from 'react';
 import {
   Control,
+  Controller,
   FieldPathValue,
   FieldValues,
   Path,
@@ -121,6 +122,12 @@ const SelectControlledField = <
     loading: false,
     error: null,
   });
+
+  const [isBlur, setIsBlur] = useState(false);
+  const [selectedOption, setSelectedOption] = useState<K | undefined>(
+    undefined
+  );
+
   // const isInitialValueUsed = useRef(false);
   // useEffect(() => {
   //   if (
@@ -204,65 +211,95 @@ const SelectControlledField = <
   };
 
   return (
-    <BaseControlledField
-      watch={watch}
-      dependentFields={dependentFields}
-      name={name}
-      control={control}
-      disabled={disabled}
-      defaultValue={defaultValue}
-      rules={rules}
-      valueToSet={valueToSet}
-      render={({ value, onChange, onBlur, name, ref, error, disabled }) => {
-        return (
-          <CustomSelect<K>
-            label={loading ? 'loading.....' : label}
-            error={!!error}
-            errorMessage={
-              (errorFetchinData && (
-                <span
-                  style={{ color: 'red', cursor: 'pointer' }}
-                  onClick={() => exectApi(optionsFromApi)}
-                >
-                  {errorFetchinData}
-                </span>
-              )) ||
-              error?.message
-            }
-            disabled={disabled}
-            options={internalOptions}
-            valueProperty={valueProperty}
-            value={value}
-            // valueToSet={valueToSet}
-            name={name}
-            isFromArrayForm={isFromArrayForm}
-            inputRef={ref}
-            helperText={helperText}
-            informationText={informationText}
-            onFormatValue={(option: K) => {
-              if (onFormatMenuItemLabel) {
-                return onFormatMenuItemLabel(option);
+    <>
+      <BaseControlledField
+        watch={watch}
+        dependentFields={dependentFields}
+        name={name}
+        control={control}
+        disabled={disabled}
+        defaultValue={defaultValue}
+        rules={rules}
+        valueToSet={valueToSet}
+        render={({ value, onChange, onBlur, name, ref, error, disabled }) => {
+          return (
+            <CustomSelect<K>
+              label={loading ? 'loading.....' : label}
+              error={!!error}
+              errorMessage={
+                (errorFetchinData && (
+                  <span
+                    style={{ color: 'red', cursor: 'pointer' }}
+                    onClick={() => exectApi(optionsFromApi)}
+                  >
+                    {errorFetchinData}
+                  </span>
+                )) ||
+                error?.message
               }
-              return option[nameProperty];
-            }}
-            onChange={(selectedValue) => {
-              onChange(selectedValue);
-            }}
-            onChangeSelectOption={(selectedOption) => {
-              setValue(
-                nameSelectedOption,
-                selectedOption as PathValue<T, Path<T>>
-              );
-            }}
-            onReset={() => {
-              onChange('');
-              setValue(nameSelectedOption, undefined as PathValue<T, Path<T>>);
-            }}
-            onBlur={onBlur}
-          />
-        );
-      }}
-    />
+              disabled={disabled}
+              options={internalOptions}
+              valueProperty={valueProperty}
+              value={value}
+              // valueToSet={valueToSet}
+              name={name}
+              isFromArrayForm={isFromArrayForm}
+              inputRef={ref}
+              helperText={helperText}
+              informationText={informationText}
+              onFormatValue={(option: K) => {
+                if (onFormatMenuItemLabel) {
+                  return onFormatMenuItemLabel(option);
+                }
+                return option[nameProperty];
+              }}
+              onChange={(selectedValue) => {
+                onChange(selectedValue);
+              }}
+              onChangeSelectOption={(selectedOption) => {
+                setSelectedOption(selectedOption);
+              }}
+              onReset={() => {
+                onChange('');
+                setValue(
+                  nameSelectedOption,
+                  undefined as PathValue<T, Path<T>>
+                );
+              }}
+              onBlur={() => {
+                setIsBlur(true);
+                onBlur();
+              }}
+            />
+          );
+        }}
+      />
+      <Controller
+        name={nameSelectedOption}
+        // rules={rules}
+        defaultValue={defaultValue}
+        control={control as Control<FieldValues>}
+        render={({
+          field: { onBlur, onChange, value },
+          // fieldState: { error },
+        }) => {
+          useEffect(() => {
+            if (!value && selectedOption) {
+              onChange(selectedOption);
+            }
+          }, [value, onChange]);
+          useEffect(() => {
+            if (isBlur) {
+              onBlur();
+            }
+          }, [isBlur]);
+          useEffect(() => {
+            onChange(selectedOption);
+          }, [selectedOption]);
+          return <></>;
+        }}
+      />
+    </>
   );
 };
 
