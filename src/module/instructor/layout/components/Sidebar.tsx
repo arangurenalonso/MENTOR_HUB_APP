@@ -57,9 +57,11 @@ const SideBar = ({
         <Divider />
         <Box sx={{ height: '100%', overflowY: 'auto' }}>
           <List>
-            {instructorRoutesDefinition.map(({ name, to }) => (
-              <SidBarItem key={name} primaryText={name} to={to} />
-            ))}
+            {instructorRoutesDefinition.map(({ name, to, isShowNavBar }) =>
+              isShowNavBar ? (
+                <SidBarItem key={name} primaryText={name} to={to} />
+              ) : null
+            )}
           </List>
         </Box>
       </Drawer>

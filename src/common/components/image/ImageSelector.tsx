@@ -1,12 +1,5 @@
 import { ChangeEvent, useCallback, useEffect, useReducer, useRef } from 'react';
-import {
-  Box,
-  Grid,
-  Typography,
-  Slider,
-  IconButton,
-  Button,
-} from '@mui/material';
+import { Box, Grid, Typography, Slider, IconButton } from '@mui/material';
 import CropIcon from '@mui/icons-material/Crop';
 import Cropper, { Area } from 'react-easy-crop';
 import { getCroppedImg } from './utils/image.utils';
@@ -204,7 +197,8 @@ const ImageSelector = ({ onChange }: ImageSelectorProps) => {
                 <CropIcon />
               </IconButton>
             )}
-            {status === ImageStatusEnum.FINISH && (
+            {(status === ImageStatusEnum.CROPPPING ||
+              status === ImageStatusEnum.FINISH) && (
               <IconButton color="warning" onClick={restart}>
                 <RestartAltIcon />
               </IconButton>

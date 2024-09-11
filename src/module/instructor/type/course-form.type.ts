@@ -1,13 +1,21 @@
 import { EditorState } from 'draft-js';
 import {
   Category,
-  IntendedLearners,
-  LearningObjective,
   Level,
-  Requirements,
   SubCategory,
 } from '../../../store/course/course.type';
-
+export type RequirementsForm = {
+  id: string;
+  description: string;
+};
+export type LearningObjectiveForm = {
+  id: string;
+  description: string;
+};
+export type IntendedLearnersForm = {
+  id: string;
+  description: string;
+};
 export type CourseFormField = {
   idCategory: string;
   categoryOption: Category;
@@ -18,9 +26,9 @@ export type CourseFormField = {
   courseTitle: string;
   courseDescriptionPlainText: string;
   courseDescription: EditorState | string;
-  requirements: Partial<Requirements>[];
-  learningObjectives: Partial<LearningObjective>[];
-  intendedLearners: Partial<IntendedLearners>[];
+  requirements: Partial<RequirementsForm>[];
+  learningObjectives: Partial<LearningObjectiveForm>[];
+  intendedLearners: Partial<IntendedLearnersForm>[];
 };
 export type ProfileFormField = {
   headline: string;

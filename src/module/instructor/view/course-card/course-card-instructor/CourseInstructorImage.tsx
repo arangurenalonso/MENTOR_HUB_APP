@@ -1,5 +1,5 @@
 import { CSSProperties, useContext } from 'react';
-import { Box, Grid, SxProps, Theme } from '@mui/material';
+import { Box, Grid, SxProps, Theme, useTheme } from '@mui/material';
 import noImage from '../../../../../assets/no-image.jpg';
 import CourseInstructorContext from './CourseInstructorContext';
 
@@ -18,14 +18,18 @@ const CourseInstructorImage = ({
 }: CourseInstructorImageProps) => {
   const { course } = useContext(CourseInstructorContext);
 
+  const theme = useTheme();
   let imgToShow: string = img || course.imgUrl || noImage;
 
   return (
-    <Grid item sx={{ lineHeight: 0 }}>
+    <Grid item sx={{ lineHeight: 0 }} xs={12} md={6} lg={4}>
       <Box
         component="img"
         sx={{
-          maxWidth: '250px',
+          width: '100%',
+          maxHeight: '200px',
+          objectFit: 'contain',
+          backgroundColor: theme.palette.background.default,
           ...sx,
         }}
         style={style}

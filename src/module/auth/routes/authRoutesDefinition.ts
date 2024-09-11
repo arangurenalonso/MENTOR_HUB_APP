@@ -7,6 +7,7 @@ const authRoutesDefinition: RouteDefinition[] = [
     path: 'login',
     Component: LoginPage,
     name: 'Login',
+    isShowNavBar: false,
   },
 
   {
@@ -14,6 +15,7 @@ const authRoutesDefinition: RouteDefinition[] = [
     path: 'register',
     Component: RegisterPage,
     name: 'Register',
+    isShowNavBar: false,
   },
 ];
 export default authRoutesDefinition;

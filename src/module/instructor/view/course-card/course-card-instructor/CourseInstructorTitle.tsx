@@ -1,6 +1,6 @@
 import { CSSProperties, useContext } from 'react';
 import CourseInstructorContext from './CourseInstructorContext';
-import { Grid, SxProps, Theme } from '@mui/material';
+import { Grid, SxProps, Theme, Typography } from '@mui/material';
 
 export interface CourseInstructorTitleProps {
   title?: string;
@@ -28,17 +28,13 @@ const CourseInstructorTitle = ({
         alignItems: 'center',
         justifyContent: 'center',
         textAlign: 'center',
+        fontWeight: 'bold',
         ...sx,
+        py: 2,
       }}
       className={`${className}`}
     >
-      {titleToShow}
-      <br />
-      Category:{course?.subCategory?.category?.description}
-      <br />
-      SubCategory: {course?.subCategory?.description}
-      <br />
-      Level: {course?.level?.description}
+      <Typography variant="h6">{titleToShow}</Typography>
     </Grid>
   );
 };

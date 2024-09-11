@@ -7,6 +7,7 @@ const mainRoutesDefinition: RouteDefinition[] = [
     path: '/home',
     Component: HomePage,
     name: 'home',
+    isShowNavBar: false,
   },
 ];
 export default mainRoutesDefinition;

@@ -2,6 +2,7 @@ import { Box, Button } from '@mui/material';
 
 type StepNavigationButtonsProps = {
   handleNext: () => void;
+  disabledNext?: boolean;
   handleBack: () => void;
   isLastStep: boolean;
   isInitial: boolean;
@@ -12,6 +13,7 @@ const StepNavigationButtons: React.FC<StepNavigationButtonsProps> = ({
   handleBack,
   isLastStep,
   isInitial,
+  disabledNext,
 }) => {
   return (
     <Box sx={{ mb: 2 }}>
@@ -20,11 +22,14 @@ const StepNavigationButtons: React.FC<StepNavigationButtonsProps> = ({
           Back
         </Button>
       )}
-      {!isLastStep && (
-        <Button variant="contained" onClick={handleNext} sx={{ mt: 1, mr: 1 }}>
-          Next
-        </Button>
-      )}
+      <Button
+        variant="contained"
+        disabled={disabledNext}
+        onClick={handleNext}
+        sx={{ mt: 1, mr: 1 }}
+      >
+        {!isLastStep ? 'Next' : 'Finish'}
+      </Button>
     </Box>
   );
 };

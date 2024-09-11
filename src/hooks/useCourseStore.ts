@@ -66,6 +66,100 @@ const useCourseStore = () => {
 
     dispatch(setCourses(coursesResult.value));
   };
+
+  const onUpdateCoursePromotionalVideoProcess = async (
+    file: File
+  ): Promise<boolean> => {
+    dispatch(onChecking());
+
+    if (courseSelected?.id) {
+      const courseUpdateResult = await courseApi.uploadCourseVideo(
+        courseSelected?.id,
+        file
+      );
+
+      if (courseUpdateResult.isErr()) {
+        const error = courseUpdateResult.error;
+        handleDecodingError(error.error);
+        return false;
+      }
+      const courseUpdated: CourseType = {
+        ...courseSelected!,
+        promotionalVideoUrl: courseUpdateResult.value,
+      };
+      dispatch(onUpdateCourse(courseUpdated));
+      return true;
+    }
+    return false;
+  };
+  const onUpdateCoursePhotoProcess = async (file: File): Promise<boolean> => {
+    dispatch(onChecking());
+
+    if (courseSelected?.id) {
+      const courseUpdateResult = await courseApi.uploadCoursePhoto(
+        courseSelected?.id,
+        file
+      );
+
+      if (courseUpdateResult.isErr()) {
+        const error = courseUpdateResult.error;
+        handleDecodingError(error.error);
+        return false;
+      }
+      const courseUpdated: CourseType = {
+        ...courseSelected!,
+        imgUrl: courseUpdateResult.value,
+      };
+      dispatch(onUpdateCourse(courseUpdated));
+      return true;
+    }
+    return false;
+  };
+  const onUpdateEnrollmentCriteriaProcess = async (
+    form: CourseFormField
+  ): Promise<boolean> => {
+    dispatch(onChecking());
+
+    const courseUpdateResult =
+      await courseApi.updateCourseEnrollmentRequirements({
+        idCourse: courseSelected?.id || '',
+        requirements: form.requirements.map((requirement) => ({
+          id: requirement.id || '',
+          description: requirement.description || '',
+        })),
+        intendedLearners: form.intendedLearners.map((requirement) => ({
+          id: requirement.id || '',
+          description: requirement.description || '',
+        })),
+        learningObjectives: form.learningObjectives.map((requirement) => ({
+          id: requirement.id || '',
+          description: requirement.description || '',
+        })),
+      });
+
+    if (courseUpdateResult.isErr()) {
+      const error = courseUpdateResult.error;
+      handleDecodingError(error.error);
+      return false;
+    }
+    const courseUpdated: CourseType = {
+      ...courseSelected!,
+      requirements: form.requirements.map((requirement) => ({
+        id: requirement.id || '',
+        description: requirement.description || '',
+      })),
+      intendedLearners: form.intendedLearners.map((requirement) => ({
+        id: requirement.id || '',
+        description: requirement.description || '',
+      })),
+      learningObjectives: form.learningObjectives.map((requirement) => ({
+        id: requirement.id || '',
+        description: requirement.description || '',
+      })),
+    };
+    dispatch(onUpdateCourse(courseUpdated));
+    return true;
+  };
   const onCreateUpdateCourseInformationProcess = async (
     form: CourseFormField
   ): Promise<boolean> => {
@@ -89,10 +183,26 @@ const useCourseStore = () => {
         handleDecodingError(error.error);
         return false;
       }
-      const courseUpdated = convertionFromCourseFormToCourseType(
-        form,
-        courseSelected.id
-      );
+      const courseUpdated: CourseType = {
+        ...courseSelected!,
+        title: form.courseTitle,
+        idInstructor: user?.idUser || '',
+        level: {
+          id: form.idLevel,
+          description: form.levelOption?.description,
+        },
+        subCategory: {
+          id: form.idSubCategory,
+          category: {
+            id: form.idCategory,
+            description: form.categoryOption?.description,
+          },
+          description: form.subCategoryOption?.description,
+        },
+        description: convertionFromCourseDescriptionFormToString(
+          form.courseDescription
+        ),
+      };
       dispatch(onUpdateCourse(courseUpdated));
     } else {
       const courseCreateResult = await courseApi.createCourse({
@@ -114,6 +224,8 @@ const useCourseStore = () => {
         form,
         idCourse
       );
+      console.log('courseToInsert', courseToInsert);
+
       dispatch(onInsertCourse(courseToInsert));
     }
     return true;
@@ -154,6 +266,7 @@ const useCourseStore = () => {
     };
     return courseType;
   };
+
   const onSetCourse = (course: CourseType) => {
     dispatch(setCourse(course));
   };
@@ -169,8 +282,11 @@ const useCourseStore = () => {
     //*Methods
     onCreateUpdateCourseInformationProcess,
     onGetCourseByInstructorConnectedProcess,
+    onUpdateEnrollmentCriteriaProcess,
     onSetCourse,
     onSetByIdCourse,
+    onUpdateCoursePhotoProcess,
+    onUpdateCoursePromotionalVideoProcess,
   };
 };
 

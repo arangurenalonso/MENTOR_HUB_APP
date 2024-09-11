@@ -8,4 +8,6 @@ export interface RouteDefinition {
   // Component: React.FC;
   Component: LazyExoticComponent<JSXComponent> | JSXComponent;
   name: string;
+
+  isShowNavBar: boolean;
 }

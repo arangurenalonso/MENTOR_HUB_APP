@@ -1,4 +1,4 @@
-import { Box, Grid, SxProps, Theme } from '@mui/material';
+import { Grid, Paper, SxProps, Theme, useTheme } from '@mui/material';
 import { CourseType } from '../../../../../store/course/course.type';
 import { CSSProperties, useState } from 'react';
 import CourseInstructorContext from './CourseInstructorContext';
@@ -26,6 +26,7 @@ const CourseInstructorCard = ({
 }: CourseInstructorCardProps) => {
   const { Provider } = CourseInstructorContext;
   const [isHovered, setIsHovered] = useState(false);
+  const theme = useTheme();
 
   return (
     <Provider
@@ -35,17 +36,27 @@ const CourseInstructorCard = ({
         isHovered,
       }}
     >
-      <Box
+      <Paper
+        elevation={3}
         sx={{ position: 'relative' }}
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
       >
-        <Grid container sx={sx} style={style} className={`${className}`}>
+        <Grid
+          container
+          sx={{
+            border: '1px solid',
+            borderColor: isHovered ? theme.palette.divider : 'transparent',
+            ...sx,
+          }}
+          style={style}
+          className={`${className}`}
+        >
           {children({
             course,
           })}
         </Grid>
-      </Box>
+      </Paper>
     </Provider>
   );
 };
