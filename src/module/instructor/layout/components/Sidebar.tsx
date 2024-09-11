@@ -7,6 +7,7 @@ import {
   List,
   Toolbar,
   Typography,
+  useTheme,
 } from '@mui/material';
 import SidBarItem from './SideBarItem';
 import instructorRoutesDefinition from '../../routes/instructorRoutesDefinition';
@@ -24,6 +25,7 @@ const SideBar = ({
   isDrawerOpen,
   toggleDrawer,
 }: SideBarProps) => {
+  const theme = useTheme();
   return (
     <Box
       component="nav"
@@ -34,7 +36,12 @@ const SideBar = ({
         open={isDrawerOpen}
         sx={{
           display: { xs: 'block' },
-          '& .MuiDrawer-paper': { boxSizing: 'border-box', width: drawerWidth },
+          '& .MuiDrawer-paper': {
+            boxSizing: 'border-box',
+            width: drawerWidth,
+            backgroundColor: theme.palette.primary.dark,
+            color: theme.palette.primary.contrastText,
+          },
         }}
       >
         <Toolbar>

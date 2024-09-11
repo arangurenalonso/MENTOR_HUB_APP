@@ -5,6 +5,7 @@ import {
   IconButton,
   Toolbar,
   Typography,
+  useTheme,
 } from '@mui/material';
 import { LogoutOutlined, MenuOutlined } from '@mui/icons-material';
 import useAuthStore from '../../../../hooks/useAuthStore';
@@ -23,12 +24,15 @@ const NavBar = ({
   toggleDrawer,
 }: NavbarProps) => {
   const { logOutProcess } = useAuthStore();
+  const theme = useTheme();
   return (
     <AppBar
       position="fixed"
       sx={{
         width: { sm: isDrawerOpen ? `calc(100% - ${drawerWidth}px)` : '100%' },
         ml: { sm: `${drawerWidth}px` },
+        backgroundColor: theme.palette.primary.dark,
+        color: theme.palette.primary.contrastText,
       }}
     >
       <Toolbar>

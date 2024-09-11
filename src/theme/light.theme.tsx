@@ -7,7 +7,7 @@ const primaryContainerText = '#e2ffdf';
 const secondaryContainer = '#55634c';
 const secondaryContainerText = '#eef3e7';
 
-const backGroundDefault = '#ffffff';
+const backGroundDefault = '#eef3e7';
 const backGroundPaper = '#d9e8cb';
 
 const primaryText = '#686a65';

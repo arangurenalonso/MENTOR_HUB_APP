@@ -7,7 +7,7 @@ const darkPrimaryContainerText = '#1a2815'; // Texto en el contenedor primario
 const darkSecondaryContainer = '#8a9b80'; // Versión más clara del color secundario
 const darkSecondaryContainerText = '#2a2e24'; // Texto en el contenedor secundario
 
-const darkBackGroundDefault = '#121212'; // Fondo predeterminado oscuro
+const darkBackGroundDefault = '#2a2e24'; // Fondo predeterminado oscuro
 const darkBackGroundPaper = '#1d1d1d'; // Fondo de los componentes (como tarjetas) en modo oscuro
 
 const darkPrimaryText = '#e2e5df'; // Texto primario claro

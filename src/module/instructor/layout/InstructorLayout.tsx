@@ -1,5 +1,5 @@
 import { Box, Toolbar } from '@mui/material';
-import { ReactNode, useState } from 'react';
+import { ReactNode, useCallback, useEffect, useRef, useState } from 'react';
 import NavBar from './components/Navbar';
 import SideBar from './components/Sidebar';
 
@@ -11,6 +11,27 @@ const InstructorLayout = ({ children }: { children: ReactNode }) => {
   const toggleDrawer = () => {
     setIsDrawerOpen(!isDrawerOpen);
   };
+
+  const [toolbarHeight, setToolbarHeight] = useState(0);
+
+  const toolbarRef = useRef<HTMLDivElement>(null);
+
+  const updateToolbarHeight = useCallback(() => {
+    if (toolbarRef.current) {
+      setToolbarHeight(toolbarRef.current.clientHeight);
+      console.log(
+        'toolbarRef.current.clientHeight',
+        toolbarRef.current.clientHeight
+      );
+    }
+  }, [toolbarRef.current]);
+
+  useEffect(() => {
+    updateToolbarHeight();
+    window.addEventListener('resize', updateToolbarHeight);
+    return () => window.removeEventListener('resize', updateToolbarHeight);
+  }, [updateToolbarHeight]);
+
   return (
     <>
       <Box className="animate__animated animate__fadeIn animate__faster">
@@ -32,14 +53,30 @@ const InstructorLayout = ({ children }: { children: ReactNode }) => {
           component="main"
           sx={{
             flexGrow: 1,
-            p: 3,
+            height: '100vh',
+            overflow: 'hidden',
             width: isDrawerOpen ? `calc(100% - ${drawerWidth}px)` : '100%',
             ml: { sm: isDrawerOpen ? `${drawerWidth}px` : 0 },
           }}
         >
-          <Toolbar />
-
-          {children}
+          <Box
+            sx={{
+              height: '100%',
+              width: '100%',
+              overflow: 'auto',
+            }}
+          >
+            <Toolbar ref={toolbarRef} />
+            <Box
+              sx={{
+                height: `calc(100vh - ${toolbarHeight}px)`,
+                overflow: 'auto',
+                width: '100%',
+              }}
+            >
+              {children}
+            </Box>
+          </Box>
         </Box>
       </Box>
     </>
