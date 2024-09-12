@@ -287,6 +287,7 @@ const useCourseStore = () => {
     onSetByIdCourse,
     onUpdateCoursePhotoProcess,
     onUpdateCoursePromotionalVideoProcess,
+    onResetSelectedCourse: () => dispatch(setCourse(null)),
   };
 };
 

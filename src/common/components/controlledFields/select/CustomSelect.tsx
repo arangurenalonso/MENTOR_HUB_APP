@@ -278,6 +278,7 @@ const CustomSelect = <T extends { [key: string]: any }>({
         TransitionComponent={Transition}
         PaperProps={{
           style: {
+            height: 'auto',
             maxHeight: '95%', // Limita la altura al 90% de la pantalla
             width: '95%', // Si también deseas controlar el ancho, puedes ajustar esto
           },

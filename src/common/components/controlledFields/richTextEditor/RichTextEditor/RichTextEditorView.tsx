@@ -29,21 +29,13 @@ const RichTextEditorView = ({ content }: RichTextEditorViewProps) => {
   }, [content]);
   return (
     <>
-      <Box
-        sx={{
-          mt: 2,
-          border: '1px solid gray',
-          padding: 2,
-        }}
-      >
-        <Editor
-          editorState={editorState}
-          customStyleMap={customStyleMap}
-          blockStyleFn={myBlockStyleFn}
-          onChange={() => {}}
-          readOnly={true}
-        />
-      </Box>
+      <Editor
+        editorState={editorState}
+        customStyleMap={customStyleMap}
+        blockStyleFn={myBlockStyleFn}
+        onChange={() => {}}
+        readOnly={true}
+      />
     </>
   );
 };

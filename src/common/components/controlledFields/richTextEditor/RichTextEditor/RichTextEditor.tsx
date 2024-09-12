@@ -87,8 +87,12 @@ const RichTextEditor = ({
 
           setEditorState(editorState);
         } else if (value instanceof EditorState) {
-          if (value.getCurrentContent().hasText()) {
-            setEditorState(value);
+          const newValueText = value.getCurrentContent().hasText();
+          const currentValueText = editorState.getCurrentContent().hasText();
+          if (newValueText) {
+            if (newValueText != currentValueText) {
+              setEditorState(value);
+            }
           }
         } else {
           console.error(

@@ -18,7 +18,7 @@ export type RenderVerticalStepContentProps = {
 // };
 
 export type VerticalStepperProps = {
-  children: {
+  render: {
     [key: string]: (args: RenderVerticalStepContentProps) => ReactNode;
   };
   stepsLabels: string[];
@@ -27,7 +27,7 @@ export type VerticalStepperProps = {
 
 const VerticalStepper = ({
   stepsLabels,
-  children,
+  render,
   initialStep = 0,
 }: VerticalStepperProps) => {
   const [activeStep, setActiveStep] = useState(initialStep);
@@ -44,14 +44,14 @@ const VerticalStepper = ({
     <Box sx={{ mx: 'auto', maxWidth: '700px' }}>
       <>
         <Stepper activeStep={activeStep} orientation="vertical">
-          {Object.keys(children).map((key, index) => (
+          {Object.keys(render).map((key, index) => (
             <Step key={key}>
               <StepLabel>{stepsLabels[index]}</StepLabel>
               <StepContent>
-                {children[key]({
+                {render[key]({
                   handleNext,
                   handleBack,
-                  isLastStep: activeStep === Object.keys(children).length - 1,
+                  isLastStep: activeStep === Object.keys(render).length - 1,
                   isInitial: activeStep === 0,
                 })}
               </StepContent>

@@ -26,7 +26,10 @@ export type IntendedLearners = {
   id: string;
   description: string;
 };
-
+export type InstructorInformation = {
+  id: string;
+  name: string;
+};
 export type CourseType = {
   id: string;
   title: string;
@@ -39,4 +42,5 @@ export type CourseType = {
   learningObjectives?: LearningObjective[] | [];
   intendedLearners?: IntendedLearners[] | [];
   requirements?: Requirements[] | [];
+  instructor?: InstructorInformation;
 };

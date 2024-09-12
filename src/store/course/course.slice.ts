@@ -13,7 +13,7 @@ export const coursesSlice = createSlice({
       state.status = courseStatusEnum.LOADED;
       state.errorMessage = null;
     },
-    setCourse: (state, action: PayloadAction<CourseType>) => {
+    setCourse: (state, action: PayloadAction<CourseType | null>) => {
       // console.log('setCourse');
       const course = action.payload;
 
