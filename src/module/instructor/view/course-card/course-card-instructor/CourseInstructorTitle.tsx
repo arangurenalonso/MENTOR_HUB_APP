@@ -1,6 +1,7 @@
 import { CSSProperties, useContext } from 'react';
 import CourseInstructorContext from './CourseInstructorContext';
-import { Grid, SxProps, Theme, Typography } from '@mui/material';
+import { SxProps, Theme, Typography } from '@mui/material';
+import Grid from '@mui/material/Grid2';
 
 export interface CourseInstructorTitleProps {
   title?: string;
@@ -20,8 +21,7 @@ const CourseInstructorTitle = ({
 
   return (
     <Grid
-      item
-      xs
+      size={{ xs: 12, sm: 'grow' }}
       style={style}
       sx={{
         display: 'flex',

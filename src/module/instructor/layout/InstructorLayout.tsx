@@ -1,4 +1,4 @@
-import { Box, Toolbar } from '@mui/material';
+import { Backdrop, Box, Toolbar } from '@mui/material';
 import { ReactNode, useCallback, useEffect, useRef, useState } from 'react';
 import NavBar from './components/Navbar';
 import SideBar from './components/Sidebar';
@@ -19,10 +19,6 @@ const InstructorLayout = ({ children }: { children: ReactNode }) => {
   const updateToolbarHeight = useCallback(() => {
     if (toolbarRef.current) {
       setToolbarHeight(toolbarRef.current.clientHeight);
-      console.log(
-        'toolbarRef.current.clientHeight',
-        toolbarRef.current.clientHeight
-      );
     }
   }, [toolbarRef.current]);
 
@@ -68,12 +64,24 @@ const InstructorLayout = ({ children }: { children: ReactNode }) => {
           >
             <Toolbar ref={toolbarRef} />
             <Box
+              onClick={() => {
+                setIsDrawerOpen(false);
+              }}
               sx={{
                 height: `calc(100vh - ${toolbarHeight}px)`,
                 overflow: 'auto',
                 width: '100%',
+                position: 'relative',
               }}
             >
+              <Backdrop
+                open={isDrawerOpen}
+                sx={{
+                  zIndex: (theme) => theme.zIndex.drawer - 1,
+                  backgroundColor: 'rgba(0, 0, 0, 0.5)',
+                }}
+                onClick={toggleDrawer} // Oculta el drawer al hacer clic en el backdrop
+              />
               {children}
             </Box>
           </Box>

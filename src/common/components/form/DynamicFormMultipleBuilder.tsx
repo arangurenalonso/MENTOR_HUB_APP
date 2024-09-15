@@ -1,4 +1,5 @@
-import { Grid, Button, FormHelperText } from '@mui/material';
+import { Button, FormHelperText } from '@mui/material';
+import Grid from '@mui/material/Grid2';
 import {
   FieldValues,
   Control,
@@ -75,7 +76,7 @@ DynamicFormMultipleBuilderProps<T>) => {
   return (
     <Grid container>
       {label && (
-        <Grid item xs={12}>
+        <Grid size={12}>
           <CustomInputLabel
             label={label}
             labelStyles={{ fontWeight: 800 }}
@@ -84,83 +85,86 @@ DynamicFormMultipleBuilderProps<T>) => {
           <FormHelperText>{helperText} </FormHelperText>
         </Grid>
       )}
-      <Grid item xs={12}>
-        <Grid container spacing={1}>
-          {fields.map((item, index) => {
-            return (
-              <Grid item xs={12} key={item.id}>
-                <LayoutRenderDynamicFormMultipleBuilder
-                  onRemove={(index) => {
-                    handleOnDelete(index);
-                  }}
-                  index={index}
-                  showButtonDelete={fields.length > 1}
-                >
-                  <Grid container spacing={1}>
-                    {fieldsObject.map((fieldConfig) => {
-                      return (
-                        <RenderField<T>
-                          isFromArrayForm={true}
-                          key={fieldConfig.name as string}
-                          field={{
-                            ...fieldConfig,
-                            name: `${name}.${index}.${fieldConfig.name}` as any,
-                            optionalName: fieldConfig.optionalName
-                              ? (`${name}.${index}.${fieldConfig.optionalName}` as any)
-                              : undefined,
-                            dependentFields: fieldConfig.dependentFields?.map(
-                              (x) => {
-                                if (typeof x === 'string') {
-                                  return `${name}.${index}.${x}` as any;
-                                } else {
-                                  return {
-                                    field: `${name}.${index}.${x.field}` as any,
-                                    value: x.value,
-                                  };
+      <Grid size={12}>
+        <div>
+          <Grid container spacing={1}>
+            {fields.map((item, index) => {
+              return (
+                <Grid size={12} key={item.id}>
+                  <LayoutRenderDynamicFormMultipleBuilder
+                    onRemove={(index) => {
+                      handleOnDelete(index);
+                    }}
+                    index={index}
+                    showButtonDelete={fields.length > 1}
+                  >
+                    <Grid container spacing={1}>
+                      {fieldsObject.map((fieldConfig) => {
+                        return (
+                          <RenderField<T>
+                            isFromArrayForm={true}
+                            key={fieldConfig.name as string}
+                            field={{
+                              ...fieldConfig,
+                              name: `${name}.${index}.${fieldConfig.name}` as any,
+                              optionalName: fieldConfig.optionalName
+                                ? (`${name}.${index}.${fieldConfig.optionalName}` as any)
+                                : undefined,
+                              dependentFields: fieldConfig.dependentFields?.map(
+                                (x) => {
+                                  if (typeof x === 'string') {
+                                    return `${name}.${index}.${x}` as any;
+                                  } else {
+                                    return {
+                                      field:
+                                        `${name}.${index}.${x.field}` as any,
+                                      value: x.value,
+                                    };
+                                  }
                                 }
-                              }
-                            ),
-                            valueToSet:
-                              item[fieldConfig.name as keyof typeof item],
-                            // @ts-ignore
-                            optionProps: fieldConfig.optionProps
-                              ? {
-                                  ...fieldConfig.optionProps,
-                                  optionsFromApi: fieldConfig.optionProps
-                                    .optionsFromApi
-                                    ? {
-                                        ...fieldConfig.optionProps
-                                          .optionsFromApi,
-                                        valueReplacement:
-                                          fieldConfig.optionProps.optionsFromApi.valueReplacement?.map(
-                                            ({ variableReplace, field }) => {
-                                              return {
-                                                variableReplace:
-                                                  variableReplace,
-                                                field:
-                                                  `${name}.${index}.${field}` as any,
-                                              };
-                                            }
-                                          ),
-                                      }
-                                    : undefined,
-                                }
-                              : undefined,
-                          }}
-                          control={control}
-                          setValue={setValue}
-                          watch={watch}
-                        />
-                      );
-                    })}
-                  </Grid>
-                </LayoutRenderDynamicFormMultipleBuilder>
-              </Grid>
-            );
-          })}
-        </Grid>
+                              ),
+                              valueToSet:
+                                item[fieldConfig.name as keyof typeof item],
+                              // @ts-ignore
+                              optionProps: fieldConfig.optionProps
+                                ? {
+                                    ...fieldConfig.optionProps,
+                                    optionsFromApi: fieldConfig.optionProps
+                                      .optionsFromApi
+                                      ? {
+                                          ...fieldConfig.optionProps
+                                            .optionsFromApi,
+                                          valueReplacement:
+                                            fieldConfig.optionProps.optionsFromApi.valueReplacement?.map(
+                                              ({ variableReplace, field }) => {
+                                                return {
+                                                  variableReplace:
+                                                    variableReplace,
+                                                  field:
+                                                    `${name}.${index}.${field}` as any,
+                                                };
+                                              }
+                                            ),
+                                        }
+                                      : undefined,
+                                  }
+                                : undefined,
+                            }}
+                            control={control}
+                            setValue={setValue}
+                            watch={watch}
+                          />
+                        );
+                      })}
+                    </Grid>
+                  </LayoutRenderDynamicFormMultipleBuilder>
+                </Grid>
+              );
+            })}
+          </Grid>
+        </div>
       </Grid>
-      <Grid item xs={12}>
+      <Grid size={12}>
         <Button
           variant="text"
           color="primary"

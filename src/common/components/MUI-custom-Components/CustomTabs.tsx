@@ -17,7 +17,7 @@ const TabPanel = ({ children, value, index, title }: TabPanelProps) => {
   return (
     <Box>
       {value === index && (
-        <Box sx={{ pl: 3, py: 5 }}>
+        <Box sx={{ px: 3, py: 5 }}>
           <Grid container gap={3}>
             <Grid size={{ xs: 12 }}>
               <Typography variant="h5">{title}</Typography>
@@ -92,13 +92,13 @@ const CustomTabs = ({ render }: CustomTabsProps) => {
             value={value}
             onChange={handleChange}
             aria-label="Vertical tabs example"
-            sx={{ borderRight: 1, borderColor: 'divider', width: '30%' }}
+            sx={{ borderRight: 1, borderColor: 'divider', minWidth: '200px' }}
           >
             {Object.keys(render).map((key, index) => {
               return <Tab key={key} label={render[key].label} />;
             })}
           </Tabs>
-          <Box sx={{ width: '70%' }}>
+          <Box sx={{ minWidth: '70%', height: '100%', overflowY: 'auto' }}>
             {Object.keys(render).map((key, index) => (
               <TabPanel
                 key={key}

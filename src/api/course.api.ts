@@ -56,6 +56,10 @@ export const courseApi = {
       data
     );
   },
+  publishCourse: async (idCourse: string) => {
+    const data = {};
+    return await httpClient.put<void>(`${basePath}/${idCourse}/publish`, data);
+  },
   updateCourseEnrollmentRequirements: async ({
     idCourse,
     requirements,

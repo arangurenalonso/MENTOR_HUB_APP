@@ -43,4 +43,5 @@ export type CourseType = {
   intendedLearners?: IntendedLearners[] | [];
   requirements?: Requirements[] | [];
   instructor?: InstructorInformation;
+  publish: boolean;
 };

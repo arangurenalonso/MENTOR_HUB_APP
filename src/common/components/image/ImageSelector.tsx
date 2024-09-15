@@ -1,5 +1,6 @@
 import { ChangeEvent, useCallback, useEffect, useReducer, useRef } from 'react';
-import { Box, Grid, Typography, Slider, IconButton } from '@mui/material';
+import { Box, Typography, Slider, IconButton } from '@mui/material';
+import Grid from '@mui/material/Grid2';
 import CropIcon from '@mui/icons-material/Crop';
 import Cropper, { Area } from 'react-easy-crop';
 import { getCroppedImg } from './utils/image.utils';
@@ -110,79 +111,83 @@ const ImageSelector = ({ onChange }: ImageSelectorProps) => {
   return (
     <>
       <Grid container>
-        <Grid item xs>
-          <Grid container spacing={2} justifyContent="center">
-            <Grid item xs={12} textAlign="center">
-              {croppedImage ? (
-                <Box
-                  component="img"
-                  src={croppedImage}
-                  alt="Cropped Image"
-                  sx={{
-                    width: '100%',
-                    minHeight: 200,
-                    maxHeight: 400,
-                    objectFit: 'contain',
-                    border: '2px solid #333',
-                    borderRadius: 2,
-                  }}
-                />
-              ) : previewUrl ? (
-                <Grid container>
-                  <Grid item xs={12}>
-                    <Box
-                      sx={{
-                        position: 'relative',
-                        width: '100%',
-                        height: 375,
-                        backgroundColor: '#333',
-                      }}
-                    >
-                      <Cropper
-                        image={previewUrl}
-                        crop={crop}
-                        zoom={zoom}
-                        aspect={750 / 422}
-                        onCropChange={(crop) => {
-                          dispatch({
-                            type: ImageActionType.SET_CROP,
-                            payload: { crop: crop },
-                          });
-                        }}
-                        onZoomChange={(zoom) => {
-                          dispatch({
-                            type: ImageActionType.SET_ZOOM,
-                            payload: { zoom: zoom },
-                          });
-                        }}
-                        onCropComplete={onCropComplete}
-                      />
-                    </Box>
-                  </Grid>
-                  <Grid item xs={12} textAlign="center">
-                    <Typography>Zoom</Typography>
-                    <Slider
-                      value={zoom}
-                      min={1}
-                      max={3}
-                      step={0.1}
-                      onChange={(e, zoomValue) =>
-                        dispatch({
-                          type: ImageActionType.SET_ZOOM,
-                          payload: { zoom: Number(zoomValue) },
-                        })
-                      }
-                    />
-                  </Grid>
-                </Grid>
-              ) : (
-                <ImagePlaceholder onCLick={handleOnClickImagePlaceholder} />
-              )}
+        <Grid size="grow">
+          <div>
+            <Grid container spacing={2} justifyContent="center">
+              <Grid size={12} textAlign="center">
+                {croppedImage ? (
+                  <Box
+                    component="img"
+                    src={croppedImage}
+                    alt="Cropped Image"
+                    sx={{
+                      width: '100%',
+                      minHeight: 200,
+                      maxHeight: 400,
+                      objectFit: 'contain',
+                      border: '2px solid #333',
+                      borderRadius: 2,
+                    }}
+                  />
+                ) : previewUrl ? (
+                  <div>
+                    <Grid container>
+                      <Grid size={12}>
+                        <Box
+                          sx={{
+                            position: 'relative',
+                            width: '100%',
+                            height: 375,
+                            backgroundColor: '#333',
+                          }}
+                        >
+                          <Cropper
+                            image={previewUrl}
+                            crop={crop}
+                            zoom={zoom}
+                            aspect={750 / 422}
+                            onCropChange={(crop) => {
+                              dispatch({
+                                type: ImageActionType.SET_CROP,
+                                payload: { crop: crop },
+                              });
+                            }}
+                            onZoomChange={(zoom) => {
+                              dispatch({
+                                type: ImageActionType.SET_ZOOM,
+                                payload: { zoom: zoom },
+                              });
+                            }}
+                            onCropComplete={onCropComplete}
+                          />
+                        </Box>
+                      </Grid>
+                      <Grid size={12} textAlign="center">
+                        <Typography>Zoom</Typography>
+                        <Slider
+                          value={zoom}
+                          min={1}
+                          max={3}
+                          step={0.1}
+                          onChange={(e, zoomValue) =>
+                            dispatch({
+                              type: ImageActionType.SET_ZOOM,
+                              payload: { zoom: Number(zoomValue) },
+                            })
+                          }
+                        />
+                      </Grid>
+                    </Grid>
+                  </div>
+                ) : (
+                  <ImagePlaceholder onCLick={handleOnClickImagePlaceholder} />
+                )}
+              </Grid>
             </Grid>
-          </Grid>
+          </div>
         </Grid>
 
-        <Grid item>
+        <Grid size="auto">
           <Box sx={{ display: 'flex', flexDirection: 'column' }}>
             {status === ImageStatusEnum.INIT && (
               <IconButton

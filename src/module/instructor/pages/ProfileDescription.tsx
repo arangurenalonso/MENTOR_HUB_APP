@@ -1,9 +1,12 @@
-import { Box, Button, Grid, Typography } from '@mui/material';
+import { Box, Typography } from '@mui/material';
 import useInstructorStore from '../../../hooks/useInstructorStore';
 import DinamicallyFormBuilder from '../../../common/components/form/DinamicallyFormBuilder';
-import { ProfileFormField } from '../type/course-form.type';
 import formProfileInformation from '../form/formProfileInformation';
 import { useEffect, useRef, useState } from 'react';
+import StepNavigationButtons from '../../../common/components/MUI-custom-Components/FormStepButtons';
+import VerticalStepper from '../../../common/components/MUI-custom-Components/VerticalStepper';
+import { ProfileFormField } from '../type/instructor-form.type';
+import CalendarGrid from '../../../common/components/calendar/AvailabilityGrid';
 
 const ProfileDescription = () => {
   const [valuesToSet, setValuesToSet] = useState<Partial<ProfileFormField>>({});
@@ -33,41 +36,60 @@ const ProfileDescription = () => {
   // onUpdateInstructorProfile(instructorUpdateData);
   // };
 
-  const formRef = useRef<{
-    submit: (onSubmit: (data: ProfileFormField) => void) => void;
+  const formProfileRef = useRef<{
+    submit: (
+      onSubmit: (data: ProfileFormField, onAfterSubmit?: () => void) => void,
+      onAfterSubmit?: () => void
+    ) => void;
   }>(null);
-  const handleSubmit = (data: ProfileFormField) => {
+
+  const handleCourseInformationSubmit = async (
+    data: ProfileFormField,
+    onAfterSubmit?: () => void
+  ) => {
     console.log('Form data:', data);
-    // Aquí puedes manejar los datos del formulario
-  };
-  const onSubmitClick = () => {
-    if (formRef.current) {
-      formRef.current.submit(handleSubmit);
+    const result = await onUpdateInstructorProfile(data);
+
+    if (onAfterSubmit && result) {
+      onAfterSubmit();
     }
   };
   return (
-    <Box sx={{ mx: 'auto', maxWidth: '700px' }}>
-      <Grid container spacing={2}>
-        <Grid item xs={12}>
-          <Typography variant="h4">Profile Descrition</Typography>
-          <Typography variant="subtitle1">
-            This info will go on your public profile. Write in the language
-            you'll teaching.
-          </Typography>
-        </Grid>
-        <Grid item xs={12}>
-          <DinamicallyFormBuilder<ProfileFormField>
-            ref={formRef}
-            fieldsObject={formProfileInformation}
-            valuesToSet={valuesToSet}
-          />
-        </Grid>
-        <Grid item xs={12} sx={{ display: 'flex', justifyContent: 'center' }}>
-          <Button variant={'outlined'} onClick={onSubmitClick}>
-            Submit Form
-          </Button>
-        </Grid>
-      </Grid>
+    <Box sx={{ mx: 'auto', maxWidth: '900px', height: '100%', p: 1 }}>
+      <VerticalStepper
+        stepsLabels={['Profile Descrition']}
+        render={{
+          firstChild: ({ handleNext, handleBack, isInitial, isLastStep }) => {
+            return (
+              <>
+                <Typography variant="h4">Profile Descrition</Typography>
+                <Typography variant="subtitle1" sx={{ mb: 3 }}>
+                  This info will go on your public profile. Write in the
+                  language you'll teaching.
+                </Typography>
+                <DinamicallyFormBuilder<ProfileFormField>
+                  ref={formProfileRef}
+                  fieldsObject={formProfileInformation}
+                  valuesToSet={valuesToSet}
+                />
+                <StepNavigationButtons
+                  handleBack={handleBack}
+                  handleNext={() => {
+                    if (formProfileRef.current) {
+                      formProfileRef.current.submit(
+                        handleCourseInformationSubmit,
+                        handleNext
+                      );
+                    }
+                  }}
+                  isLastStep={isLastStep}
+                  isInitial={isInitial}
+                />
+              </>
+            );
+          },
+        }}
+      />
     </Box>
   );
 };

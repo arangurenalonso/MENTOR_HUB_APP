@@ -41,7 +41,7 @@ const VerticalStepper = ({
   };
 
   return (
-    <Box sx={{ mx: 'auto', maxWidth: '700px' }}>
+    <Box sx={{ mx: 'auto', maxWidth: '100%' }}>
       <>
         <Stepper activeStep={activeStep} orientation="vertical">
           {Object.keys(render).map((key, index) => (

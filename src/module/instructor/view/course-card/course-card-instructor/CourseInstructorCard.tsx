@@ -1,8 +1,8 @@
-import { Grid, Paper, SxProps, Theme, useTheme } from '@mui/material';
+import { Paper, SxProps, Theme, useTheme } from '@mui/material';
 import { CourseType } from '../../../../../store/course/course.type';
 import { CSSProperties, useState } from 'react';
 import CourseInstructorContext from './CourseInstructorContext';
-
+import Grid from '@mui/material/Grid2';
 export interface CourseCardHandlers {
   course: CourseType;
 }
@@ -44,6 +44,7 @@ const CourseInstructorCard = ({
       >
         <Grid
           container
+          spacing={1}
           sx={{
             border: '1px solid',
             borderColor: isHovered ? theme.palette.divider : 'transparent',

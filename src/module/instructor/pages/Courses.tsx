@@ -1,4 +1,5 @@
-import { Box, Grid } from '@mui/material';
+import { Box } from '@mui/material';
+import Grid from '@mui/material/Grid2';
 import useCourseStore from '../../../hooks/useCourseStore';
 import {
   CourseInstructorCard,
@@ -18,10 +19,10 @@ const Courses = () => {
     navigate(`/instructor/course/${course.id}`);
   };
   return (
-    <Box sx={{ mx: 'auto', maxWidth: '700px' }}>
+    <Box sx={{ mx: 'auto', maxWidth: '900px', my: 5 }}>
       <Grid container spacing={2}>
         {courses.map((course) => (
-          <Grid key={course.id} item xs={12}>
+          <Grid key={course.id} size={12}>
             <CourseInstructorCard course={course} onClick={handleOnClick}>
               {({}) => (
                 <>

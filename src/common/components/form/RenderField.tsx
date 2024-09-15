@@ -1,4 +1,4 @@
-import { Grid } from '@mui/material';
+import Grid from '@mui/material/Grid2';
 import {
   FieldValues,
   Control,
@@ -30,13 +30,7 @@ const RenderField = <T extends FieldValues>({
   isFromArrayForm,
 }: RenderFieldProps<T>) => {
   if (field.type === ControlledFieldEnum.LineBreak) {
-    return (
-      <Grid
-        item
-        xs={12}
-        style={{ display: 'block', height: 0, padding: 0, margin: 0 }}
-      />
-    );
+    return <div></div>;
   }
 
   let element: JSX.Element | null = null;
@@ -124,12 +118,13 @@ const RenderField = <T extends FieldValues>({
 
   return (
     <Grid
-      item
-      xs={field.xs}
-      sm={field.sm}
-      md={field.md}
-      lg={field.lg}
-      xl={field.xl}
+      size={{
+        xs: field.xs,
+        sm: field.sm,
+        md: field.md,
+        lg: field.lg,
+        xl: field.xl,
+      }}
     >
       {element}
     </Grid>

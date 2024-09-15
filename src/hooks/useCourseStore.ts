@@ -263,6 +263,7 @@ const useCourseStore = () => {
         description: form.subCategoryOption?.description,
       },
       description: description,
+      publish: false,
     };
     return courseType;
   };
@@ -272,6 +273,25 @@ const useCourseStore = () => {
   };
   const onSetByIdCourse = async (id: string) => {
     dispatch(findAndSetCourse(id));
+  };
+  const onPublishProcess = async (idCourse: string): Promise<boolean> => {
+    dispatch(onChecking());
+
+    const courseUpdateResult = await courseApi.publishCourse(
+      courseSelected?.id || ''
+    );
+
+    if (courseUpdateResult.isErr()) {
+      const error = courseUpdateResult.error;
+      handleDecodingError(error.error);
+      return false;
+    }
+    const courseUpdated: CourseType = {
+      ...courseSelected!,
+      publish: true,
+    };
+    dispatch(onUpdateCourse(courseUpdated));
+    return true;
   };
   return {
     //*Properties
@@ -288,6 +308,7 @@ const useCourseStore = () => {
     onUpdateCoursePhotoProcess,
     onUpdateCoursePromotionalVideoProcess,
     onResetSelectedCourse: () => dispatch(setCourse(null)),
+    onPublishProcess,
   };
 };
 

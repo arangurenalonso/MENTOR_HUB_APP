@@ -1,7 +1,8 @@
 import { useReducer, useEffect, useRef } from 'react';
 import { RecordRTCPromisesHandler } from 'recordrtc';
 import useMediaDevices from '../../../hooks/useMediaDevices';
-import { Typography, Box, Grid, Button, useTheme } from '@mui/material';
+import { Typography, Box, Button, useTheme } from '@mui/material';
+import Grid from '@mui/material/Grid2';
 import { PlayArrow, Stop, Pause, Replay } from '@mui/icons-material';
 import RadioButtonCheckedIcon from '@mui/icons-material/RadioButtonChecked';
 import {
@@ -191,8 +192,7 @@ const VideoRecorder = ({ onChange }: VideoRecorderProps) => {
   return (
     <Grid container rowGap={1}>
       <Grid
-        item
-        xs={12}
+        size={12}
         sx={{
           border: '2px solid black',
           borderRadius: '5px',
@@ -251,7 +251,7 @@ const VideoRecorder = ({ onChange }: VideoRecorderProps) => {
           </Box>
         )}
       </Grid>
-      <Grid item xs={12}>
+      <Grid size={12}>
         {status === VideoRecorderStatusEnum.INIT && (
           <Box sx={{ display: 'flex', justifyContent: 'center', gap: 2 }}>
             <Button
@@ -318,7 +318,7 @@ const VideoRecorder = ({ onChange }: VideoRecorderProps) => {
         )}
       </Grid>
       {error && (
-        <Grid>
+        <Grid size={12}>
           <Typography color="error" variant="body1">
             {error}
           </Typography>

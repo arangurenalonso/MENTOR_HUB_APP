@@ -2,7 +2,7 @@ import { FieldValues, Path, PathValue, useForm } from 'react-hook-form';
 import FieldBaseType, {
   LineBreakType,
 } from '../controlledFields/type/fieldType';
-import { Grid } from '@mui/material';
+import Grid from '@mui/material/Grid2';
 import { Fragment } from 'react/jsx-runtime';
 import RenderField from './RenderField';
 import { forwardRef, useEffect, useImperativeHandle, useMemo } from 'react';

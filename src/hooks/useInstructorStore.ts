@@ -8,15 +8,10 @@ import {
 import { instructorApi } from '../api/instructor.api';
 import { AppDispatch, RootState } from '../store/store';
 import { ValidateError, ErrorData } from '../utils/adpters/axios-http-client';
-import { RawDraftContentState } from 'draft-js';
+import { convertToRaw, EditorState, RawDraftContentState } from 'draft-js';
 import useAuthStore from './useAuthStore';
+import { ProfileFormField } from '../module/instructor/type/instructor-form.type';
 
-export type updateInstructorProfileArgs = {
-  headline: string;
-  introduction: RawDraftContentState;
-  teachingExperience: RawDraftContentState;
-  motivation: RawDraftContentState;
-};
 const useInstructorStore = () => {
   const dispatch: AppDispatch = useDispatch();
   const { status, instructor, errorMessage } = useSelector(
@@ -64,16 +59,36 @@ const useInstructorStore = () => {
   };
 
   const onUpdateInstructorProfile = async (
-    instructorData: updateInstructorProfileArgs
-  ) => {
+    instructorData: ProfileFormField
+  ): Promise<boolean> => {
     const authenticationResult = await instructorApi.updateAbout({
       headline: instructorData.headline,
-      introduction: JSON.stringify(instructorData.introduction),
-      teachingExperience: JSON.stringify(instructorData.teachingExperience),
-      motivation: JSON.stringify(instructorData.motivation),
+      introduction: convertionFromEditorStateOrStringToString(
+        instructorData.introduction
+      ),
+      teachingExperience: convertionFromEditorStateOrStringToString(
+        instructorData.teachingExperience
+      ),
+      motivation: convertionFromEditorStateOrStringToString(
+        instructorData.motivation
+      ),
       idInstructor: user?.idUser || '',
     });
-    console.log('authenticationResult', authenticationResult);
+    if (authenticationResult.isErr()) {
+      const error = authenticationResult.error;
+      handleDecodingError(error.error);
+      return false;
+    }
+    return true;
+  };
+  const convertionFromEditorStateOrStringToString = (
+    editor: string | EditorState
+  ): string => {
+    const description =
+      typeof editor === 'string'
+        ? editor
+        : JSON.stringify(convertToRaw(editor.getCurrentContent()));
+    return description;
   };
   return {
     //*Properties

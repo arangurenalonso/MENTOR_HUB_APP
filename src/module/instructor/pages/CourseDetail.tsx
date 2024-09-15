@@ -6,7 +6,7 @@ import useCourseStore from '../../../hooks/useCourseStore';
 import formCourseInformation from '../form/formCourseInformation';
 import formEnrollmentCriteria from '../form/formEnrollmentCriteria';
 import { CourseFormField } from '../type/course-form.type';
-import { Box, Button, Typography } from '@mui/material';
+import { Box, Button } from '@mui/material';
 import { useParams } from 'react-router-dom';
 import ImageSelector from '../../../common/components/image/ImageSelector';
 import InsertPhotoIcon from '@mui/icons-material/InsertPhoto';
@@ -15,6 +15,7 @@ import VideoRecorder from '../../../common/components/video/VideoRecorder';
 import AddAPhotoIcon from '@mui/icons-material/AddAPhoto';
 import { VideoCameraFront } from '@mui/icons-material';
 import CourseResume from './CourseResume';
+import CustomTabs from '../../../common/components/MUI-custom-Components/CustomTabs';
 
 const CourseDetail = () => {
   const params = useParams();
@@ -27,6 +28,7 @@ const CourseDetail = () => {
     onSetByIdCourse,
     courses,
     onResetSelectedCourse,
+    onPublishProcess,
   } = useCourseStore();
 
   const [video, setVideo] = useState<File | undefined | null>(null);
@@ -67,6 +69,8 @@ const CourseDetail = () => {
     };
   }, []);
   useEffect(() => {
+    console.log('course', course);
+
     if (course) {
       const courseFormField: Partial<CourseFormField> = {
         idCategory: course.subCategory.category?.id,
@@ -140,13 +144,182 @@ const CourseDetail = () => {
       onAfterSubmit();
     }
   };
+  const handlePublishSubmit = async (onAfterSubmit?: () => void) => {
+    if (course?.id) {
+      const result = await onPublishProcess(course?.id);
+
+      if (onAfterSubmit && result) {
+        onAfterSubmit();
+      }
+    }
+  };
   return (
-    <Box sx={{ mx: 'auto', maxWidth: '800px', height: '100%', p: 1, pb: 5 }}>
-      {/* <CustomTabs
-        render={{
-          firstChild: {
-            label: 'Course Information',
-            element: ({}) => {
+    <Box sx={{ mx: 'auto', maxWidth: '900px', height: '100%', p: 1 }}>
+      {course?.publish ? (
+        <CustomTabs
+          render={{
+            firstChild: {
+              label: 'Course Information',
+              element: ({}) => {
+                return (
+                  <>
+                    <DinamicallyFormBuilder<CourseFormField>
+                      ref={formCourseInformationRef}
+                      fieldsObject={formCourseInformation}
+                      valuesToSet={courseSelected}
+                    />
+                  </>
+                );
+              },
+            },
+            secondChild: {
+              label: 'Enrollment Criteria',
+              element: ({}) => {
+                return (
+                  <>
+                    <DinamicallyFormBuilder<CourseFormField>
+                      fieldsObject={formEnrollmentCriteria}
+                      valuesToSet={courseSelected}
+                      ref={formEnrollmentCriteriaRef}
+                    />
+                  </>
+                );
+              },
+            },
+            thirdChild: {
+              label: 'Photo',
+              element: ({}) => {
+                return (
+                  <>
+                    {course?.imgUrl && !isNewImg && (
+                      <>
+                        <Box
+                          component="img"
+                          src={course.imgUrl}
+                          alt="Cropped Image"
+                          sx={{
+                            width: '100%',
+                            minHeight: 200,
+                            objectFit: 'contain',
+                            border: '2px solid #333',
+                            borderRadius: 2,
+                          }}
+                        />
+
+                        <Box sx={{ textAlign: 'center' }}>
+                          <Button
+                            variant="outlined"
+                            onClick={() => {
+                              setIsNewImg(true);
+                            }}
+                            startIcon={<AddAPhotoIcon />}
+                            sx={{ mx: 'auto' }}
+                          >
+                            New
+                          </Button>
+                        </Box>
+                      </>
+                    )}
+                    {(!course?.imgUrl || isNewImg) && (
+                      <>
+                        <ImageSelector
+                          onChange={(file?: File | null | undefined) => {
+                            setImg(file);
+                          }}
+                        />
+                        {course?.imgUrl && (
+                          <Box sx={{ textAlign: 'center', mt: 1 }}>
+                            <Button
+                              variant="outlined"
+                              onClick={() => {
+                                setIsNewImg(false);
+                              }}
+                              startIcon={<InsertPhotoIcon />}
+                              sx={{ mx: 'auto' }}
+                            >
+                              Back to Photo Uploaded
+                            </Button>
+                          </Box>
+                        )}
+                      </>
+                    )}
+                  </>
+                );
+              },
+            },
+            fourChild: {
+              label: 'Promotional Video',
+              element: ({}) => {
+                return (
+                  <>
+                    {course?.promotionalVideoUrl && !isNewVideo && (
+                      <>
+                        <Box
+                          component="video"
+                          src={course?.promotionalVideoUrl}
+                          controls
+                          sx={{
+                            width: '100%',
+                            minHeight: 200,
+                            objectFit: 'contain',
+                            border: '2px solid #333',
+                            borderRadius: 2,
+                          }}
+                        />
+                        <Box sx={{ textAlign: 'center' }}>
+                          <Button
+                            variant="outlined"
+                            onClick={() => {
+                              setIsNewVideo(true);
+                            }}
+                            startIcon={<VideoCameraFrontIcon />}
+                            sx={{ mx: 'auto' }}
+                          >
+                            New
+                          </Button>
+                        </Box>
+                      </>
+                    )}
+                    {(!course?.promotionalVideoUrl || isNewVideo) && (
+                      <>
+                        <VideoRecorder
+                          onChange={(file?: File | null | undefined) => {
+                            setVideo(file);
+                          }}
+                        />
+                        {course?.promotionalVideoUrl && (
+                          <Box sx={{ textAlign: 'center', mt: 1 }}>
+                            <Button
+                              variant="outlined"
+                              onClick={() => {
+                                setIsNewVideo(false);
+                              }}
+                              startIcon={<VideoCameraFront />}
+                              sx={{ mx: 'auto' }}
+                            >
+                              Back to Video Uploaded
+                            </Button>
+                          </Box>
+                        )}
+                      </>
+                    )}
+                  </>
+                );
+              },
+            },
+          }}
+        />
+      ) : (
+        <VerticalStepper
+          stepsLabels={[
+            'Course Information',
+            'Enrollment Criteria',
+            'Photo',
+            'Promotional Video',
+            'Resume',
+          ]}
+          render={{
+            firstChild: ({ handleNext, handleBack, isInitial, isLastStep }) => {
               return (
                 <>
                   <DinamicallyFormBuilder<CourseFormField>
@@ -154,170 +327,40 @@ const CourseDetail = () => {
                     fieldsObject={formCourseInformation}
                     valuesToSet={courseSelected}
                   />
-                </>
-              );
-            },
-          },
-          secondChild: {
-            label: 'Enrollment Criteria',
-            element: ({}) => {
-              return (
-                <>
-                  <DinamicallyFormBuilder<CourseFormField>
-                    fieldsObject={formEnrollmentCriteria}
-                    valuesToSet={courseSelected}
-                    ref={formEnrollmentCriteriaRef}
+                  <StepNavigationButtons
+                    handleBack={handleBack}
+                    handleNext={() => {
+                      if (formCourseInformationRef.current) {
+                        formCourseInformationRef.current.submit(
+                          handleCourseInformationSubmit,
+                          handleNext
+                        );
+                      }
+                    }}
+                    isLastStep={isLastStep}
+                    isInitial={isInitial}
                   />
                 </>
               );
             },
-          },
-          thirdChild: {
-            label: 'Photo',
-            element: ({}) => {
-              return (
-                <>
-                  {course?.imgUrl && !isNewImg && (
-                    <>
-                      <Box
-                        component="img"
-                        src={course.imgUrl}
-                        alt="Cropped Image"
-                        sx={{
-                          width: '100%',
-                          minHeight: 200,
-                          objectFit: 'contain',
-                          border: '2px solid #333',
-                          borderRadius: 2,
-                        }}
-                      />
-
-                      <Box sx={{ textAlign: 'center' }}>
-                        <Button
-                          variant="outlined"
-                          onClick={() => {
-                            setIsNewImg(true);
-                          }}
-                          startIcon={<AddAPhotoIcon />}
-                          sx={{ mx: 'auto' }}
-                        >
-                          New
-                        </Button>
-                      </Box>
-                    </>
-                  )}
-                  {(!course?.imgUrl || isNewImg) && (
-                    <>
-                      <ImageSelector
-                        onChange={(file?: File | null | undefined) => {
-                          setImg(file);
-                        }}
-                      />
-                      {course?.imgUrl && (
-                        <Box sx={{ textAlign: 'center', mt: 1 }}>
-                          <Button
-                            variant="outlined"
-                            onClick={() => {
-                              setIsNewImg(false);
-                            }}
-                            startIcon={<InsertPhotoIcon />}
-                            sx={{ mx: 'auto' }}
-                          >
-                            Back to Photo Uploaded
-                          </Button>
-                        </Box>
-                      )}
-                    </>
-                  )}
-                </>
-              );
-            },
-          },
-          fourChild: {
-            label: 'Promotional Video',
-            element: ({}) => {
-              return (
-                <>
-                  {course?.promotionalVideoUrl && !isNewVideo && (
-                    <>
-                      <Box
-                        component="video"
-                        src={course?.promotionalVideoUrl}
-                        controls
-                        sx={{
-                          width: '100%',
-                          minHeight: 200,
-                          objectFit: 'contain',
-                          border: '2px solid #333',
-                          borderRadius: 2,
-                        }}
-                      />
-                      <Box sx={{ textAlign: 'center' }}>
-                        <Button
-                          variant="outlined"
-                          onClick={() => {
-                            setIsNewVideo(true);
-                          }}
-                          startIcon={<VideoCameraFrontIcon />}
-                          sx={{ mx: 'auto' }}
-                        >
-                          New
-                        </Button>
-                      </Box>
-                    </>
-                  )}
-                  {(!course?.promotionalVideoUrl || isNewVideo) && (
-                    <>
-                      <VideoRecorder
-                        onChange={(file?: File | null | undefined) => {
-                          setVideo(file);
-                        }}
-                      />
-                      {course?.promotionalVideoUrl && (
-                        <Box sx={{ textAlign: 'center', mt: 1 }}>
-                          <Button
-                            variant="outlined"
-                            onClick={() => {
-                              setIsNewVideo(false);
-                            }}
-                            startIcon={<VideoCameraFront />}
-                            sx={{ mx: 'auto' }}
-                          >
-                            Back to Video Uploaded
-                          </Button>
-                        </Box>
-                      )}
-                    </>
-                  )}
-                </>
-              );
-            },
-          },
-        }}
-      /> */}
-      <VerticalStepper
-        stepsLabels={[
-          'Course Information',
-          'Enrollment Criteria',
-          'Photo',
-          'Promotional Video',
-          'Resume',
-        ]}
-        render={{
-          firstChild: ({ handleNext, handleBack, isInitial, isLastStep }) => {
-            return (
+            secondChild: ({
+              handleNext,
+              handleBack,
+              isInitial,
+              isLastStep,
+            }) => (
               <>
                 <DinamicallyFormBuilder<CourseFormField>
-                  ref={formCourseInformationRef}
-                  fieldsObject={formCourseInformation}
+                  fieldsObject={formEnrollmentCriteria}
                   valuesToSet={courseSelected}
+                  ref={formEnrollmentCriteriaRef}
                 />
                 <StepNavigationButtons
                   handleBack={handleBack}
                   handleNext={() => {
-                    if (formCourseInformationRef.current) {
-                      formCourseInformationRef.current.submit(
-                        handleCourseInformationSubmit,
+                    if (formEnrollmentCriteriaRef.current) {
+                      formEnrollmentCriteriaRef.current.submit(
+                        handleCourseEnrollmentCriteriaSubmit,
                         handleNext
                       );
                     }
@@ -326,190 +369,167 @@ const CourseDetail = () => {
                   isInitial={isInitial}
                 />
               </>
-            );
-          },
-          secondChild: ({ handleNext, handleBack, isInitial, isLastStep }) => (
-            <>
-              <DinamicallyFormBuilder<CourseFormField>
-                fieldsObject={formEnrollmentCriteria}
-                valuesToSet={courseSelected}
-                ref={formEnrollmentCriteriaRef}
-              />
-              <StepNavigationButtons
-                handleBack={handleBack}
-                handleNext={() => {
-                  if (formEnrollmentCriteriaRef.current) {
-                    formEnrollmentCriteriaRef.current.submit(
-                      handleCourseEnrollmentCriteriaSubmit,
-                      handleNext
-                    );
+            ),
+            thirdChild: ({ handleNext, handleBack, isInitial, isLastStep }) => (
+              <>
+                {course?.imgUrl && !isNewImg && (
+                  <>
+                    <Box
+                      component="img"
+                      src={course.imgUrl}
+                      alt="Cropped Image"
+                      sx={{
+                        width: '100%',
+                        minHeight: 200,
+                        objectFit: 'contain',
+                        border: '2px solid #333',
+                        borderRadius: 2,
+                      }}
+                    />
+
+                    <Box sx={{ textAlign: 'center' }}>
+                      <Button
+                        variant="outlined"
+                        onClick={() => {
+                          setIsNewImg(true);
+                        }}
+                        startIcon={<AddAPhotoIcon />}
+                        sx={{ mx: 'auto' }}
+                      >
+                        New
+                      </Button>
+                    </Box>
+                  </>
+                )}
+                {(!course?.imgUrl || isNewImg) && (
+                  <>
+                    <ImageSelector
+                      onChange={(file?: File | null | undefined) => {
+                        setImg(file);
+                      }}
+                    />
+                    {course?.imgUrl && (
+                      <Box sx={{ textAlign: 'center', mt: 1 }}>
+                        <Button
+                          variant="outlined"
+                          onClick={() => {
+                            setIsNewImg(false);
+                          }}
+                          startIcon={<InsertPhotoIcon />}
+                          sx={{ mx: 'auto' }}
+                        >
+                          Back to Photo Uploaded
+                        </Button>
+                      </Box>
+                    )}
+                  </>
+                )}
+                <StepNavigationButtons
+                  disabledNext={
+                    !(
+                      (Boolean(course?.imgUrl) && !isNewImg) ||
+                      (Boolean(course?.imgUrl) && isNewImg && Boolean(img)) ||
+                      (!Boolean(course?.imgUrl) && Boolean(img))
+                    )
                   }
-                }}
-                isLastStep={isLastStep}
-                isInitial={isInitial}
-              />
-            </>
-          ),
-          thirdChild: ({ handleNext, handleBack, isInitial, isLastStep }) => (
-            <>
-              {course?.imgUrl && !isNewImg && (
-                <>
-                  <Box
-                    component="img"
-                    src={course.imgUrl}
-                    alt="Cropped Image"
-                    sx={{
-                      width: '100%',
-                      minHeight: 200,
-                      objectFit: 'contain',
-                      border: '2px solid #333',
-                      borderRadius: 2,
-                    }}
-                  />
-
-                  <Box sx={{ textAlign: 'center' }}>
-                    <Button
-                      variant="outlined"
-                      onClick={() => {
-                        setIsNewImg(true);
+                  handleBack={handleBack}
+                  handleNext={() => {
+                    handleOnSubmitPhoto(handleNext);
+                  }}
+                  isLastStep={isLastStep}
+                  isInitial={isInitial}
+                />
+              </>
+            ),
+            fourChild: ({ handleNext, handleBack, isInitial, isLastStep }) => (
+              <>
+                {course?.promotionalVideoUrl && !isNewVideo && (
+                  <>
+                    <Box
+                      component="video"
+                      src={course?.promotionalVideoUrl}
+                      controls
+                      sx={{
+                        width: '100%',
+                        minHeight: 200,
+                        objectFit: 'contain',
+                        border: '2px solid #333',
+                        borderRadius: 2,
                       }}
-                      startIcon={<AddAPhotoIcon />}
-                      sx={{ mx: 'auto' }}
-                    >
-                      New
-                    </Button>
-                  </Box>
-                </>
-              )}
-              {(!course?.imgUrl || isNewImg) && (
-                <>
-                  <ImageSelector
-                    onChange={(file?: File | null | undefined) => {
-                      setImg(file);
-                    }}
-                  />
-                  {course?.imgUrl && (
-                    <Box sx={{ textAlign: 'center', mt: 1 }}>
+                    />
+                    <Box sx={{ textAlign: 'center' }}>
                       <Button
                         variant="outlined"
                         onClick={() => {
-                          setIsNewImg(false);
+                          setIsNewVideo(true);
                         }}
-                        startIcon={<InsertPhotoIcon />}
+                        startIcon={<VideoCameraFrontIcon />}
                         sx={{ mx: 'auto' }}
                       >
-                        Back to Photo Uploaded
+                        New
                       </Button>
                     </Box>
-                  )}
-                </>
-              )}
-              <StepNavigationButtons
-                disabledNext={
-                  !(
-                    (Boolean(course?.imgUrl) && !isNewImg) ||
-                    (Boolean(course?.imgUrl) && isNewImg && Boolean(img)) ||
-                    (!Boolean(course?.imgUrl) && Boolean(img))
-                  )
-                }
-                handleBack={handleBack}
-                handleNext={() => {
-                  handleOnSubmitPhoto(handleNext);
-                }}
-                isLastStep={isLastStep}
-                isInitial={isInitial}
-              />
-            </>
-          ),
-          fourChild: ({ handleNext, handleBack, isInitial, isLastStep }) => (
-            <>
-              {course?.promotionalVideoUrl && !isNewVideo && (
-                <>
-                  <Box
-                    component="video"
-                    src={course?.promotionalVideoUrl}
-                    controls
-                    sx={{
-                      width: '100%',
-                      minHeight: 200,
-                      objectFit: 'contain',
-                      border: '2px solid #333',
-                      borderRadius: 2,
-                    }}
-                  />
-                  <Box sx={{ textAlign: 'center' }}>
-                    <Button
-                      variant="outlined"
-                      onClick={() => {
-                        setIsNewVideo(true);
+                  </>
+                )}
+                {(!course?.promotionalVideoUrl || isNewVideo) && (
+                  <>
+                    <VideoRecorder
+                      onChange={(file?: File | null | undefined) => {
+                        setVideo(file);
                       }}
-                      startIcon={<VideoCameraFrontIcon />}
-                      sx={{ mx: 'auto' }}
-                    >
-                      New
-                    </Button>
-                  </Box>
-                </>
-              )}
-              {(!course?.promotionalVideoUrl || isNewVideo) && (
-                <>
-                  <VideoRecorder
-                    onChange={(file?: File | null | undefined) => {
-                      setVideo(file);
-                    }}
-                  />
-                  {course?.promotionalVideoUrl && (
-                    <Box sx={{ textAlign: 'center', mt: 1 }}>
-                      <Button
-                        variant="outlined"
-                        onClick={() => {
-                          setIsNewVideo(false);
-                        }}
-                        startIcon={<VideoCameraFront />}
-                        sx={{ mx: 'auto' }}
-                      >
-                        Back to Video Uploaded
-                      </Button>
-                    </Box>
-                  )}
-                </>
-              )}
-              <StepNavigationButtons
-                disabledNext={
-                  !(
-                    (Boolean(course?.promotionalVideoUrl) && !isNewVideo) ||
-                    (Boolean(course?.promotionalVideoUrl) &&
-                      isNewVideo &&
-                      Boolean(video)) ||
-                    (!Boolean(course?.promotionalVideoUrl) && Boolean(video))
-                  )
-                }
-                handleBack={handleBack}
-                handleNext={() => {
-                  handleOnSubmitPromotionalVideo(handleNext);
-                }}
-                isLastStep={isLastStep}
-                isInitial={isInitial}
-              />
-            </>
-          ),
-          fifthChild: ({ handleNext, handleBack, isInitial, isLastStep }) => (
-            <>
-              {course && <CourseResume course={course} />}
+                    />
+                    {course?.promotionalVideoUrl && (
+                      <Box sx={{ textAlign: 'center', mt: 1 }}>
+                        <Button
+                          variant="outlined"
+                          onClick={() => {
+                            setIsNewVideo(false);
+                          }}
+                          startIcon={<VideoCameraFront />}
+                          sx={{ mx: 'auto' }}
+                        >
+                          Back to Video Uploaded
+                        </Button>
+                      </Box>
+                    )}
+                  </>
+                )}
+                <StepNavigationButtons
+                  disabledNext={
+                    !(
+                      (Boolean(course?.promotionalVideoUrl) && !isNewVideo) ||
+                      (Boolean(course?.promotionalVideoUrl) &&
+                        isNewVideo &&
+                        Boolean(video)) ||
+                      (!Boolean(course?.promotionalVideoUrl) && Boolean(video))
+                    )
+                  }
+                  handleBack={handleBack}
+                  handleNext={() => {
+                    handleOnSubmitPromotionalVideo(handleNext);
+                  }}
+                  isLastStep={isLastStep}
+                  isInitial={isInitial}
+                />
+              </>
+            ),
+            fifthChild: ({ handleNext, handleBack, isInitial, isLastStep }) => (
+              <>
+                {course && <CourseResume course={course} />}
 
-              <StepNavigationButtons
-                disabledNext={!video}
-                handleBack={handleBack}
-                handleNext={() => {
-                  // handleOnSubmitPromotionalVideo(handleNext);
-                }}
-                isLastStep={isLastStep}
-                isInitial={isInitial}
-              />
-            </>
-          ),
-        }}
-      />
+                <StepNavigationButtons
+                  handleBack={handleBack}
+                  handleNext={() => {
+                    handlePublishSubmit(handleNext);
+                  }}
+                  isLastStep={isLastStep}
+                  isInitial={isInitial}
+                />
+              </>
+            ),
+          }}
+        />
+      )}
     </Box>
   );
 };

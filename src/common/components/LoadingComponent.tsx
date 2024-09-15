@@ -1,4 +1,5 @@
-import { CircularProgress, Grid } from '@mui/material';
+import { CircularProgress } from '@mui/material';
+import Grid from '@mui/material/Grid2';
 const LoadingComponent = () => {
   return (
     <Grid
@@ -9,7 +10,7 @@ const LoadingComponent = () => {
       justifyContent={'center'}
       sx={{ minHeight: '100vh', backgroundColor: 'primary.main', padding: 4 }}
     >
-      <Grid item>
+      <Grid size={12}>
         <CircularProgress color="warning" size={100} />
       </Grid>
     </Grid>

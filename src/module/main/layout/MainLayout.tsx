@@ -5,7 +5,7 @@ const MainLayout = ({ children }: { children: ReactNode }) => {
   return (
     <>
       LAYOUT DE MAIN
-      <Box sx={{ mt: 3, width: '100%', maxWidth: 400, mx: 'auto' }}>
+      <Box sx={{ mt: 3, width: '100%', maxWidth: 1000, mx: 'auto' }}>
         <div>{children}</div>
       </Box>
     </>
